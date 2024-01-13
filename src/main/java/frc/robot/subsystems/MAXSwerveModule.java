@@ -17,7 +17,8 @@ import com.revrobotics.RelativeEncoder;
 
 import frc.robot.Constants.ModuleConstants;
 import monologue.Logged;
-import monologue.Monologue.LogBoth;
+import monologue.Monologue;
+import monologue.Annotations.Log;
 
 public class MAXSwerveModule implements Logged{
   private final CANSparkMax m_drivingSparkMax;
@@ -33,21 +34,29 @@ public class MAXSwerveModule implements Logged{
   private SwerveModuleState m_desiredState = new SwerveModuleState(0.0, new Rotation2d());
 
   //telemetry fields
-  @LogBoth
+  @Log.NT
+  @Log.File
   private double m_turnMotorCurrent = 0;
-  @LogBoth
+  @Log.NT
+  @Log.File
   private double m_turnMotorTemp = 0;
-  @LogBoth
+  @Log.NT
+  @Log.File
   private double m_turnMotorVoltage = 0;
-  @LogBoth
+  @Log.NT
+  @Log.File
   private double m_driveMotorCurrent = 0;
-  @LogBoth
+  @Log.NT
+  @Log.File
   private double m_driveMotorTemp = 0;
-  @LogBoth
+  @Log.NT
+  @Log.File
   private double m_driveMotorVoltage = 0;
-  @LogBoth
+  @Log.NT
+  @Log.File
   private double m_moduleSpeed = 0;
-  @LogBoth
+  @Log.NT
+  @Log. File
   private double m_modeulePosition = 0;
 
   /**

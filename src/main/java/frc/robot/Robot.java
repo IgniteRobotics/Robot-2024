@@ -4,14 +4,15 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import monologue.Monologue;
-import monologue.Monologue.LogBoth;
+import monologue.Annotations.Log;
 import monologue.Logged;
 
-/**
+/**f
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
  * the package after creating this project, you must also update the build.gradle file in the
@@ -22,7 +23,9 @@ public class Robot extends TimedRobot implements Logged {
 
   private RobotContainer m_robotContainer;
 
-  @LogBoth
+  @Log.NT
+  @Log.File
+  
   private CommandScheduler m_Scheduler;
 
   /**
@@ -38,7 +41,9 @@ public class Robot extends TimedRobot implements Logged {
     m_Scheduler = CommandScheduler.getInstance();
 
     //do this LAST!!
-    Monologue.setupLogging(this, "/Robot");
+    boolean fileOnly = false;
+    boolean lazyLogging = false;
+    Monologue.setupMonologue(this, "/Robot", fileOnly, lazyLogging);
   }
 
   /**
@@ -55,7 +60,8 @@ public class Robot extends TimedRobot implements Logged {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    Monologue.update();
+    Monologue.setFileOnly(DriverStation.isFMSAttached());
+    Monologue.updateAll();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
