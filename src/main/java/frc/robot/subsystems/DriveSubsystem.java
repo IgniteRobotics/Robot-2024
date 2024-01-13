@@ -19,8 +19,9 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
+import monologue.Monologue;
 import monologue.Logged;
-import monologue.Monologue.LogBoth;
+import monologue.Annotations.Log;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase implements Logged{
@@ -49,11 +50,14 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
   // Slew rate filter variables for controlling lateral acceleration
-  @LogBoth
+  @Log.NT
+@Log.File
   private double m_currentRotation = 0.0;
-  @LogBoth
+  @Log.NT
+@Log.File
   private double m_currentTranslationDir = 0.0;
-  @LogBoth
+  @Log.NT
+@Log.File
   private double m_currentTranslationMag = 0.0;
 
   private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRate);
@@ -109,7 +113,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
    *
    * @return The pose.
    */
-  @LogBoth
+  @Log.NT
+  @Log.File
   public Pose2d getPose() {
     return m_odometry.getPoseMeters();
   }
