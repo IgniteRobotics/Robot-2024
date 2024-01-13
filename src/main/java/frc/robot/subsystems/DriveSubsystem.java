@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
-import monologue.Monologue;
 import monologue.Logged;
 import monologue.Annotations.Log;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
