@@ -79,7 +79,9 @@ public class RobotContainer implements Logged {
     new JoystickButton(m_driverController, XboxController.Button.kA.value)
         .onTrue(new ResetGyro(m_robotDrive));
     new JoystickButton(m_driverController, XboxController.Button.kB.value)
-        .onTrue(m_robotDrive.followPathCommand("New Path"));
+       .onTrue(m_robotDrive.followPathCommand("New Path"));
+    new JoystickButton(m_driverController, XboxController.Button.kY.value)
+       .onTrue(m_robotDrive.followPathCommand("Auto Prototype Path"));
   }
 
   /**
