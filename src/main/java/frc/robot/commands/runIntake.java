@@ -7,13 +7,17 @@ public class RunIntake extends Command {
   private final IntakeSubsystem m_intake;
   private final double m_speed;
 
-  /** Creates a new ParkCommand. */
+  
+
+  /** Creates a new Run Intake Command. */
   public RunIntake(IntakeSubsystem m_subsystem, double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_intake = m_subsystem;
     m_speed = speed;
     addRequirements(m_intake);
   }
+  
+
 
   // Called when the command is initially scheduled.
   @Override
@@ -22,7 +26,7 @@ public class RunIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.setSpeed(speed);
+    m_intake.setSpeed(m_speed);
   }
 
   // Called once the command ends or is interrupted.

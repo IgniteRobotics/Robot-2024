@@ -19,7 +19,9 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ParkCommand;
 import frc.robot.commands.ResetGyro;
+import frc.robot.commands.RunIntake;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import monologue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -36,6 +38,7 @@ import java.util.List;
 public class RobotContainer implements Logged {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final IntakeSubsystem m_robotIntake = new IntakeSubsystem();
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -74,6 +77,10 @@ public class RobotContainer implements Logged {
         .whileTrue(new ParkCommand(m_robotDrive));
     new JoystickButton(m_driverController, XboxController.Button.kA.value)
         .onTrue(new ResetGyro(m_robotDrive));
+    new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
+        .whileTrue(new RunIntake(m_robotIntake, 1));
+    new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
+    .whileTrue(new RunIntake(m_robotIntake, -1));
   }
 
   /**
