@@ -3,12 +3,12 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class runIntake extends Command {
+public class RunIntake extends Command {
   private final IntakeSubsystem m_intake;
   private final double m_speed;
 
   /** Creates a new ParkCommand. */
-  public runIntake(IntakeSubsystem m_subsystem, double speed) {
+  public RunIntake(IntakeSubsystem m_subsystem, double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_intake = m_subsystem;
     m_speed = speed;
