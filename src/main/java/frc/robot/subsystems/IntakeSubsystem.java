@@ -6,8 +6,6 @@ package frc.robot.subsystems;
 
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Supplier;
 
 import com.revrobotics.CANSparkMax;
 
