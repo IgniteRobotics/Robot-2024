@@ -44,7 +44,7 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
     // additionalIntakeMotor = new CANSparkMax(Constants.CANConstants.INTAKE_MOTOR_2, MotorType.kBrushless);
 
         // Configuring the main intake motor
-        intakeMotor.setInverted(false);
+        intakeMotor.setInverted(true);
         intakeMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
         intakeMotor.setSmartCurrentLimit(25); // Don't modify or remove
 
