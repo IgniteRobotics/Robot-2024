@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import monologue.Monologue;
 import monologue.Annotations.Log;
 import monologue.Logged;
+import edu.wpi.first.wpilibj.smartdashboard.*;
 
 /**f
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -27,6 +28,8 @@ public class Robot extends TimedRobot implements Logged {
   @Log.File
   
   private CommandScheduler m_Scheduler;
+
+  private final Field2d field = new Field2d();
 
   /**
    * This function is run when the robot is first started up and should be used for any

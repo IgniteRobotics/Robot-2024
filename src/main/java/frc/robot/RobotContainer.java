@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj. smartdashboard.Field2d;
 
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.path.PathConstraints;
@@ -56,6 +57,7 @@ public class RobotContainer implements Logged {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer(){
+
     // Configure the button bindings
     configureButtonBindings();
 

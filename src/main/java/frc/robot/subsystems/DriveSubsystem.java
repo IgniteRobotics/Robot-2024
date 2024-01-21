@@ -75,6 +75,9 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   @Log.NT
 @Log.File
   private double m_currentTranslationMag = 0.0;
+  @Log.NT
+@Log.File
+  private PathPlannerPath logged_path; 
 
   private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRate);
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
@@ -322,6 +325,7 @@ public  Command followPathCommand(String pathName, double speed) {
   // PathPlannerTrajectory traj = new PathPlannerTrajectory();
 
   PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+  logged_path = path;
 
   
    return new FollowPathHolonomic(
