@@ -317,7 +317,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
 
   
   // Assuming this method is part of a drivetrain subsystem that provides the necessary methods
-public  Command followPathCommand(String pathName) {
+public  Command followPathCommand(String pathName, double speed) {
   //PathPlannerTrajectory​(PathPlannerPath path, ChassisSpeeds startingSpeeds, Rotation2d startingRotation)
   // PathPlannerTrajectory traj = new PathPlannerTrajectory();
 
@@ -332,7 +332,7 @@ public  Command followPathCommand(String pathName) {
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
                         new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
                         new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-                        4.5, // Max module speed, in m/s
+                        speed, // Max module speed, in m/s
                         0.4, // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig() // Default path replanning config. See the API for the options here
                 ),

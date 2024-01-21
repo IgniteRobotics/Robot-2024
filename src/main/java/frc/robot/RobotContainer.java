@@ -47,6 +47,8 @@ public class RobotContainer implements Logged {
 
   private final SendableChooser<Command> autonChooser;
 
+  private final double pathSpeed = 2;
+
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
@@ -58,9 +60,9 @@ public class RobotContainer implements Logged {
     configureButtonBindings();
 
     autonChooser = new SendableChooser<>();
-    autonChooser.addOption("Autonomous Prototype Path", m_robotDrive.followPathCommand("Auto Prototype Path"));
-    autonChooser.addOption("Simple Path", m_robotDrive.followPathCommand("New Path"));
-    autonChooser.addOption( "Two Ring Auto", m_robotDrive.followPathCommand("Two Ring Auto"));
+    autonChooser.addOption("Autonomous Prototype Path", m_robotDrive.followPathCommand("Auto Prototype Path", pathSpeed));
+    autonChooser.addOption("Simple Path", m_robotDrive.followPathCommand("New Path", pathSpeed));
+    autonChooser.addOption( "Two Ring Auto", m_robotDrive.followPathCommand("Two Ring Auto", pathSpeed));
     autonChooser.addOption("None", null);
     SmartDashboard.putData("Autonomous", autonChooser);
 
@@ -92,9 +94,9 @@ public class RobotContainer implements Logged {
     new JoystickButton(m_driverController, XboxController.Button.kA.value)
         .onTrue(new ResetGyro(m_robotDrive));
     new JoystickButton(m_driverController, XboxController.Button.kB.value)
-       .onTrue(m_robotDrive.followPathCommand("New Path"));
+       .onTrue(m_robotDrive.followPathCommand("New Path", pathSpeed));
     new JoystickButton(m_driverController, XboxController.Button.kY.value)
-       .onTrue(m_robotDrive.followPathCommand("Auto Prototype Path"));
+       .onTrue(m_robotDrive.followPathCommand("Auto Prototype Path", pathSpeed));
   }
 
   /**
