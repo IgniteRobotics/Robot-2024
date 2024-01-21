@@ -60,6 +60,7 @@ public class RobotContainer implements Logged {
     autonChooser = new SendableChooser<>();
     autonChooser.addOption("Autonomous Prototype Path", m_robotDrive.followPathCommand("Auto Prototype Path"));
     autonChooser.addOption("Simple Path", m_robotDrive.followPathCommand("New Path"));
+    autonChooser.addOption( "Two Ring Auto", m_robotDrive.followPathCommand("Two Ring Auto"));
     autonChooser.addOption("None", null);
     SmartDashboard.putData("Autonomous", autonChooser);
 
