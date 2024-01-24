@@ -17,9 +17,14 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.comm.preferences.DoublePreference;
 import frc.robot.commands.ParkCommand;
 import frc.robot.commands.ResetGyro;
+import frc.robot.commands.RunIntake;
+import frc.robot.commands.RunUmbrella;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.UmbrellaSubsystem;
 import monologue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -45,6 +50,14 @@ import com.pathplanner.lib.path.PathPlannerPath;
 public class RobotContainer implements Logged {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final IntakeSubsystem m_robotIntake = new IntakeSubsystem();
+  private final UmbrellaSubsystem m_umbrella  = new UmbrellaSubsystem();
+
+
+  //Robot preferences
+  private DoublePreference intakePower = new DoublePreference("intake/intakePower", 0.5);
+  private DoublePreference outtakePower = new DoublePreference("intake/outtakePower", 0.5);
+  private DoublePreference umbrellaPower = new DoublePreference( "umbrella/Power", 0.25);
 
   private final SendableChooser<Command> autonChooser;
 
@@ -95,10 +108,12 @@ public class RobotContainer implements Logged {
         .whileTrue(new ParkCommand(m_robotDrive));
     new JoystickButton(m_driverController, XboxController.Button.kA.value)
         .onTrue(new ResetGyro(m_robotDrive));
-    new JoystickButton(m_driverController, XboxController.Button.kB.value)
-       .onTrue(m_robotDrive.followPathCommand("New Path", pathSpeed));
+    new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
+        .whileTrue(new RunIntake(m_robotIntake, intakePower));
+    new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
+    .whileTrue(new RunIntake(m_robotIntake, outtakePower));
     new JoystickButton(m_driverController, XboxController.Button.kY.value)
-       .onTrue(m_robotDrive.followPathCommand("Auto Prototype Path", pathSpeed));
+        .whileTrue(new RunUmbrella(m_umbrella, umbrellaPower));
   }
 
   /**
