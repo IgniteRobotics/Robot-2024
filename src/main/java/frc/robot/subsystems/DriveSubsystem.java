@@ -5,7 +5,12 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,13 +20,23 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
 import monologue.Logged;
 import monologue.Annotations.Log;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.commands.FollowPathHolonomic;
+
+
+
 
 public class DriveSubsystem extends SubsystemBase implements Logged{
   // Create MAXSwerveModules
@@ -47,6 +62,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
 
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
+  private SwerveModuleState[] m_moduleStates = new SwerveModuleState[4];
 
   // Slew rate filter variables for controlling lateral acceleration
   @Log.NT
@@ -58,6 +74,9 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   @Log.NT
 @Log.File
   private double m_currentTranslationMag = 0.0;
+  @Log.NT
+@Log.File
+  private PathPlannerPath logged_path; 
 
   private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRate);
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
@@ -79,8 +98,14 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   }
 
   @Override
-  public void periodic() {
+  public void periodic(
+  ) {
     // Update the odometry in the periodic block
+
+    m_frontLeft.periodic();
+    m_frontRight.periodic();
+    m_rearLeft.periodic();
+    m_rearRight.periodic();
 
     m_odometry.update(
         Rotation2d.fromDegrees(m_gyro.getAngle()),
@@ -91,20 +116,22 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
             m_rearRight.getPosition()
   
         });
-        SmartDashboard.putNumber("left front turn", m_frontLeft.getPosition().angle.getDegrees());
-        SmartDashboard.putNumber("left front drive", m_frontLeft.getState().speedMetersPerSecond);
-        SmartDashboard.putNumber("left back turn", m_rearLeft.getPosition().angle.getDegrees());
-        SmartDashboard.putNumber("left bacl drive", m_rearLeft.getState().speedMetersPerSecond);
-        SmartDashboard.putNumber("right front turn", m_frontRight.getPosition().angle.getDegrees());
-        SmartDashboard.putNumber("right front drive", m_frontRight.getState().speedMetersPerSecond);
-        SmartDashboard.putNumber("right back turn", m_rearRight.getPosition().angle.getDegrees());
-        SmartDashboard.putNumber("right back drive", m_rearRight.getState().speedMetersPerSecond);
+    SmartDashboard.putNumber("left front turn", m_frontLeft.getPosition().angle.getDegrees());
+    SmartDashboard.putNumber("left front drive", m_frontLeft.getState().speedMetersPerSecond);
+    SmartDashboard.putNumber("left back turn", m_rearLeft.getPosition().angle.getDegrees());
+    SmartDashboard.putNumber("left back drive", m_rearLeft.getState().speedMetersPerSecond);
+    SmartDashboard.putNumber("right front turn", m_frontRight.getPosition().angle.getDegrees());
+    SmartDashboard.putNumber("right front drive", m_frontRight.getState().speedMetersPerSecond);
+    SmartDashboard.putNumber("right back turn", m_rearRight.getPosition().angle.getDegrees());
+    SmartDashboard.putNumber("right back drive", m_rearRight.getState().speedMetersPerSecond);
 
 
-        m_frontLeft.periodic();
-        m_frontRight.periodic();
-        m_rearLeft.periodic();
-        m_rearRight.periodic();
+        
+
+    m_moduleStates[0] = m_frontLeft.getState();
+    m_moduleStates[1] = m_frontRight.getState();
+    m_moduleStates[2] = m_rearLeft.getState();
+    m_moduleStates[3] = m_rearRight.getState();
   }
 
   /**
@@ -219,6 +246,16 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     m_rearRight.setDesiredState(swerveModuleStates[3]);
   }
 
+  public void driveRobotRelative(ChassisSpeeds speeds){
+    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);  
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
+    m_frontLeft.setDesiredState(swerveModuleStates[0]);
+    m_frontRight.setDesiredState(swerveModuleStates[1]);
+    m_rearLeft.setDesiredState(swerveModuleStates[2]);
+    m_rearRight.setDesiredState(swerveModuleStates[3]);
+  }
+
   /**
    * Sets the wheels into an X formation to prevent movement.
    */
@@ -273,4 +310,53 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   public double getTurnRate() {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
+
+  public ChassisSpeeds getRobotRelativeSpeeds() {
+    return DriveConstants.kDriveKinematics.toChassisSpeeds(m_moduleStates);
+  }
+
+  
+
+  
+  // Assuming this method is part of a drivetrain subsystem that provides the necessary methods
+public  Command followPathCommand(String pathName, double speed) {
+  //PathPlannerTrajectory​(PathPlannerPath path, ChassisSpeeds startingSpeeds, Rotation2d startingRotation)
+  // PathPlannerTrajectory traj = new PathPlannerTrajectory();
+
+  PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+  logged_path = path;
+
+  
+   return new FollowPathHolonomic(
+                path,
+                this::getPose, // Robot pose supplier
+                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+                new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+                        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+                        speed, // Max module speed, in m/s
+                        0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+                        new ReplanningConfig() // Default path replanning config. See the API for the options here
+                ),
+                () -> {
+                    // Boolean supplier that controls when the path will be mirrored for the red alliance
+                    // This will flip the path being followed to the red side of the field.
+                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+                    var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red;
+                    }
+                    return false;
+                },
+                this // Reference to this subsystem to set requirements
+        );
+
+
+
+}
+
+
+
 }
