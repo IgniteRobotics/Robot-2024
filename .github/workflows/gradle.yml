@@ -11,6 +11,10 @@ on:
   pull_request:
     branches: [ "main", "development" ]
 
+env:
+  ACTIONS_RUNNER_DEBUG: true
+  ACTIONS_STEP_DEBUG: true
+
 permissions:
   contents: read
 
