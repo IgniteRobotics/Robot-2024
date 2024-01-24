@@ -35,4 +35,4 @@ jobs:
     - run: pwd
     - run: ls -la
     - name: Execute Gradle build
-      run: ./gradlew build
+      run: ./gradlew -i build
