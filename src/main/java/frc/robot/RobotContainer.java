@@ -18,6 +18,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.comm.preferences.DoublePreference;
+import frc.robot.commands.AccuratePathFollow;
 import frc.robot.commands.ParkCommand;
 import frc.robot.commands.ResetGyro;
 import frc.robot.commands.RunIntake;
@@ -75,9 +76,9 @@ public class RobotContainer implements Logged {
     configureButtonBindings();
 
     autonChooser = new SendableChooser<>();
-    autonChooser.addOption("Autonomous Prototype Path", m_robotDrive.followPathCommand("Auto Prototype Path", pathSpeed));
-    autonChooser.addOption("Simple Path", m_robotDrive.followPathCommand("New Path", pathSpeed));
-    autonChooser.addOption( "Two Ring Auto", m_robotDrive.followPathCommand("Two Ring Auto", pathSpeed));
+    autonChooser.addOption("Autonomous Prototype Path", new AccuratePathFollow(m_robotDrive, "Auto Prototype Path", pathSpeed, new Pose2d(new Translation2d(0, 0), m_robotDrive.getHeading())));
+    autonChooser.addOption("Simple Path", new AccuratePathFollow(m_robotDrive, "New Path", pathSpeed, null));
+    autonChooser.addOption( "Two Ring Auto", new AccuratePathFollow(m_robotDrive, "Two Ring Auto", pathSpeed, null));
     autonChooser.addOption("None", null);
     SmartDashboard.putData("Autonomous", autonChooser);
 

@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.SetRobotPose;
 import frc.utils.SwerveUtils;
 import monologue.Logged;
 import monologue.Annotations.Log;
@@ -304,6 +305,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     return Rotation2d.fromDegrees(m_gyro.getAngle()).getDegrees();
   }
 
+
   /**
    * Returns the turn rate of the robot.
    *
@@ -317,19 +319,11 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     return DriveConstants.kDriveKinematics.toChassisSpeeds(m_moduleStates);
   }
 
-  
-
-  
-  // Assuming this method is part of a drivetrain subsystem that provides the necessary methods
-public  Command followPathCommand(String pathName, double speed) {
+// Assuming this method is part of a drivetrain subsystem that provides the necessary methods
+public  Command  followPathCommand(PathPlannerPath path, double speed) {
   //PathPlannerTrajectory​(PathPlannerPath path, ChassisSpeeds startingSpeeds, Rotation2d startingRotation)
   // PathPlannerTrajectory traj = new PathPlannerTrajectory();
-
-  PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-  logged_path = path;
-
-  
-   return new FollowPathHolonomic(
+  return new FollowPathHolonomic(
                 path,
                 this::getPose, // Robot pose supplier
                 this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
@@ -355,10 +349,8 @@ public  Command followPathCommand(String pathName, double speed) {
                 this // Reference to this subsystem to set requirements
         );
 
-
-
+  
 }
-
 
 
 }
