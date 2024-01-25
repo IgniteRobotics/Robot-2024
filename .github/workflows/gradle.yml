@@ -32,8 +32,5 @@ jobs:
         distribution: 'temurin'
     - uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       id: setup-gradle
-    - run: pwd
-    - run: ls -la
     - name: Execute Gradle build
-      run: ./gradlew -i build
-    - run: ls -laR build/classes/
+      run: ./gradlew build
