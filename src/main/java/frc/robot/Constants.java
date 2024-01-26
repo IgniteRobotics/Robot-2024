@@ -142,4 +142,7 @@ public final class Constants {
 
 public static final int INTAKE_MOTOR_1 = 1;
 public static final int UMBRELLA_MOTOR_1 = 3;
+
+public static final int SHOOTER_MOTOR_LEADER = 5;
+public static final int SHOOTER_MOTOR_FOLLOWER = 6;
 }

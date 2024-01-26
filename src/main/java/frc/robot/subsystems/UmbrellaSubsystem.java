@@ -38,6 +38,7 @@ public class UmbrellaSubsystem extends SubsystemBase implements Logged{
     umbrellaMotor.setInverted(false);//TODO: fix when certain
     umbrellaMotor.setIdleMode(CANSparkFlex.IdleMode.kBrake);
     umbrellaMotor.setSmartCurrentLimit(40); //maybe?
+    umbrellaMotor.burnFlash();
   }
 
   public void setSpeed (double speed)
