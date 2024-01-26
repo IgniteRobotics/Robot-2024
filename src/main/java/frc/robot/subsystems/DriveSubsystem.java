@@ -316,7 +316,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   }
 
   
-
   
   // Assuming this method is part of a drivetrain subsystem that provides the necessary methods
 public  Command followPathCommand(String pathName, double speed) {
