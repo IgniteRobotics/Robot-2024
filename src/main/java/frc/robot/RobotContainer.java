@@ -76,9 +76,9 @@ public class RobotContainer implements Logged {
     configureButtonBindings();
 
     autonChooser = new SendableChooser<>();
-    autonChooser.addOption("Autonomous Prototype Path", new AccuratePathFollow(m_robotDrive, "Auto Prototype Path", pathSpeed, new Pose2d(new Translation2d(0.775869, 2.64565), new Rotation2d(m_robotDrive.getHeading()))));
-    autonChooser.addOption("Simple Path", new AccuratePathFollow(m_robotDrive, "New Path", pathSpeed, new Pose2d(new Translation2d(0.96269, 7.10848), new Rotation2d(m_robotDrive.getHeading()))));
-    autonChooser.addOption( "Two Ring Auto", new AccuratePathFollow(m_robotDrive, "Two Ring Auto", pathSpeed, new Pose2d(new Translation2d(0.76356, 3.43903), new Rotation2d(m_robotDrive.getHeading()))));
+    autonChooser.addOption("Autonomous Prototype Path", new AccuratePathFollow(m_robotDrive, "Auto Prototype Path", pathSpeed));
+    autonChooser.addOption("Simple Path", new AccuratePathFollow(m_robotDrive, "New Path", pathSpeed));
+    autonChooser.addOption( "Two Ring Auto", new AccuratePathFollow(m_robotDrive, "Two Ring Auto", pathSpeed));
     autonChooser.addOption("None", null);
     SmartDashboard.putData("Autonomous", autonChooser);
 

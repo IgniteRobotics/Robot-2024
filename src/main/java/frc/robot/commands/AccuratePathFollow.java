@@ -24,11 +24,11 @@ public class AccuratePathFollow extends SequentialCommandGroup {
 
 
   /** Creates a new AccuratePathFollow. */
-  public AccuratePathFollow(DriveSubsystem m_subsystem, String pathName, double speed, Pose2d pose) {
+  public AccuratePathFollow(DriveSubsystem m_subsystem, String pathName, double speed) {
     PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new SetRobotPose(m_subsystem, pose), new FollowPathHolonomic(
+    addCommands(new SetRobotPose(m_subsystem, path.getPreviewStartingHolonomicPose()), new FollowPathHolonomic(
                 path,
                 m_subsystem::getPose, // Robot pose supplier
                 m_subsystem::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
