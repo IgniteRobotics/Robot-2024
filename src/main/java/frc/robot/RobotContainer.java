@@ -85,6 +85,7 @@ public class RobotContainer implements Logged {
     autonChooser.addOption("Simple Path",AutoBuilder.followPath(simplePath));
     autonChooser.addOption( "Two Ring Auto", AutoBuilder.followPath(autoRing));
     autonChooser.addOption("None", null);
+    autonChooser.addOption("run New Auto", AutoBuilder.buildAuto("New Auto"));
     SmartDashboard.putData("Autonomous", autonChooser);
 
     // Configure default commands
