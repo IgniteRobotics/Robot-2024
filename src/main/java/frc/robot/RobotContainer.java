@@ -75,17 +75,12 @@ public class RobotContainer implements Logged {
     // Configure the button bindings
     configureButtonBindings();
 
-    PathPlannerPath simplePath = PathPlannerPath.fromPathFile("New Path");
-    PathPlannerPath autoRing = PathPlannerPath.fromPathFile("Two Ring Auto");
-    PathPlannerPath autoProto = PathPlannerPath.fromPathFile("Auto Prototype Path");
 
 
     autonChooser = AutoBuilder.buildAutoChooser();
-    autonChooser.addOption("Autonomous Prototype Path", AutoBuilder.followPath(autoProto));
-    autonChooser.addOption("Simple Path",AutoBuilder.followPath(simplePath));
-    autonChooser.addOption( "Two Ring Auto", AutoBuilder.followPath(autoRing));
+    autonChooser.addOption("Run New Auto", AutoBuilder.buildAuto("New Auto"));
+    autonChooser.addOption("straight auto", AutoBuilder.buildAuto("straight auto"));
     autonChooser.addOption("None", null);
-    autonChooser.addOption("run New Auto", AutoBuilder.buildAuto("New Auto"));
     SmartDashboard.putData("Autonomous", autonChooser);
 
     // Configure default commands
