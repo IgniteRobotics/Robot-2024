@@ -79,7 +79,8 @@ public class RobotContainer implements Logged {
     PathPlannerPath autoRing = PathPlannerPath.fromPathFile("Two Ring Auto");
     PathPlannerPath autoProto = PathPlannerPath.fromPathFile("Auto Prototype Path");
 
-    autonChooser = new SendableChooser<>();
+
+    autonChooser = AutoBuilder.buildAutoChooser();
     autonChooser.addOption("Autonomous Prototype Path", AutoBuilder.followPath(autoProto));
     autonChooser.addOption("Simple Path",AutoBuilder.followPath(simplePath));
     autonChooser.addOption( "Two Ring Auto", AutoBuilder.followPath(autoRing));
