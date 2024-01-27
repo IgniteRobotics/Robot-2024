@@ -124,16 +124,12 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
 
         var alliance = DriverStation.getAlliance();
         if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-        }
-        return false;
-    },
+          return alliance.get() == DriverStation.Alliance.Red;
+      }
+      return false;
+        },
     this // Reference to this subsystem to set requirements
     );
-
-    //TODO  REMOVE THIS!  TESTING ONLY!
-    this.resetOdometry(new Pose2d(2,4.5, Rotation2d.fromDegrees(0)));
-
   }
 
   @Override
