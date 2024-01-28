@@ -27,7 +27,6 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.UmbrellaSubsystem;
 import monologue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -37,8 +36,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj. smartdashboard.Field2d;
 
 import com.pathplanner.lib.path.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+
 
 
 /*
@@ -74,10 +75,11 @@ public class RobotContainer implements Logged {
     // Configure the button bindings
     configureButtonBindings();
 
-    autonChooser = new SendableChooser<>();
-    autonChooser.addOption("Autonomous Prototype Path", m_robotDrive.followPathCommand("Auto Prototype Path", pathSpeed));
-    autonChooser.addOption("Simple Path", m_robotDrive.followPathCommand("New Path", pathSpeed));
-    autonChooser.addOption( "Two Ring Auto", m_robotDrive.followPathCommand("Two Ring Auto", pathSpeed));
+
+
+    autonChooser = AutoBuilder.buildAutoChooser();
+    autonChooser.addOption("Run New Auto", AutoBuilder.buildAuto("New Auto"));
+    autonChooser.addOption("straight auto", AutoBuilder.buildAuto("straight auto"));
     autonChooser.addOption("None", null);
     SmartDashboard.putData("Autonomous", autonChooser);
 
@@ -114,6 +116,9 @@ public class RobotContainer implements Logged {
     .whileTrue(new RunIntake(m_robotIntake, outtakePower));
     new JoystickButton(m_driverController, XboxController.Button.kY.value)
         .whileTrue(new RunUmbrella(m_umbrella, umbrellaPower));
+    new JoystickButton(m_driverController, XboxController.Button.kB.value)
+        .onTrue(m_robotDrive.pathFindertoPoseBuilder(new Pose2d(8,5, Rotation2d.fromDegrees(0)),
+                                                          2,2,6.28,6.28));
   }
 
   /**

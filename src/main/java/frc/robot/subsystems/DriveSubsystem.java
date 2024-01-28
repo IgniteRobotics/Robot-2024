@@ -4,11 +4,16 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
+import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -23,6 +28,7 @@ import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
 import monologue.Logged;
@@ -32,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.commands.FollowPathHolonomic;
 
@@ -85,7 +92,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
-      Rotation2d.fromDegrees(m_gyro.getAngle()),
+      Rotation2d.fromDegrees(getAngle()),
       new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -95,6 +102,34 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
+  
+
+  // Configure AutoBuilder last
+  AutoBuilder.configureHolonomic(
+    this::getPose, // Robot pose supplier
+    this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+    this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+    this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+    new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+            4.5, // Max module speed, in m/s
+            0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+            new ReplanningConfig() // Default path replanning config. See the API for the options here
+    ),
+    () -> {
+        // Boolean supplier that controls when the path will be mirrored for the red alliance
+        // This will flip the path being followed to the red side of the field.
+        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+          return alliance.get() == DriverStation.Alliance.Red;
+      }
+      return false;
+        },
+    this // Reference to this subsystem to set requirements
+    );
   }
 
   @Override
@@ -108,7 +143,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     m_rearRight.periodic();
 
     m_odometry.update(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        Rotation2d.fromDegrees(getAngle()),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -152,7 +187,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
    */
   public void resetOdometry(Pose2d pose) {
     m_odometry.resetPosition(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        Rotation2d.fromDegrees(getAngle()),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -236,7 +271,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
 
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, Rotation2d.fromDegrees(m_gyro.getAngle()))
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, Rotation2d.fromDegrees(getAngle()))
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -299,7 +334,11 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return Rotation2d.fromDegrees(m_gyro.getAngle()).getDegrees();
+    return Rotation2d.fromDegrees(getAngle()).getDegrees();
+  }
+
+  public double getAngle() {
+    return -m_gyro.getAngle();
   }
 
   /**
@@ -316,7 +355,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   }
 
   
-
   
   // Assuming this method is part of a drivetrain subsystem that provides the necessary methods
 public  Command followPathCommand(String pathName, double speed) {
@@ -358,5 +396,54 @@ public  Command followPathCommand(String pathName, double speed) {
 }
 
 
+
+/**
+ * @param targetPoseSupplier Supplier for the target pose to move to
+ * @param maxVelSupplier Supplier for Max Linear Velocity in meters/sec
+ * @param maxAccelSupplier Supplier for Max Linear Acceleration in meters/sec^2
+ * @param maxRotSupplier Supplier for Max Angular Velocity in radians/sec
+ * @param maxRotAccelSupplier Supplier for Max Angular Acceleration in meters/sec^2
+ * @return A command group that follows the new path
+ */
+  public Command pathFindertoPoseBuilder(
+    Supplier<Pose2d> targetPoseSupplier,
+    DoubleSupplier maxVelSupplier,
+    DoubleSupplier maxAccelSupplier,
+    DoubleSupplier maxRotSupplier,
+    DoubleSupplier maxRotAccelSupplier){
+
+    Pose2d targetPose = targetPoseSupplier.get();
+    double maxLinVelMPS = maxVelSupplier.getAsDouble();
+    double maxLinAccelMPSSq = maxAccelSupplier.getAsDouble();
+    double maxAglVelocityRps = maxRotSupplier.getAsDouble();
+    double maxAngAccelRpsSq = maxRotAccelSupplier.getAsDouble();
+
+    return this.pathFindertoPoseBuilder(targetPose, maxLinVelMPS, maxLinAccelMPSSq, maxAglVelocityRps, maxAngAccelRpsSq);
+
+  }
+
+  /**
+   * @param targetPose The target pose to move to
+   * @param maxLinVelMPS Max Linear Velocity in meters/sec
+   * @param maxLinAccelMPSSq Max Linear Acceleration in meters/sec^2
+   * @param maxAglVelocityRps Max Angular Velocity in radians/sec
+   * @param maxAngAccelRpsSq Max Angular Acceleration in meters/sec^2
+   * @return A command group that follows the new path
+   */
+  public Command pathFindertoPoseBuilder(
+    Pose2d targetPose,
+    double maxLinVelMPS,
+    double maxLinAccelMPSSq,
+    double maxAglVelocityRps,
+    double maxAngAccelRpsSq){ 
+    PathConstraints constraints = new PathConstraints(maxLinVelMPS, maxLinAccelMPSSq, maxAglVelocityRps, maxAngAccelRpsSq);
+
+    return AutoBuilder.pathfindToPose(
+          targetPose,
+          constraints,
+          0.0, // Goal end velocity in meters/sec
+          0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
+      );
+  }
 
 }
