@@ -54,9 +54,11 @@ public class Robot extends TimedRobot implements Logged {
 
     DataLogManager.start();
 
+    //starting URCL in sim blows up.
     if (isReal()) {
       URCL.start();
     } else {
+      //Shush telling me that I don't have a controller in the sim.
       DriverStation.silenceJoystickConnectionWarning(true);
     }
 
