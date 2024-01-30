@@ -144,11 +144,16 @@ public final class Constants {
   }
 
   public static class CameraConstants {
-    public static final String photonCameraNameLeft = "LEFT";
+    public static final String photonCameraNameFrontLeft = "FRONT_LEFT";
     // public static final Transform3d photonCameraTransformLeft = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
-    public static final Transform3d photonCameraTransformLeft = new Transform3d(new Translation3d(0.1, 0.26, 0.7874), new Rotation3d(0, 20 / 180.0 * Math.PI, 0));
-    public static final String photonCameraNameRight = "RIGHT";
-    public static final Transform3d photonCameraTransformRight = new Transform3d(new Translation3d(0.1, -0.26, 0.7874), new Rotation3d(0, 20 / 180.0 * Math.PI, 0));
+    public static final Transform3d photonCameraTransformFrontLeft = new Transform3d(new Translation3d(0.1, 0.26, 0.7874), new Rotation3d(0, 20 / 180.0 * Math.PI, 0));
+    public static final String photonCameraNameFrontRight = "FRONT_RIGHT";
+    public static final Transform3d photonCameraTransformFrontRight = new Transform3d(new Translation3d(0.1, -0.26, 0.7874), new Rotation3d(0, 20 / 180.0 * Math.PI, 0));
+    public static final String photonCameraNameRearRight = "REAR_RIGHT";
+    public static final Transform3d photonCameraTransformRearRight = new Transform3d(new Translation3d(0.1, -0.26, 0.7874), new Rotation3d(0, 20 / 180.0 * Math.PI, 0));
+    public static final String photonCameraNameRearLeft = "REAR_LEFT";
+    public static final Transform3d photonCameraTransformRearLeft = new Transform3d(new Translation3d(0.1, -0.26, 0.7874), new Rotation3d(0, 20 / 180.0 * Math.PI, 0));
+
   }
 
 public static final int INTAKE_MOTOR_1 = 1;
