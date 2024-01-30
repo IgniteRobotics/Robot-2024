@@ -6,7 +6,10 @@ package frc.robot;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -138,6 +141,14 @@ public final class Constants {
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
+  }
+
+  public static class CameraConstants {
+    public static final String photonCameraNameLeft = "LEFT";
+    // public static final Transform3d photonCameraTransformLeft = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
+    public static final Transform3d photonCameraTransformLeft = new Transform3d(new Translation3d(0.1, 0.26, 0.7874), new Rotation3d(0, 20 / 180.0 * Math.PI, 0));
+    public static final String photonCameraNameRight = "RIGHT";
+    public static final Transform3d photonCameraTransformRight = new Transform3d(new Translation3d(0.1, -0.26, 0.7874), new Rotation3d(0, 20 / 180.0 * Math.PI, 0));
   }
 
 public static final int INTAKE_MOTOR_1 = 1;
