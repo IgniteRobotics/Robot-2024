@@ -24,6 +24,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
@@ -37,6 +39,17 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.MutableMeasure.mutable;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
+
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -100,6 +113,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
           m_rearRight.getPosition()
       });
 
+  //sysid routines for characterization
+  SysIdRoutine m_DriveSysIdRoutine;
+  SysIdRoutine m_TurnSysIdRoutine;
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
   
@@ -130,6 +147,25 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
         },
     this // Reference to this subsystem to set requirements
     );
+    
+    m_DriveSysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(),
+      new SysIdRoutine.Mechanism(
+        (Measure<Voltage> volts) -> this.setDriveVolts(volts.in(Volts)),
+        null, // No log consumer, since data is recorded by URCL
+      this
+      ) 
+    );
+    
+    m_TurnSysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(),
+      new SysIdRoutine.Mechanism(
+        (Measure<Voltage> volts) -> this.setTurnVolts(volts.in(Volts)),
+        null, // No log consumer, since data is recorded by URCL
+      this
+      ) 
+    );
+
   }
 
   @Override
@@ -292,6 +328,30 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   }
 
   /**
+   * Set all drive motors to voltage
+   * 
+   * @param volts
+   */
+  public void setDriveVolts(double volts){
+    m_frontLeft.setDriveVolts(volts);
+    m_frontRight.setDriveVolts(volts);
+    m_rearLeft.setDriveVolts(volts);
+    m_rearRight.setDriveVolts(volts);
+  }
+
+  /**
+   * Set all trurn motors to voltage
+   * 
+   * @param volts
+   */
+  public void setTurnVolts(double volts){
+    m_frontLeft.setTurnVolts(volts);
+    m_frontRight.setTurnVolts(volts);
+    m_rearLeft.setTurnVolts(volts);
+    m_rearLeft.setTurnVolts(volts);
+  }
+
+  /**
    * Sets the wheels into an X formation to prevent movement.
    */
   public void setX() {
@@ -444,6 +504,22 @@ public  Command followPathCommand(String pathName, double speed) {
           0.0, // Goal end velocity in meters/sec
           0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
       );
+  }
+
+  public Command driveSysIdTestBuilder(double staticTimeout, double dynamicTimeout){
+    return m_DriveSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward).withTimeout(staticTimeout)
+      .andThen(m_DriveSysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse).withTimeout(staticTimeout))
+      .andThen(m_DriveSysIdRoutine.dynamic(SysIdRoutine.Direction.kForward).withTimeout(dynamicTimeout))
+      .andThen(m_DriveSysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse).withTimeout(dynamicTimeout))
+      .finallyDo(() -> this.setDriveVolts(0));
+  }
+
+  public Command turnSysIdTestBuilder(double staticTimeout, double dynamicTimeout){ 
+    return m_TurnSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward).withTimeout(staticTimeout)
+      .andThen(m_TurnSysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse).withTimeout(staticTimeout))
+      .andThen(m_TurnSysIdRoutine.dynamic(SysIdRoutine.Direction.kForward).withTimeout(dynamicTimeout))
+      .andThen(m_TurnSysIdRoutine   .dynamic(SysIdRoutine.Direction.kReverse).withTimeout(dynamicTimeout))
+      .finallyDo(() -> this.setTurnVolts(0));
   }
 
 }
