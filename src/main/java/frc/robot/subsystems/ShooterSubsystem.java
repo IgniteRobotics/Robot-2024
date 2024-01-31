@@ -69,6 +69,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     shooterMotorLeader.setIdleMode(CANSparkFlex.IdleMode.kCoast);
     shooterMotorFollower.setIdleMode(CANSparkFlex.IdleMode.kCoast);
 
+    //TODO: Make actual constants
     shooterMotorLeader.setSmartCurrentLimit(40);
     shooterMotorFollower.setSmartCurrentLimit(40);
 
