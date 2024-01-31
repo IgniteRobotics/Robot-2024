@@ -45,6 +45,7 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
         intakeMotor.setInverted(true);
         intakeMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
         intakeMotor.setSmartCurrentLimit(25); // Don't modify or remove
+        intakeMotor.burnFlash();
 
       
     }

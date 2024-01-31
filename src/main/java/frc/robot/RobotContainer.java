@@ -22,8 +22,11 @@ import frc.robot.commands.ParkCommand;
 import frc.robot.commands.ResetGyro;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.RunUmbrella;
+import frc.robot.commands.RunShooterPower;
+import frc.robot.commands.RunShooterRPM;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.UmbrellaSubsystem;
 import monologue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -53,12 +56,15 @@ public class RobotContainer implements Logged {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final IntakeSubsystem m_robotIntake = new IntakeSubsystem();
   private final UmbrellaSubsystem m_umbrella  = new UmbrellaSubsystem();
+  private final ShooterSubsystem m_shooter = new ShooterSubsystem();
 
 
   //Robot preferences
   private DoublePreference intakePower = new DoublePreference("intake/intakePower", 0.5);
   private DoublePreference outtakePower = new DoublePreference("intake/outtakePower", 0.5);
   private DoublePreference umbrellaPower = new DoublePreference( "umbrella/Power", 0.25);
+  private DoublePreference shooterPower = new DoublePreference("shooter/Power", 0.25);
+  private DoublePreference shooterRPM = new DoublePreference("shooter/RPM", 500);
 
   private final SendableChooser<Command> autonChooser;
 
@@ -66,6 +72,7 @@ public class RobotContainer implements Logged {
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  XboxController m_manipController = new XboxController(OIConstants.kManipControllerPort);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -116,9 +123,15 @@ public class RobotContainer implements Logged {
     .whileTrue(new RunIntake(m_robotIntake, outtakePower));
     new JoystickButton(m_driverController, XboxController.Button.kY.value)
         .whileTrue(new RunUmbrella(m_umbrella, umbrellaPower));
+
+    new JoystickButton(m_manipController, XboxController.Button.kB.value)
+    .whileTrue(new RunShooterPower(m_shooter, shooterPower));
+    new JoystickButton(m_manipController, XboxController.Button.kA.value)
+    .whileTrue(new RunShooterRPM(m_shooter, shooterRPM));
     new JoystickButton(m_driverController, XboxController.Button.kB.value)
         .onTrue(m_robotDrive.pathFindertoPoseBuilder(new Pose2d(8,5, Rotation2d.fromDegrees(0)),
                                                           2,2,6.28,6.28));
+
   }
 
   /**

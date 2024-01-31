@@ -118,6 +118,7 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kManipControllerPort = 1;
     public static final double kDriveDeadband = 0.15;
   }
 
@@ -142,4 +143,7 @@ public final class Constants {
 
 public static final int INTAKE_MOTOR_1 = 1;
 public static final int UMBRELLA_MOTOR_1 = 3;
+
+public static final int SHOOTER_MOTOR_LEADER = 5;
+public static final int SHOOTER_MOTOR_FOLLOWER = 6;
 }
