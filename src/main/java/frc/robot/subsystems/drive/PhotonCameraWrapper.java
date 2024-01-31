@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drive;
 
-import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Optional;
 
