@@ -4,8 +4,11 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+
+import org.photonvision.EstimatedRobotPose;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -34,6 +37,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.commands.FollowPathHolonomic;
+import frc.robot.subsystems.drive.PhotonCameraWrapper;
+import frc.robot.subsystems.drive.PhotonCameraWrapper.Side;
 
 
 
@@ -62,7 +67,9 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
 
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
+  private final PhotonCameraWrapper m_photonCameraWrapper;
   private SwerveModuleState[] m_moduleStates = new SwerveModuleState[4];
+
 
   // Slew rate filter variables for controlling lateral acceleration
   @Log.NT
@@ -123,6 +130,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
         },
     this // Reference to this subsystem to set requirements
     );
+    m_photonCameraWrapper = new PhotonCameraWrapper();
   }
 
   @Override
@@ -160,6 +168,26 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     m_moduleStates[1] = m_frontRight.getState();
     m_moduleStates[2] = m_rearLeft.getState();
     m_moduleStates[3] = m_rearRight.getState();
+
+    Optional<EstimatedRobotPose> estimatedPoseFrontLeft = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.FRONT_LEFT);
+    Optional<EstimatedRobotPose> estimatedPoseFrontRight = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.FRONT_RIGHT);
+    Optional<EstimatedRobotPose> estimatedPoseRearLeft = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.REAR_LEFT);
+    Optional<EstimatedRobotPose> estimatedPoseRearRight = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.REAR_RIGHT);
+    if (estimatedPoseFrontLeft.isPresent()) {
+      EstimatedRobotPose pose = estimatedPoseFrontLeft.get();
+    }
+
+    if(estimatedPoseFrontRight.isPresent()) {
+      EstimatedRobotPose pose = estimatedPoseFrontRight.get();
+    }
+
+    if (estimatedPoseRearLeft.isPresent()) {
+      EstimatedRobotPose pose = estimatedPoseRearLeft.get();
+    }
+
+    if(estimatedPoseRearRight.isPresent()) {
+      EstimatedRobotPose pose = estimatedPoseRearRight.get();
+    }
   }
 
   /**
