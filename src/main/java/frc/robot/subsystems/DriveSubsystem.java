@@ -16,6 +16,9 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -68,6 +71,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
   private final PhotonCameraWrapper m_photonCameraWrapper;
+  private final SwerveDrivePoseEstimator poseEstimator;
+
   private SwerveModuleState[] m_moduleStates = new SwerveModuleState[4];
 
 
@@ -131,6 +136,19 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     this // Reference to this subsystem to set requirements
     );
     m_photonCameraWrapper = new PhotonCameraWrapper();
+    poseEstimator = new SwerveDrivePoseEstimator(
+                          DriveConstants.kDriveKinematics, 
+                          this.getYaw(),
+                          new SwerveModulePosition[] {
+                            m_frontLeft.getPosition(),
+                            m_frontRight.getPosition(),
+                            m_rearLeft.getPosition(),
+                            m_rearRight.getPosition()
+                            },
+                            this.getPose(),
+                            VecBuilder.fill(0.95, 0.95, 0.95), 
+                            VecBuilder.fill(0.05, 0.05, 0.05)
+                          );
   }
 
   @Override
@@ -175,18 +193,22 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     Optional<EstimatedRobotPose> estimatedPoseRearRight = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.REAR_RIGHT);
     if (estimatedPoseFrontLeft.isPresent()) {
       EstimatedRobotPose pose = estimatedPoseFrontLeft.get();
+      poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }
 
     if(estimatedPoseFrontRight.isPresent()) {
       EstimatedRobotPose pose = estimatedPoseFrontRight.get();
+      poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }
 
     if (estimatedPoseRearLeft.isPresent()) {
       EstimatedRobotPose pose = estimatedPoseRearLeft.get();
+      poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }
 
     if(estimatedPoseRearRight.isPresent()) {
       EstimatedRobotPose pose = estimatedPoseRearRight.get();
+      poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }
   }
 
@@ -361,6 +383,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   public double getAngle() {
     return -m_gyro.getAngle();
   }
+
+  public Rotation2d getYaw() {
+    return m_gyro.getRotation2d().times(-1); // this inversion is a property of the AHRSGyro itself
+}
 
   /**
    * Returns the turn rate of the robot.
