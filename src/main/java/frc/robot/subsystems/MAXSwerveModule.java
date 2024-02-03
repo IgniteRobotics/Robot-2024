@@ -185,6 +185,24 @@ public class MAXSwerveModule implements Logged{
 
     m_desiredState = desiredState;
   }
+  
+  /**
+   * Directly set drive voltage for sysid tests
+   * 
+   * @param volts
+   */
+  public void setDriveVolts(double volts){
+    m_drivingSparkMax.setVoltage(volts);
+  }
+
+  /**
+   * Directly set turn voltage for sysid tests
+   * 
+   * @param volts
+   */
+  public void setTurnVolts(double volts){
+    m_turningSparkMax.setVoltage(volts);
+  }
 
   /** Zeroes all the SwerveModule encoders. */
   public void resetEncoders() {

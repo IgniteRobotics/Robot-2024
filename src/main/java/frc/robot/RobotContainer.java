@@ -122,16 +122,9 @@ public class RobotContainer implements Logged {
     new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
     .whileTrue(new RunIntake(m_robotIntake, outtakePower));
     new JoystickButton(m_driverController, XboxController.Button.kY.value)
-        .whileTrue(new RunUmbrella(m_umbrella, umbrellaPower));
-
-    new JoystickButton(m_manipController, XboxController.Button.kB.value)
-    .whileTrue(new RunShooterPower(m_shooter, shooterPower));
-    new JoystickButton(m_manipController, XboxController.Button.kA.value)
-    .whileTrue(new RunShooterRPM(m_shooter, shooterRPM));
+        .whileTrue(m_robotDrive.driveSysIdTestBuilder(7, 3));
     new JoystickButton(m_driverController, XboxController.Button.kB.value)
-        .onTrue(m_robotDrive.pathFindertoPoseBuilder(new Pose2d(8,5, Rotation2d.fromDegrees(0)),
-                                                          2,2,6.28,6.28));
-
+        .whileTrue(m_robotDrive.turnSysIdTestBuilder(7, 3));
   }
 
   /**
