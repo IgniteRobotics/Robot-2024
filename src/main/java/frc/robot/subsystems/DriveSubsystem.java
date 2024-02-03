@@ -4,18 +4,21 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import org.photonvision.EstimatedRobotPose;
+
 import com.kauailabs.navx.frc.AHRS;
-import com.pathplanner.lib.path.PathPlannerTrajectory;
-import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.pathplanner.lib.auto.AutoBuilder;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -30,14 +33,11 @@ import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
 import monologue.Logged;
 import monologue.Annotations.Log;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import static edu.wpi.first.units.Units.Volts;
@@ -54,6 +54,8 @@ import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.commands.FollowPathHolonomic;
+import frc.robot.subsystems.drive.PhotonCameraWrapper;
+import frc.robot.subsystems.drive.PhotonCameraWrapper.Side;
 
 
 
@@ -82,7 +84,11 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
 
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
+  private final PhotonCameraWrapper m_photonCameraWrapper;
+  private final SwerveDrivePoseEstimator poseEstimator;
+
   private SwerveModuleState[] m_moduleStates = new SwerveModuleState[4];
+
 
   // Slew rate filter variables for controlling lateral acceleration
   @Log.NT
@@ -166,6 +172,20 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       ) 
     );
 
+    m_photonCameraWrapper = new PhotonCameraWrapper();
+    poseEstimator = new SwerveDrivePoseEstimator(
+                          DriveConstants.kDriveKinematics, 
+                          this.getYaw(),
+                          new SwerveModulePosition[] {
+                            m_frontLeft.getPosition(),
+                            m_frontRight.getPosition(),
+                            m_rearLeft.getPosition(),
+                            m_rearRight.getPosition()
+                            },
+                            this.getPose(),
+                            VecBuilder.fill(0.95, 0.95, 0.95), 
+                            VecBuilder.fill(0.05, 0.05, 0.05)
+                          );
   }
 
   @Override
@@ -203,6 +223,30 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     m_moduleStates[1] = m_frontRight.getState();
     m_moduleStates[2] = m_rearLeft.getState();
     m_moduleStates[3] = m_rearRight.getState();
+
+    Optional<EstimatedRobotPose> estimatedPoseFrontLeft = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.FRONT_LEFT);
+    Optional<EstimatedRobotPose> estimatedPoseFrontRight = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.FRONT_RIGHT);
+    Optional<EstimatedRobotPose> estimatedPoseRearLeft = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.REAR_LEFT);
+    Optional<EstimatedRobotPose> estimatedPoseRearRight = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.REAR_RIGHT);
+    if (estimatedPoseFrontLeft.isPresent()) {
+      EstimatedRobotPose pose = estimatedPoseFrontLeft.get();
+      poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+    }
+
+    if(estimatedPoseFrontRight.isPresent()) {
+      EstimatedRobotPose pose = estimatedPoseFrontRight.get();
+      poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+    }
+
+    if (estimatedPoseRearLeft.isPresent()) {
+      EstimatedRobotPose pose = estimatedPoseRearLeft.get();
+      poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+    }
+
+    if(estimatedPoseRearRight.isPresent()) {
+      EstimatedRobotPose pose = estimatedPoseRearRight.get();
+      poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+    }
   }
 
   /**
@@ -400,6 +444,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   public double getAngle() {
     return -m_gyro.getAngle();
   }
+
+  public Rotation2d getYaw() {
+    return m_gyro.getRotation2d().times(-1); // this inversion is a property of the AHRSGyro itself
+}
 
   /**
    * Returns the turn rate of the robot.
