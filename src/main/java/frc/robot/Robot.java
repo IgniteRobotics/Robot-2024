@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+import org.littletonrobotics.urcl.URCL;
+
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -49,10 +52,21 @@ public class Robot extends TimedRobot implements Logged {
 
     m_Scheduler = CommandScheduler.getInstance();
 
+    DataLogManager.start();
+
+    //starting URCL in sim blows up.
+    if (isReal()) {
+      URCL.start();
+    } else {
+      //Shush telling me that I don't have a controller in the sim.
+      DriverStation.silenceJoystickConnectionWarning(true);
+    }
+
     //do this LAST!!
     boolean fileOnly = false;
     boolean lazyLogging = false;
     Monologue.setupMonologue(this, "/Robot", fileOnly, lazyLogging);
+    DriverStation.startDataLog(DataLogManager.getLog()); // same log used by monologue
   }
 
   /**

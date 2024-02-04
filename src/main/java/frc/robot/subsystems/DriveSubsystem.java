@@ -4,18 +4,22 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import org.photonvision.EstimatedRobotPose;
+
 import com.kauailabs.navx.frc.AHRS;
-import com.pathplanner.lib.path.PathPlannerTrajectory;
-import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.pathplanner.lib.auto.AutoBuilder;
 
-import edu.wpi.first.math.controller.PIDController;
+
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,23 +28,36 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
 import monologue.Logged;
 import monologue.Annotations.Log;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.MutableMeasure.mutable;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
+
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.commands.FollowPathHolonomic;
+import frc.robot.subsystems.drive.PhotonCameraWrapper;
+import frc.robot.subsystems.drive.PhotonCameraWrapper.Side;
 
 
 
@@ -69,7 +86,11 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
 
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
+  private final PhotonCameraWrapper m_photonCameraWrapper;
+  private final SwerveDrivePoseEstimator poseEstimator;
+
   private SwerveModuleState[] m_moduleStates = new SwerveModuleState[4];
+
 
   // Slew rate filter variables for controlling lateral acceleration
   @Log.NT
@@ -100,9 +121,27 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
           m_rearRight.getPosition()
       });
 
+  //sysid routines for characterization
+  SysIdRoutine m_DriveSysIdRoutine;
+  SysIdRoutine m_TurnSysIdRoutine;
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
   
+    m_photonCameraWrapper = new PhotonCameraWrapper();
+    poseEstimator = new SwerveDrivePoseEstimator(
+                          DriveConstants.kDriveKinematics, 
+                          this.getYaw(),
+                          new SwerveModulePosition[] {
+                            m_frontLeft.getPosition(),
+                            m_frontRight.getPosition(),
+                            m_rearLeft.getPosition(),
+                            m_rearRight.getPosition()
+                            },
+                            new Pose2d(),
+                            VecBuilder.fill(0.95, 0.95, 0.95), 
+                            VecBuilder.fill(0.05, 0.05, 0.05)
+                          );
 
   // Configure AutoBuilder last
   AutoBuilder.configureHolonomic(
@@ -130,6 +169,26 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
         },
     this // Reference to this subsystem to set requirements
     );
+    
+    m_DriveSysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(),
+      new SysIdRoutine.Mechanism(
+        (Measure<Voltage> volts) -> this.setDriveVolts(volts.in(Volts)),
+        null, // No log consumer, since data is recorded by URCL
+      this
+      ) 
+    );
+    
+    m_TurnSysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(),
+      new SysIdRoutine.Mechanism(
+        (Measure<Voltage> volts) -> this.setTurnVolts(volts.in(Volts)),
+        null, // No log consumer, since data is recorded by URCL
+      this
+      ) 
+    );
+
+   
   }
 
   @Override
@@ -167,6 +226,31 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     m_moduleStates[1] = m_frontRight.getState();
     m_moduleStates[2] = m_rearLeft.getState();
     m_moduleStates[3] = m_rearRight.getState();
+
+    Optional<EstimatedRobotPose> estimatedPoseFrontLeft = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.FRONT_LEFT);
+    Optional<EstimatedRobotPose> estimatedPoseFrontRight = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.FRONT_RIGHT);
+    Optional<EstimatedRobotPose> estimatedPoseRearLeft = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.REAR_LEFT);
+    Optional<EstimatedRobotPose> estimatedPoseRearRight = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.REAR_RIGHT);
+    if (estimatedPoseFrontLeft.isPresent()) {
+      EstimatedRobotPose pose = estimatedPoseFrontLeft.get();
+      poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+    }
+
+    if(estimatedPoseFrontRight.isPresent()) {
+      EstimatedRobotPose pose = estimatedPoseFrontRight.get();
+      poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+    }
+
+    if (estimatedPoseRearLeft.isPresent()) {
+      EstimatedRobotPose pose = estimatedPoseRearLeft.get();
+      poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+    }
+
+    if(estimatedPoseRearRight.isPresent()) {
+      EstimatedRobotPose pose = estimatedPoseRearRight.get();
+      poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+    }
+
   }
 
   /**
@@ -177,7 +261,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   @Log.NT
   @Log.File
   public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
+    return poseEstimator.getEstimatedPosition();
   }
 
   /**
@@ -292,6 +376,30 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   }
 
   /**
+   * Set all drive motors to voltage
+   * 
+   * @param volts
+   */
+  public void setDriveVolts(double volts){
+    m_frontLeft.setDriveVolts(volts);
+    m_frontRight.setDriveVolts(volts);
+    m_rearLeft.setDriveVolts(volts);
+    m_rearRight.setDriveVolts(volts);
+  }
+
+  /**
+   * Set all trurn motors to voltage
+   * 
+   * @param volts
+   */
+  public void setTurnVolts(double volts){
+    m_frontLeft.setTurnVolts(volts);
+    m_frontRight.setTurnVolts(volts);
+    m_rearLeft.setTurnVolts(volts);
+    m_rearLeft.setTurnVolts(volts);
+  }
+
+  /**
    * Sets the wheels into an X formation to prevent movement.
    */
   public void setX() {
@@ -301,6 +409,13 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
   }
 
+  //set the modules directly to zero without optimization
+  public void setModulesZero() {
+    m_frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)), false);
+    m_frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)), false);
+    m_rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)), false);
+    m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)), false);
+  }
   /**
    * Sets the swerve ModuleStates.
    *
@@ -340,6 +455,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   public double getAngle() {
     return -m_gyro.getAngle();
   }
+
+  public Rotation2d getYaw() {
+    return m_gyro.getRotation2d().times(-1); // this inversion is a property of the AHRSGyro itself
+}
 
   /**
    * Returns the turn rate of the robot.
@@ -444,6 +563,24 @@ public  Command followPathCommand(String pathName, double speed) {
           0.0, // Goal end velocity in meters/sec
           0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
       );
+  }
+
+  public Command driveSysIdTestBuilder(double staticTimeout, double dynamicTimeout){
+    return
+      new InstantCommand(() -> this.setModulesZero())
+      .andThen(m_DriveSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward).withTimeout(staticTimeout))
+      .andThen(m_DriveSysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse).withTimeout(staticTimeout))
+      .andThen(m_DriveSysIdRoutine.dynamic(SysIdRoutine.Direction.kForward).withTimeout(dynamicTimeout))
+      .andThen(m_DriveSysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse).withTimeout(dynamicTimeout))
+      .finallyDo(() -> this.setDriveVolts(0));
+  }
+
+  public Command turnSysIdTestBuilder(double staticTimeout, double dynamicTimeout){ 
+    return m_TurnSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward).withTimeout(staticTimeout)
+      .andThen(m_TurnSysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse).withTimeout(staticTimeout))
+      .andThen(m_TurnSysIdRoutine.dynamic(SysIdRoutine.Direction.kForward).withTimeout(dynamicTimeout))
+      .andThen(m_TurnSysIdRoutine   .dynamic(SysIdRoutine.Direction.kReverse).withTimeout(dynamicTimeout))
+      .finallyDo(() -> this.setTurnVolts(0));
   }
 
 }

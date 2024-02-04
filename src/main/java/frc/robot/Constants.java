@@ -6,7 +6,10 @@ package frc.robot;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -35,9 +38,9 @@ public final class Constants {
     public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
 
     // Chassis configuration
-    public static final double kTrackWidth = Units.inchesToMeters(20.5);
+    public static final double kTrackWidth = Units.inchesToMeters(23.5);
     // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = Units.inchesToMeters(20.5);
+    public static final double kWheelBase = Units.inchesToMeters(25.5);
     // Distance between front and back wheels on robot
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2),
@@ -139,6 +142,19 @@ public final class Constants {
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
+  }
+
+  public static class CameraConstants {
+    public static final String photonCameraNameFrontLeft = "FRONT_LEFT";
+    // public static final Transform3d photonCameraTransformLeft = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
+    public static final Transform3d photonCameraTransformFrontLeft = new Transform3d(new Translation3d(.324, 0.298, .235), new Rotation3d(0, -10 / 180.0 * Math.PI, -15/180 * Math.PI));
+    public static final String photonCameraNameFrontRight = "FRONT_RIGHT";
+    public static final Transform3d photonCameraTransformFrontRight = new Transform3d(new Translation3d(.324, -.298, .235), new Rotation3d(0, -10 / 180.0 * Math.PI, -15/180 * Math.PI));
+    public static final String photonCameraNameRearRight = "REAR_RIGHT";
+    public static final Transform3d photonCameraTransformRearRight = new Transform3d(new Translation3d(-.324, -.298, 0.235), new Rotation3d(0, -10 / 180.0 * Math.PI, 195/180 * Math.PI));
+    public static final String photonCameraNameRearLeft = "REAR_LEFT";
+    public static final Transform3d photonCameraTransformRearLeft = new Transform3d(new Translation3d(-.324, 0.298, 0.235), new Rotation3d(0, -10 / 180.0 * Math.PI, -195/180 * Math.PI));
+
   }
 
 public static final int INTAKE_MOTOR_1 = 1;

@@ -5,17 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.comm.preferences.DoublePreference;
 import frc.robot.commands.ParkCommand;
@@ -31,17 +23,11 @@ import frc.robot.subsystems.UmbrellaSubsystem;
 import monologue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import java.util.List;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj. smartdashboard.Field2d;
 
-import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
 
 
 
@@ -122,16 +108,9 @@ public class RobotContainer implements Logged {
     new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
     .whileTrue(new RunIntake(m_robotIntake, outtakePower));
     new JoystickButton(m_driverController, XboxController.Button.kY.value)
-        .whileTrue(new RunUmbrella(m_umbrella, umbrellaPower));
-
-    new JoystickButton(m_manipController, XboxController.Button.kB.value)
-    .whileTrue(new RunShooterPower(m_shooter, shooterPower));
-    new JoystickButton(m_manipController, XboxController.Button.kA.value)
-    .whileTrue(new RunShooterRPM(m_shooter, shooterRPM));
+        .whileTrue(m_robotDrive.driveSysIdTestBuilder(4, 1.75));
     new JoystickButton(m_driverController, XboxController.Button.kB.value)
-        .onTrue(m_robotDrive.pathFindertoPoseBuilder(new Pose2d(8,5, Rotation2d.fromDegrees(0)),
-                                                          2,2,6.28,6.28));
-
+        .whileTrue(m_robotDrive.turnSysIdTestBuilder(7, 3));
   }
 
   /**
