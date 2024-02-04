@@ -22,7 +22,7 @@ import monologue.Annotations.Log;
 
 public class MAXSwerveModule implements Logged{
   private final CANSparkFlex m_drivingSparkMax;
-  private final CANSparkFlex m_turningSparkMax;
+  private final CANSparkMax m_turningSparkMax;
 
   private final RelativeEncoder m_drivingEncoder;
   private final AbsoluteEncoder m_turningEncoder;
@@ -67,7 +67,7 @@ public class MAXSwerveModule implements Logged{
    */
   public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset) {
     m_drivingSparkMax = new CANSparkFlex(drivingCANId, MotorType.kBrushless);
-    m_turningSparkMax = new CANSparkFlex(turningCANId, MotorType.kBrushless);
+    m_turningSparkMax = new CANSparkMax(turningCANId, MotorType.kBrushless);
 
     // Factory reset, so we get the SPARKS MAX to a known state before configuring
     // them. This is useful in case a SPARK MAX is swapped out.
@@ -169,21 +169,30 @@ public class MAXSwerveModule implements Logged{
    *
    * @param desiredState Desired state with speed and angle.
    */
-  public void setDesiredState(SwerveModuleState desiredState) {
+  public void setDesiredState(SwerveModuleState desiredState, boolean optimize) {
     // Apply chassis angular offset to the desired state.
     SwerveModuleState correctedDesiredState = new SwerveModuleState();
     correctedDesiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
     correctedDesiredState.angle = desiredState.angle.plus(Rotation2d.fromRadians(m_chassisAngularOffset));
 
+    SwerveModuleState optimizedDesiredState;
     // Optimize the reference state to avoid spinning further than 90 degrees.
-    SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(correctedDesiredState,
+    if (optimize){
+      optimizedDesiredState = SwerveModuleState.optimize(correctedDesiredState,
         new Rotation2d(m_turningEncoder.getPosition()));
+    } else {
+      optimizedDesiredState = correctedDesiredState;
+    }
 
     // Command driving and turning SPARKS MAX towards their respective setpoints.
     m_drivingPIDController.setReference(optimizedDesiredState.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
     m_turningPIDController.setReference(optimizedDesiredState.angle.getRadians(), CANSparkMax.ControlType.kPosition);
 
     m_desiredState = desiredState;
+  }
+
+  public void setDesiredState(SwerveModuleState desiredState) {
+    this.setDesiredState(desiredState, true);
   }
   
   /**

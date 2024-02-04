@@ -16,6 +16,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.pathplanner.lib.auto.AutoBuilder;
 
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -38,6 +39,7 @@ import frc.utils.SwerveUtils;
 import monologue.Logged;
 import monologue.Annotations.Log;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import static edu.wpi.first.units.Units.Volts;
@@ -126,6 +128,20 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
   
+    m_photonCameraWrapper = new PhotonCameraWrapper();
+    poseEstimator = new SwerveDrivePoseEstimator(
+                          DriveConstants.kDriveKinematics, 
+                          this.getYaw(),
+                          new SwerveModulePosition[] {
+                            m_frontLeft.getPosition(),
+                            m_frontRight.getPosition(),
+                            m_rearLeft.getPosition(),
+                            m_rearRight.getPosition()
+                            },
+                            new Pose2d(),
+                            VecBuilder.fill(0.95, 0.95, 0.95), 
+                            VecBuilder.fill(0.05, 0.05, 0.05)
+                          );
 
   // Configure AutoBuilder last
   AutoBuilder.configureHolonomic(
@@ -172,20 +188,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       ) 
     );
 
-    m_photonCameraWrapper = new PhotonCameraWrapper();
-    poseEstimator = new SwerveDrivePoseEstimator(
-                          DriveConstants.kDriveKinematics, 
-                          this.getYaw(),
-                          new SwerveModulePosition[] {
-                            m_frontLeft.getPosition(),
-                            m_frontRight.getPosition(),
-                            m_rearLeft.getPosition(),
-                            m_rearRight.getPosition()
-                            },
-                            this.getPose(),
-                            VecBuilder.fill(0.95, 0.95, 0.95), 
-                            VecBuilder.fill(0.05, 0.05, 0.05)
-                          );
+   
   }
 
   @Override
@@ -247,6 +250,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       EstimatedRobotPose pose = estimatedPoseRearRight.get();
       poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }
+
   }
 
   /**
@@ -257,7 +261,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   @Log.NT
   @Log.File
   public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
+    return poseEstimator.getEstimatedPosition();
   }
 
   /**
@@ -405,6 +409,13 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
   }
 
+  //set the modules directly to zero without optimization
+  public void setModulesZero() {
+    m_frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)), false);
+    m_frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)), false);
+    m_rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)), false);
+    m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)), false);
+  }
   /**
    * Sets the swerve ModuleStates.
    *
@@ -555,7 +566,9 @@ public  Command followPathCommand(String pathName, double speed) {
   }
 
   public Command driveSysIdTestBuilder(double staticTimeout, double dynamicTimeout){
-    return m_DriveSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward).withTimeout(staticTimeout)
+    return
+      new InstantCommand(() -> this.setModulesZero())
+      .andThen(m_DriveSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward).withTimeout(staticTimeout))
       .andThen(m_DriveSysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse).withTimeout(staticTimeout))
       .andThen(m_DriveSysIdRoutine.dynamic(SysIdRoutine.Direction.kForward).withTimeout(dynamicTimeout))
       .andThen(m_DriveSysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse).withTimeout(dynamicTimeout))
