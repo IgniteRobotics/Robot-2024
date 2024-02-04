@@ -65,7 +65,7 @@ public class MAXSwerveModule implements Logged{
    * MAXSwerve Module built with NEOs, SPARKS MAX, and a Through Bore
    * Encoder.
    */
-  public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset) {
+  public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset, double drivekp) {
     m_drivingSparkMax = new CANSparkFlex(drivingCANId, MotorType.kBrushless);
     m_turningSparkMax = new CANSparkMax(turningCANId, MotorType.kBrushless);
 
@@ -108,7 +108,7 @@ public class MAXSwerveModule implements Logged{
 
     // Set the PID gains for the driving motor. Note these are example gains, and you
     // may need to tune them for your own robot!
-    m_drivingPIDController.setP(ModuleConstants.kDrivingP);
+    m_drivingPIDController.setP(drivekp);
     m_drivingPIDController.setI(ModuleConstants.kDrivingI);
     m_drivingPIDController.setD(ModuleConstants.kDrivingD);
     m_drivingPIDController.setFF(ModuleConstants.kDrivingFF);

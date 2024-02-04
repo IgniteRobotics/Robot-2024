@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ModuleConstants;
 import frc.utils.SwerveUtils;
 import monologue.Logged;
 import monologue.Annotations.Log;
@@ -67,22 +68,26 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
       DriveConstants.kFrontLeftDrivingCanId,
       DriveConstants.kFrontLeftTurningCanId,
-      DriveConstants.kFrontLeftChassisAngularOffset);
+      DriveConstants.kFrontLeftChassisAngularOffset,
+      ModuleConstants.kDrivingPFL);
 
   private final MAXSwerveModule m_frontRight = new MAXSwerveModule(
       DriveConstants.kFrontRightDrivingCanId,
       DriveConstants.kFrontRightTurningCanId,
-      DriveConstants.kFrontRightChassisAngularOffset);
+      DriveConstants.kFrontRightChassisAngularOffset,
+      ModuleConstants.kDrivingPFR);
 
   private final MAXSwerveModule m_rearLeft = new MAXSwerveModule(
       DriveConstants.kRearLeftDrivingCanId,
       DriveConstants.kRearLeftTurningCanId,
-      DriveConstants.kBackLeftChassisAngularOffset);
+      DriveConstants.kBackLeftChassisAngularOffset,
+      ModuleConstants.kDrivingPRL);
 
   private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
       DriveConstants.kRearRightDrivingCanId,
       DriveConstants.kRearRightTurningCanId,
-      DriveConstants.kBackRightChassisAngularOffset);
+      DriveConstants.kBackRightChassisAngularOffset,
+      ModuleConstants.kDrivingPRR);
 
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
