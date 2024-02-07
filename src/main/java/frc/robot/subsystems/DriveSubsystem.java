@@ -201,6 +201,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     m_rearLeft.periodic();
     m_rearRight.periodic();
 
+    
     m_odometry.update(
         Rotation2d.fromDegrees(getAngle()),
         new SwerveModulePosition[] {
@@ -250,6 +251,13 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       EstimatedRobotPose pose = estimatedPoseRearRight.get();
       poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }
+
+    poseEstimator.update(new Rotation2d(m_gyro.getYaw()), new SwerveModulePosition[] {
+      m_frontLeft.getPosition(),
+      m_frontRight.getPosition(),
+      m_rearLeft.getPosition(),
+      m_rearRight.getPosition()
+    });
 
   }
 
