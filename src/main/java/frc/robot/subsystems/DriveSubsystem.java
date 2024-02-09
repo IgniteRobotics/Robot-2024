@@ -94,32 +94,36 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
 
   // Slew rate filter variables for controlling lateral acceleration
   @Log.NT
-@Log.File
+  @Log.File
   private double m_currentRotation = 0.0;
   @Log.NT
-@Log.File
+  @Log.File
   private double m_currentTranslationDir = 0.0;
   @Log.NT
-@Log.File
+  @Log.File
   private double m_currentTranslationMag = 0.0;
   @Log.NT
-@Log.File
+  @Log.File
   private PathPlannerPath logged_path; 
+
+  @Log.NT
+  @Log.File
+  private Pose2d m_currentPose2d = new Pose2d(0,0,new Rotation2d(0));
 
   private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRate);
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
   // Odometry class for tracking robot pose
-  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
-      DriveConstants.kDriveKinematics,
-      Rotation2d.fromDegrees(getAngle()),
-      new SwerveModulePosition[] {
-          m_frontLeft.getPosition(),
-          m_frontRight.getPosition(),
-          m_rearLeft.getPosition(),
-          m_rearRight.getPosition()
-      });
+  // SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
+  //     DriveConstants.kDriveKinematics,
+  //     Rotation2d.fromDegrees(getAngle()),
+  //     new SwerveModulePosition[] {
+  //         m_frontLeft.getPosition(),
+  //         m_frontRight.getPosition(),
+  //         m_rearLeft.getPosition(),
+  //         m_rearRight.getPosition()
+  //     });
 
   //sysid routines for characterization
   SysIdRoutine m_DriveSysIdRoutine;
@@ -138,15 +142,15 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
                             m_rearLeft.getPosition(),
                             m_rearRight.getPosition()
                             },
-                            new Pose2d(),
-                            VecBuilder.fill(0.95, 0.95, 0.95), 
-                            VecBuilder.fill(0.05, 0.05, 0.05)
+                            m_currentPose2d,
+                            VecBuilder.fill(.99, .99, .99), 
+                            VecBuilder.fill(0.01, 0.01, 0.01)
                           );
 
   // Configure AutoBuilder last
   AutoBuilder.configureHolonomic(
     this::getPose, // Robot pose supplier
-    this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+    this::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
     this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
     this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
     new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
@@ -201,16 +205,16 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     m_rearLeft.periodic();
     m_rearRight.periodic();
 
-    
-    m_odometry.update(
-        Rotation2d.fromDegrees(getAngle()),
-        new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_rearLeft.getPosition(),
-            m_rearRight.getPosition()
+
+    // m_odometry.update(
+    //     Rotation2d.fromDegrees(getAngle()),
+    //     new SwerveModulePosition[] {
+    //         m_frontLeft.getPosition(),
+    //         m_frontRight.getPosition(),
+    //         m_rearLeft.getPosition(),
+    //         m_rearRight.getPosition()
   
-        });
+    //     });
     SmartDashboard.putNumber("left front turn", m_frontLeft.getPosition().angle.getDegrees());
     SmartDashboard.putNumber("left front drive", m_frontLeft.getState().speedMetersPerSecond);
     SmartDashboard.putNumber("left back turn", m_rearLeft.getPosition().angle.getDegrees());
@@ -218,10 +222,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     SmartDashboard.putNumber("right front turn", m_frontRight.getPosition().angle.getDegrees());
     SmartDashboard.putNumber("right front drive", m_frontRight.getState().speedMetersPerSecond);
     SmartDashboard.putNumber("right back turn", m_rearRight.getPosition().angle.getDegrees());
-    SmartDashboard.putNumber("right back drive", m_rearRight.getState().speedMetersPerSecond);
-
-
-        
+    SmartDashboard.putNumber("right back drive", m_rearRight.getState().speedMetersPerSecond); 
+    SmartDashboard.putNumber("drivetrain/x", m_currentPose2d.getX());
+    SmartDashboard.putNumber("drivetrain/y", m_currentPose2d.getY());
+    SmartDashboard.putNumber("drivetrain/r", m_currentPose2d.getRotation().getDegrees());
 
     m_moduleStates[0] = m_frontLeft.getState();
     m_moduleStates[1] = m_frontRight.getState();
@@ -249,15 +253,24 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
 
     if(estimatedPoseRearRight.isPresent()) {
       EstimatedRobotPose pose = estimatedPoseRearRight.get();
+      SmartDashboard.putNumber("estpose/x", pose.estimatedPose.getX());
+      SmartDashboard.putNumber("estpose/y", pose.estimatedPose.getY());
+      SmartDashboard.putNumber("estpose/r", pose.estimatedPose.getRotation().getAngle());
       poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }
 
     poseEstimator.update(new Rotation2d(m_gyro.getYaw()), new SwerveModulePosition[] {
-      m_frontLeft.getPosition(),
-      m_frontRight.getPosition(),
-      m_rearLeft.getPosition(),
-      m_rearRight.getPosition()
+      // m_frontLeft.getPosition(),
+      // m_frontRight.getPosition(),
+      // m_rearLeft.getPosition(),
+      // m_rearRight.getPosition()
+      new SwerveModulePosition(),
+      new SwerveModulePosition(),
+      new SwerveModulePosition(),
+      new SwerveModulePosition(),
     });
+
+    m_currentPose2d = poseEstimator.getEstimatedPosition();
 
   }
 
@@ -269,7 +282,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   @Log.NT
   @Log.File
   public Pose2d getPose() {
-    return poseEstimator.getEstimatedPosition();
+    return m_currentPose2d;
   }
 
   /**
@@ -277,16 +290,25 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
    *
    * @param pose The pose to which to set the odometry.
    */
-  public void resetOdometry(Pose2d pose) {
-    m_odometry.resetPosition(
-        Rotation2d.fromDegrees(getAngle()),
-        new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_rearLeft.getPosition(),
-            m_rearRight.getPosition()
-        },
-        pose);
+  public void setPose(Pose2d pose) {
+    // m_odometry.resetPosition(
+    //     Rotation2d.fromDegrees(getAngle()),
+    //     new SwerveModulePosition[] {
+    //         m_frontLeft.getPosition(),
+    //         m_frontRight.getPosition(),
+    //         m_rearLeft.getPosition(),
+    //         m_rearRight.getPosition()
+    //     },
+    //     pose);
+    this.poseEstimator.resetPosition(
+      this.getYaw(), 
+      new SwerveModulePosition[] {
+        m_frontLeft.getPosition(),
+        m_frontRight.getPosition(),
+        m_rearLeft.getPosition(),
+        m_rearRight.getPosition()
+        }, 
+      pose);
   }
 
   /**
