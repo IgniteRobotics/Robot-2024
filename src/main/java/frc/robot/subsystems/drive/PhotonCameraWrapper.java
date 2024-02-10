@@ -1,4 +1,5 @@
 package frc.robot.subsystems.drive;
+import java.util.List;
 
 import java.io.UncheckedIOException;
 import java.util.Optional;
@@ -7,6 +8,7 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -53,6 +55,7 @@ public class PhotonCameraWrapper {
     public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose, Side side) {
         if(side == Side.FRONT_RIGHT) {
             photonPoseEstimatorFrontRight.setReferencePose(prevEstimatedRobotPose);
+            
             return photonPoseEstimatorFrontRight.update();
         } else if (side == Side.FRONT_LEFT){
             photonPoseEstimatorFrontLeft.setReferencePose(prevEstimatedRobotPose);

@@ -4,11 +4,13 @@
 
 package frc.robot.subsystems;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import org.photonvision.EstimatedRobotPose;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -234,22 +236,38 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     Optional<EstimatedRobotPose> estimatedPoseRearRight = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.REAR_RIGHT);
     if (estimatedPoseFrontLeft.isPresent()) {
       EstimatedRobotPose pose = estimatedPoseFrontLeft.get();
-      poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+      boolean poseOK = true;
+      for(PhotonTrackedTarget target: pose.targetsUsed) {
+          if(target.getPoseAmbiguity() > 0.2) poseOK = false;
+      }
+      if(poseOK) poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }
 
     if(estimatedPoseFrontRight.isPresent()) {
       EstimatedRobotPose pose = estimatedPoseFrontRight.get();
-      poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+      boolean poseOK = true;
+      for(PhotonTrackedTarget target: pose.targetsUsed) {
+          if(target.getPoseAmbiguity() > 0.2) poseOK = false;
+      }
+      if(poseOK) poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }
 
     if (estimatedPoseRearLeft.isPresent()) {
       EstimatedRobotPose pose = estimatedPoseRearLeft.get();
-      poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+      boolean poseOK = true;
+      for(PhotonTrackedTarget target: pose.targetsUsed) {
+          if(target.getPoseAmbiguity() > 0.2) poseOK = false;
+      }
+      if(poseOK) poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }
 
     if(estimatedPoseRearRight.isPresent()) {
       EstimatedRobotPose pose = estimatedPoseRearRight.get();
-      poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+      boolean poseOK = true;
+      for(PhotonTrackedTarget target: pose.targetsUsed) {
+          if(target.getPoseAmbiguity() > 0.2) poseOK = false;
+      }
+      if(poseOK) poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }
 
     poseEstimator.update(new Rotation2d(m_gyro.getYaw()), new SwerveModulePosition[] {
