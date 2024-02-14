@@ -24,7 +24,7 @@ import monologue.Annotations.Log;
 
 
 public class IntakeSubsystem extends SubsystemBase implements Logged {
-  private final CANSparkMax intakeMotor;
+  private final CANSparkMax intakeMotor, positionMotor;
 
   @Log.File
   @Log.NT
@@ -38,7 +38,7 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
 
   
   public IntakeSubsystem() {
-    intakeMotor = new CANSparkMax (Constants.INTAKE_MOTOR_1, MotorType.kBrushless);
+    intakeMotor = new CANSparkMax (Constants.INTAKE_ROLLER_MOTOR_1, MotorType.kBrushless);
     // additionalIntakeMotor = new CANSparkMax(Constants.CANConstants.INTAKE_MOTOR_2, MotorType.kBrushless);
 
         // Configuring the main intake motor
@@ -47,7 +47,8 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
         intakeMotor.setSmartCurrentLimit(25); // Don't modify or remove
         intakeMotor.burnFlash();
 
-      
+      // postion control motor neo 550
+    positionMotor = new CANSparkMax (Constants.INTAKE_POSITION_MOTOR_1, MotorType.kBrushless);
     }
 
     public void setSpeed (double speed)
