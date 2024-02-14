@@ -41,8 +41,8 @@ public class RobotContainer implements Logged {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final IntakeSubsystem m_robotIntake = new IntakeSubsystem();
-  private final UmbrellaSubsystem m_umbrella  = new UmbrellaSubsystem();
-  private final ShooterSubsystem m_shooter = new ShooterSubsystem();
+  //private final UmbrellaSubsystem m_umbrella  = new UmbrellaSubsystem();
+  //private final ShooterSubsystem m_shooter = new ShooterSubsystem();
 
 
   //Robot preferences
