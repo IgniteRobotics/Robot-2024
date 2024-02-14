@@ -49,6 +49,9 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
 
       // postion control motor neo 550
     positionMotor = new CANSparkMax (Constants.INTAKE_POSITION_MOTOR_1, MotorType.kBrushless);
+        positionMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        positionMotor.setSmartCurrentLimit(25);
+        positionMotor.burnFlash();
     }
 
     public void setSpeed (double speed)
@@ -68,7 +71,15 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
     SmartDashboard.putNumber("intake/outputCurrent", current);
     SmartDashboard.putNumber("intake/temperature", temperature);
     SmartDashboard.putNumber("intake/velocity", velocity);
+    temperature = positionMotor.getMotorTemperature();
+    velocity = positionMotor.getEncoder().getVelocity();
+    current = positionMotor.getOutputCurrent();
+    SmartDashboard.putNumber("position/temperature", temperature);
+    SmartDashboard.putNumber("position/outputCurrent", current);
+    SmartDashboard.putNumber("position/velocity", velocity);
    }
+
+
 
     
   
