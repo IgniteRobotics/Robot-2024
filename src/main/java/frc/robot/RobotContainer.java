@@ -71,8 +71,7 @@ public class RobotContainer implements Logged {
 
 
     autonChooser = AutoBuilder.buildAutoChooser();
-    autonChooser.addOption("Run New Auto", AutoBuilder.buildAuto("New Auto"));
-    autonChooser.addOption("straight auto", AutoBuilder.buildAuto("straight auto"));
+    autonChooser.addOption("Forward 2 Meters", AutoBuilder.buildAuto("Forward 2 meters"));
     autonChooser.addOption("None", null);
     SmartDashboard.putData("Autonomous", autonChooser);
 
