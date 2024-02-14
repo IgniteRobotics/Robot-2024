@@ -16,12 +16,6 @@
           "data": {
             "pathName": "Go forward 2 meters"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Go back 2 meters while forward"
-          }
         }
       ]
     }
