@@ -22,6 +22,36 @@
           "data": {
             "waitTime": 2.0
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Circle Around Stage Part 2"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Circle Around Stage Part 3"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Circle Around Stage Part 4"
+          }
         }
       ]
     }
