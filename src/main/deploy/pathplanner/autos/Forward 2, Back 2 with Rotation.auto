@@ -5,7 +5,7 @@
       "x": 2.1,
       "y": 6.37
     },
-    "rotation": 0.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,13 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Go forward 2 meters"
+            "pathName": "Go forward 2 meters while turning 180"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Go back 2 meters while forward"
+            "pathName": "Go backward 2 (facing back) while turning 180"
           }
         }
       ]

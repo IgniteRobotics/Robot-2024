@@ -20,7 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Go back 2 meters"
+            "pathName": "Go back 2 meters while forward"
           }
         }
       ]
