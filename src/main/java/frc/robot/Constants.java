@@ -151,9 +151,9 @@ public final class Constants {
     public static final String photonCameraNameFrontRight = "FRONT_RIGHT";
     public static final Transform3d photonCameraTransformFrontRight = new Transform3d(new Translation3d(.324, -0.298, .235), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 15.0/180 * Math.PI));
     public static final String photonCameraNameRearRight = "REAR_RIGHT";
-    public static final Transform3d photonCameraTransformRearRight = new Transform3d(new Translation3d(-.324, -0.298, 0.235), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 195.0/180 * Math.PI));
+    public static final Transform3d photonCameraTransformRearRight = new Transform3d(new Translation3d(-.324, -0.298, 0.235), new Rotation3d(0.0, -10 / 180.0 * Math.PI, -195.0/180 * Math.PI));
     public static final String photonCameraNameRearLeft = "REAR_LEFT";
-    public static final Transform3d photonCameraTransformRearLeft = new Transform3d(new Translation3d(-.324, 0.298, 0.235), new Rotation3d(0.0, -10 / 180.0 * Math.PI, -195.0/180 * Math.PI));
+    public static final Transform3d photonCameraTransformRearLeft = new Transform3d(new Translation3d(-.324, 0.298, 0.235), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 195.0/180 * Math.PI));
 
   }
 
