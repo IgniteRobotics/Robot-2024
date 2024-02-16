@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 
 
@@ -51,6 +52,8 @@ public class RobotContainer implements Logged {
   private DoublePreference umbrellaPower = new DoublePreference( "umbrella/Power", 0.25);
   private DoublePreference shooterPower = new DoublePreference("shooter/Power", 0.25);
   private DoublePreference shooterRPM = new DoublePreference("shooter/RPM", 500);
+
+
 
   private final SendableChooser<Command> autonChooser;
 
@@ -89,7 +92,7 @@ public class RobotContainer implements Logged {
             m_robotDrive));
   }
 
-  /**
+/**
    * Use this method to define your button->command mappings. Buttons can be
    * created by
    * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its

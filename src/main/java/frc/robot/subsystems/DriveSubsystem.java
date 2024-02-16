@@ -555,15 +555,17 @@ public  Command followPathCommand(String pathName, double speed) {
     DoubleSupplier maxVelSupplier,
     DoubleSupplier maxAccelSupplier,
     DoubleSupplier maxRotSupplier,
-    DoubleSupplier maxRotAccelSupplier){
+    DoubleSupplier maxRotAccelSupplier,
+    DoubleSupplier endGoalEndVelocity){
 
     Pose2d targetPose = targetPoseSupplier.get();
     double maxLinVelMPS = maxVelSupplier.getAsDouble();
     double maxLinAccelMPSSq = maxAccelSupplier.getAsDouble();
     double maxAglVelocityRps = maxRotSupplier.getAsDouble();
     double maxAngAccelRpsSq = maxRotAccelSupplier.getAsDouble();
+    double goalEndVelocity = endGoalEndVelocity.getAsDouble();
 
-    return this.pathFindertoPoseBuilder(targetPose, maxLinVelMPS, maxLinAccelMPSSq, maxAglVelocityRps, maxAngAccelRpsSq);
+    return this.pathFindertoPoseBuilder(targetPose, maxLinVelMPS, maxLinAccelMPSSq, maxAglVelocityRps, maxAngAccelRpsSq, goalEndVelocity);
 
   }
 
@@ -580,13 +582,14 @@ public  Command followPathCommand(String pathName, double speed) {
     double maxLinVelMPS,
     double maxLinAccelMPSSq,
     double maxAglVelocityRps,
-    double maxAngAccelRpsSq){ 
+    double maxAngAccelRpsSq,
+    double goalEndVelocity){ 
     PathConstraints constraints = new PathConstraints(maxLinVelMPS, maxLinAccelMPSSq, maxAglVelocityRps, maxAngAccelRpsSq);
 
     return AutoBuilder.pathfindToPose(
           targetPose,
           constraints,
-          0.0, // Goal end velocity in meters/sec
+          goalEndVelocity, // Goal end velocity in meters/sec
           0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
       );
   }
