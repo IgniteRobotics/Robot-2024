@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+import edu.wpi.first.wpilibj.DriverStation;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -26,9 +27,12 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.utils.DestinationUtil;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
+
 
 
 
@@ -101,6 +105,7 @@ public class RobotContainer implements Logged {
    * passing it to a
    * {@link JoystickButton}.
    */
+
   private void configureButtonBindings() {
     new JoystickButton(m_driverController, XboxController.Button.kX.value)
         .whileTrue(new ParkCommand(m_robotDrive));
@@ -114,9 +119,12 @@ public class RobotContainer implements Logged {
         .whileTrue(m_robotDrive.driveSysIdTestBuilder(4, 1.75));
     new JoystickButton(m_driverController, XboxController.Button.kB.value)
         .whileTrue(m_robotDrive.turnSysIdTestBuilder(7, 3));
-  }
+        //AMP
+    new POVButton(m_driverController, 90)
+        .whileTrue(m_robotDrive.pathFindertoPOseBuilder(DestinationUtil.SourceFinder(DriverStation.getAlliance()), )
+  
 
-  /**
+  /*
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous

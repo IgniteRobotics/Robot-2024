@@ -164,6 +164,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
         // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
         var alliance = DriverStation.getAlliance();
+      
         if (alliance.isPresent()) {
           return alliance.get() == DriverStation.Alliance.Red;
       }
@@ -612,4 +613,6 @@ public  Command followPathCommand(String pathName, double speed) {
       .finallyDo(() -> this.setTurnVolts(0));
   }
 
-}
+  }
+
+
