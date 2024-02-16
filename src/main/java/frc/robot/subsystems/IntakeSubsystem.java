@@ -8,6 +8,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkMax;
@@ -20,6 +21,7 @@ import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.subsystems.IntakeSubsystem;
 import monologue.Logged;
 import monologue.Annotations.Log;
@@ -32,7 +34,7 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
   
   private final CANSparkMax intakeMotor, positionMotor;
   private final SparkPIDController positionController;
-  
+  private final double POSITION_TOLERANCE = 50;
 
   public static class positionConstants {
     private static double kP = 0;
@@ -57,6 +59,9 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
   @Log.File
   @Log.NT
   private double positiontemperature;
+  @Log.File
+  @Log.NT
+  private double positionTarget;
   public IntakeSubsystem() {
     intakeMotor = new CANSparkMax (Constants.INTAKE_ROLLER_MOTOR_1, MotorType.kBrushless);
     // additionalIntakeMotor = new CANSparkMax(Constants.CANConstants.INTAKE_MOTOR_2, MotorType.kBrushless);
@@ -127,10 +132,17 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
 
     public void setPosition (double position)
     {
-      intakeMotor.set(MathUtil.clamp(position, -1, 1));
+      positionController.setReference(position, ControlType.kSmartMotion);
+        positionTarget = position;
     }
-
-
+    public boolean wristAtSetpoint() {
+        if(Robot.isSimulation()) return true;
+         return getIntakePosition() >= positionTarget - POSITION_TOLERANCE
+             && getIntakePosition() <= positionTarget + POSITION_TOLERANCE;
+  }
+  public double getIntakePosition() {
+    return positionMotor.getEncoder().getPosition();
+  }
     public void stop(){
       intakeMotor.stopMotor();
     }
