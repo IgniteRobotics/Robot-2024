@@ -5,38 +5,58 @@
 package frc.robot.subsystems;
 
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkMax;
-
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
 import monologue.Logged;
 import monologue.Annotations.Log;
-
-
+import edu.wpi.first.wpilibj.Preferences;
 
 
 
 
 public class IntakeSubsystem extends SubsystemBase implements Logged {
-  private final CANSparkMax intakeMotor, positionMotor;
-
-  @Log.File
-  @Log.NT
-  private double current;
-  @Log.File
-  @Log.NT
-  private double velocity;
-  @Log.File
-  @Log.NT
-  private double temperature;
-
   
+  private final CANSparkMax intakeMotor, positionMotor;
+  private final SparkPIDController positionController;
+  
+
+  public static class positionConstants {
+    private static double kP = 0;
+    private static double kI = 0;
+    private static double kD = 0;
+  }
+  @Log.File
+  @Log.NT
+  private double intakecurrent;
+  @Log.File
+  @Log.NT
+  private double intakevelocity;
+  @Log.File
+  @Log.NT
+  private double intaketemperature;
+  @Log.File
+  @Log.NT
+  private double postioncurrent;
+  @Log.File
+  @Log.NT
+  private double positionvelocity;
+  @Log.File
+  @Log.NT
+  private double positiontemperature;
   public IntakeSubsystem() {
     intakeMotor = new CANSparkMax (Constants.INTAKE_ROLLER_MOTOR_1, MotorType.kBrushless);
     // additionalIntakeMotor = new CANSparkMax(Constants.CANConstants.INTAKE_MOTOR_2, MotorType.kBrushless);
@@ -48,35 +68,82 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
         intakeMotor.burnFlash();
 
       // postion control motor neo 550
-    positionMotor = new CANSparkMax (Constants.INTAKE_POSITION_MOTOR_1, MotorType.kBrushless);
+        positionMotor = new CANSparkMax (Constants.INTAKE_POSITION_MOTOR_1, MotorType.kBrushless);
         positionMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
         positionMotor.setSmartCurrentLimit(25);
         positionMotor.burnFlash();
+
+     
+        // the variable numbers for the softlimit are from 2023 they need to be fixed
+        this.positionMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+        this.positionMotor.setSoftLimit(SoftLimitDirection.kReverse, 150);
+        this.positionMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+        this.positionMotor.setSoftLimit(SoftLimitDirection.kForward, 1125);
+    
+        this.positionController = positionMotor.getPIDController();
+       
+    
+        configureSparkMax(positionMotor);
+      
+    
+        configurepositionController(positionController);
+        
+    
+        Preferences.initDouble("arm/arm/kP", 0);
+        Preferences.initDouble("arm/arm/kI", 0);
+        Preferences.initDouble("arm/arm/kD", 0);
+        
+
+
+
+
+        
+
+
+
+
+
+
+
     }
 
+    private void configurepositionController(SparkPIDController controller) {
+          controller.setP(positionConstants.kP);
+          controller.setI(positionConstants.kI);
+          controller.setD(positionConstants.kD);
+          controller.setOutputRange(-1, 1);
+    }
+
+    private void configureSparkMax(CANSparkMax motor) {
+    positionMotor.setInverted(false);
+    positionMotor.setIdleMode(IdleMode.kBrake);
+
+    positionMotor.setSmartCurrentLimit(20);
+  }
     public void setSpeed (double speed)
     {
-      intakeMotor.set(MathUtil.clamp(speed, -1, 1));
+      intakeMotor.set(MathUtil.clamp(speed, -1, 1));    
     }
-    
+
+    public void setPosition (double position)
+    {
+      intakeMotor.set(MathUtil.clamp(position, -1, 1));
+    }
+
+
     public void stop(){
       intakeMotor.stopMotor();
     }
 
   public void periodic() {
 
-    temperature = intakeMotor.getMotorTemperature();
-    velocity = intakeMotor.getEncoder().getVelocity();
-    current = intakeMotor.getOutputCurrent();
-    SmartDashboard.putNumber("intake/outputCurrent", current);
-    SmartDashboard.putNumber("intake/temperature", temperature);
-    SmartDashboard.putNumber("intake/velocity", velocity);
-    temperature = positionMotor.getMotorTemperature();
-    velocity = positionMotor.getEncoder().getVelocity();
-    current = positionMotor.getOutputCurrent();
-    SmartDashboard.putNumber("position/temperature", temperature);
-    SmartDashboard.putNumber("position/outputCurrent", current);
-    SmartDashboard.putNumber("position/velocity", velocity);
+    intaketemperature = intakeMotor.getMotorTemperature();
+    intakevelocity = intakeMotor.getEncoder().getVelocity();
+    intakecurrent = intakeMotor.getOutputCurrent();
+    positiontemperature = positionMotor.getMotorTemperature();
+    positionvelocity = positionMotor.getEncoder().getVelocity();
+    postioncurrent = positionMotor.getOutputCurrent();
+
    }
 
 
