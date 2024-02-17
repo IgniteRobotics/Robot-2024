@@ -111,9 +111,9 @@ public class RobotContainer implements Logged {
     new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
     .whileTrue(new RunIntake(m_robotIntake, outtakePower, intakePosition));
     new JoystickButton(m_driverController, XboxController.Button.kY.value)
-        .whileTrue(m_robotDrive.driveSysIdTestBuilder(4, 1.75));
+        .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
     new JoystickButton(m_driverController, XboxController.Button.kB.value)
-        .whileTrue(m_robotDrive.turnSysIdTestBuilder(7, 3));
+        .whileTrue(m_robotDrive.turnSysIdTestBuilder(10, 5));
   }
 
   /**

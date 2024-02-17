@@ -43,6 +43,7 @@ import monologue.Annotations.Log;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.units.MutableMeasure.mutable;
@@ -596,6 +597,7 @@ public  Command followPathCommand(String pathName, double speed) {
       new InstantCommand(() -> this.setModulesZero())
       .andThen(m_DriveSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward).withTimeout(staticTimeout))
       .andThen(m_DriveSysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse).withTimeout(staticTimeout))
+      .andThen(new WaitCommand(2))
       .andThen(m_DriveSysIdRoutine.dynamic(SysIdRoutine.Direction.kForward).withTimeout(dynamicTimeout))
       .andThen(m_DriveSysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse).withTimeout(dynamicTimeout))
       .finallyDo(() -> this.setDriveVolts(0));
