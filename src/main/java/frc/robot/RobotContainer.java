@@ -102,7 +102,8 @@ public class RobotContainer implements Logged {
 
 public SequentialCommandGroup SourceDrive(){
     return new SequentialCommandGroup(m_robotDrive.pathFindertoPoseBuilder(m_DestinationUtil.SourceFinder(DriverStation.getAlliance()), Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
-        Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond,  Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared, Constants.AutoConstants.endGoalEndVelocityIntermediate));
+        Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond,  Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared, Constants.AutoConstants.endGoalEndVelocityIntermediate),
+        AutoBuilder.buildAuto("SourceDriveAuto"));
   }  
 public SequentialCommandGroup SpeakerDrive(){
     return new SequentialCommandGroup(m_robotDrive.pathFindertoPoseBuilder(m_DestinationUtil.SpeakerFinder(DriverStation.getAlliance()), Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
