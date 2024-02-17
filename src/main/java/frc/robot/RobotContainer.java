@@ -46,6 +46,7 @@ public class RobotContainer implements Logged {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final IntakeSubsystem m_robotIntake = new IntakeSubsystem();
+  private final DestinationUtil m_DestinationUtil = new DestinationUtil();
   //private final UmbrellaSubsystem m_umbrella  = new UmbrellaSubsystem();
   //private final ShooterSubsystem m_shooter = new ShooterSubsystem();
 
@@ -121,7 +122,10 @@ public class RobotContainer implements Logged {
         .whileTrue(m_robotDrive.turnSysIdTestBuilder(7, 3));
         //AMP
     new POVButton(m_driverController, 90)
-        .whileTrue(m_robotDrive.pathFindertoPoseBuilder(DestinationUtil.SourceFinder(DriverStation.getAlliance()), 2, 2, 2, 2, 2));
+        .whileTrue(m_robotDrive.pathFindertoPoseBuilder(m_DestinationUtil.SourceFinder(DriverStation.getAlliance()), Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
+         Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond, Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared, Constants.AutoConstants.endGoalEndVelocityIntermediate));
+    
+  }
   
 
   /*
