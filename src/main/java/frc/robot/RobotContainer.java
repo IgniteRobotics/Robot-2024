@@ -32,7 +32,9 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.utils.DestinationUtil;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
 
 
 
@@ -105,10 +107,11 @@ public SequentialCommandGroup SourceDrive(){
 public SequentialCommandGroup SpeakerDrive(){
     return new SequentialCommandGroup(m_robotDrive.pathFindertoPoseBuilder(m_DestinationUtil.SpeakerFinder(DriverStation.getAlliance()), Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
         Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond,  Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared, Constants.AutoConstants.endGoalEndVelocityIntermediate));
-  }  
+  }
 public SequentialCommandGroup AmpDrive(){
     return new SequentialCommandGroup(m_robotDrive.pathFindertoPoseBuilder(m_DestinationUtil.AmpFinder(DriverStation.getAlliance()), Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
-        Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond,  Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared, Constants.AutoConstants.endGoalEndVelocityIntermediate));
+        Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond,  Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared, Constants.AutoConstants.endGoalEndVelocityIntermediate),
+        AutoBuilder.buildAuto("AmpDriveAuto"));
   }
 
 /**
