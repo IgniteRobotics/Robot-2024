@@ -24,6 +24,7 @@ import frc.robot.subsystems.UmbrellaSubsystem;
 import monologue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -97,6 +98,19 @@ public class RobotContainer implements Logged {
             m_robotDrive));
   }
 
+public SequentialCommandGroup SourceDrive(){
+    return new SequentialCommandGroup(m_robotDrive.pathFindertoPoseBuilder(m_DestinationUtil.SourceFinder(DriverStation.getAlliance()), Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
+        Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond,  Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared, Constants.AutoConstants.endGoalEndVelocityIntermediate));
+  }  
+public SequentialCommandGroup SpeakerDrive(){
+    return new SequentialCommandGroup(m_robotDrive.pathFindertoPoseBuilder(m_DestinationUtil.SpeakerFinder(DriverStation.getAlliance()), Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
+        Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond,  Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared, Constants.AutoConstants.endGoalEndVelocityIntermediate));
+  }  
+public SequentialCommandGroup AmpDrive(){
+    return new SequentialCommandGroup(m_robotDrive.pathFindertoPoseBuilder(m_DestinationUtil.AmpFinder(DriverStation.getAlliance()), Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
+        Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond,  Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared, Constants.AutoConstants.endGoalEndVelocityIntermediate));
+  }
+
 /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by
@@ -120,16 +134,12 @@ public class RobotContainer implements Logged {
         .whileTrue(m_robotDrive.driveSysIdTestBuilder(4, 1.75));
     new JoystickButton(m_driverController, XboxController.Button.kB.value)
         .whileTrue(m_robotDrive.turnSysIdTestBuilder(7, 3));
-        //AMP
     new POVButton(m_driverController, 90)
-        .whileTrue(m_robotDrive.pathFindertoPoseBuilder(m_DestinationUtil.SourceFinder(DriverStation.getAlliance()), Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
-         Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond, Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared, Constants.AutoConstants.endGoalEndVelocityIntermediate));
+        .whileTrue(SourceDrive());
     new POVButton(m_driverController, 180)
-        .whileTrue(m_robotDrive.pathFindertoPoseBuilder(m_DestinationUtil.SpeakerFinder(DriverStation.getAlliance()), Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
-        Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond,  Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared, Constants.AutoConstants.endGoalEndVelocityIntermediate));
+        .whileTrue(SpeakerDrive());
     new POVButton(m_driverController, 270)
-        .whileTrue(m_robotDrive.pathFindertoPoseBuilder(m_DestinationUtil.AmpFinder(DriverStation.getAlliance()), Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
-        Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond,  Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared, Constants.AutoConstants.endGoalEndVelocityIntermediate));
+        .whileTrue(AmpDrive());
 
   }
   
@@ -142,6 +152,8 @@ public class RobotContainer implements Logged {
   public Command getAutonomousCommand() {
     return autonChooser.getSelected();
   }
+
+  
  
     
 }
