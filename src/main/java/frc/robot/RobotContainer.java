@@ -124,7 +124,13 @@ public class RobotContainer implements Logged {
     new POVButton(m_driverController, 90)
         .whileTrue(m_robotDrive.pathFindertoPoseBuilder(m_DestinationUtil.SourceFinder(DriverStation.getAlliance()), Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
          Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond, Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared, Constants.AutoConstants.endGoalEndVelocityIntermediate));
-    
+    new POVButton(m_driverController, 180)
+        .whileTrue(m_robotDrive.pathFindertoPoseBuilder(m_DestinationUtil.SpeakerFinder(DriverStation.getAlliance()), Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
+        Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond,  Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared, Constants.AutoConstants.endGoalEndVelocityIntermediate));
+    new POVButton(m_driverController, 270)
+        .whileTrue(m_robotDrive.pathFindertoPoseBuilder(m_DestinationUtil.AmpFinder(DriverStation.getAlliance()), Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
+        Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond,  Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared, Constants.AutoConstants.endGoalEndVelocityIntermediate));
+
   }
   
 
