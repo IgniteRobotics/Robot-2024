@@ -47,6 +47,7 @@ public class RobotContainer implements Logged {
 
   //Robot preferences
   private DoublePreference intakePower = new DoublePreference("intake/intakePower", 0.5);
+  private DoublePreference intakePosition = new DoublePreference("intake/intakePosition", 100);
   private DoublePreference outtakePower = new DoublePreference("intake/outtakePower", 0.5);
   private DoublePreference umbrellaPower = new DoublePreference( "umbrella/Power", 0.25);
   private DoublePreference shooterPower = new DoublePreference("shooter/Power", 0.25);
@@ -104,9 +105,9 @@ public class RobotContainer implements Logged {
     new JoystickButton(m_driverController, XboxController.Button.kA.value)
         .onTrue(new ResetGyro(m_robotDrive));
     new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
-        .whileTrue(new RunIntake(m_robotIntake, intakePower));
+        .whileTrue(new RunIntake(m_robotIntake, intakePower, intakePosition));
     new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
-    .whileTrue(new RunIntake(m_robotIntake, outtakePower));
+    .whileTrue(new RunIntake(m_robotIntake, outtakePower, intakePosition));
     new JoystickButton(m_driverController, XboxController.Button.kY.value)
         .whileTrue(m_robotDrive.driveSysIdTestBuilder(4, 1.75));
     new JoystickButton(m_driverController, XboxController.Button.kB.value)
