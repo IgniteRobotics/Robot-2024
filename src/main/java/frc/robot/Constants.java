@@ -156,8 +156,9 @@ public final class Constants {
     public static final Transform3d photonCameraTransformRearLeft = new Transform3d(new Translation3d(-.324, 0.298, 0.235), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 195.0/180 * Math.PI));
 
   }
+public static final int INTAKE_POSITION_MOTOR_1 = 2;
 
-public static final int INTAKE_MOTOR_1 = 1;
+public static final int INTAKE_ROLLER_MOTOR_1 = 1;
 public static final int UMBRELLA_MOTOR_1 = 3;
 
 public static final int SHOOTER_MOTOR_LEADER = 5;
