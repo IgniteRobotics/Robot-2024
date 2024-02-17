@@ -121,7 +121,7 @@ public class RobotContainer implements Logged {
         .whileTrue(m_robotDrive.turnSysIdTestBuilder(7, 3));
         //AMP
     new POVButton(m_driverController, 90)
-        .whileTrue(m_robotDrive.pathFindertoPoseBuilder(DestinationUtil.SourceFinder(DriverStation.getAlliance()), 2, 2, 2, 2, 2);
+        .whileTrue(m_robotDrive.pathFindertoPoseBuilder(DestinationUtil.SourceFinder(DriverStation.getAlliance()), 2, 2, 2, 2, 2));
   
 
   /*
