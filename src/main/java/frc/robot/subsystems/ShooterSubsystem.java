@@ -93,8 +93,6 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     m_pidControllerFollower.setReference(MathUtil.clamp(rpm, -maxRPM, maxRPM), CANSparkFlex.ControlType.kVelocity);
   }
 
-
-
   public void stop() {
     shooterMotorLeader.stopMotor();
     shooterMotorFollower.stopMotor();
