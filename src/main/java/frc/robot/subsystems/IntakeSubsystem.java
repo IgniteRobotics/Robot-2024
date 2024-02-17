@@ -171,5 +171,13 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
         intakeMotor.set(speed);
     }
 
+  
+    public Command dogetDefaultCommand(){
+      return runEnd(() -> {
+        setSpeed(0);
+        setPosition(0);
+      }, this::stop);
+    }
+
 
 }
