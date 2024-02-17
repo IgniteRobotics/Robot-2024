@@ -10,11 +10,11 @@ import java.util.Optional;
 
 /** Add your docs here. */
 public class DestinationUtil {
-    private final static Pose2d BASourceP = new Pose2d(13.63, 2.42, new Rotation2d(3*Math.PI/2));
-    private final static Pose2d RASourceP = new Pose2d(2.91, 2.42, new Rotation2d(3*Math.PI/2));
+    private final static Pose2d BASourceP = new Pose2d(13.63, 2.42, new Rotation2d(310 * Math.PI/180));
+    private final static Pose2d RASourceP = new Pose2d(2.91, 2.42, new Rotation2d(230 * Math.PI/180));
 
-    private final static Pose2d BASpeakerP = new Pose2d(2.9, 5.56, new Rotation2d(0));
-    private final static Pose2d RASpeakerP = new Pose2d(13.66, 5.56, new Rotation2d(Math.PI));
+    private final static Pose2d BASpeakerP = new Pose2d(2.9, 5.56, new Rotation2d(Math.PI));
+    private final static Pose2d RASpeakerP = new Pose2d(13.66, 5.56, new Rotation2d(0));
 
     private final static Pose2d BAAmpP = new Pose2d(1.78, 5.75, new Rotation2d(Math.PI/2));
     private final static Pose2d RAAmpP = new Pose2d(14.72, 5.75, new Rotation2d(Math.PI/2));
