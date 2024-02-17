@@ -106,7 +106,8 @@ public SequentialCommandGroup SourceDrive(){
   }  
 public SequentialCommandGroup SpeakerDrive(){
     return new SequentialCommandGroup(m_robotDrive.pathFindertoPoseBuilder(m_DestinationUtil.SpeakerFinder(DriverStation.getAlliance()), Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
-        Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond,  Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared, Constants.AutoConstants.endGoalEndVelocityIntermediate));
+        Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond,  Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared, Constants.AutoConstants.endGoalEndVelocityIntermediate),
+        AutoBuilder.buildAuto("SpeakerDriveAuto"));
   }
 public SequentialCommandGroup AmpDrive(){
     return new SequentialCommandGroup(m_robotDrive.pathFindertoPoseBuilder(m_DestinationUtil.AmpFinder(DriverStation.getAlliance()), Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared,
