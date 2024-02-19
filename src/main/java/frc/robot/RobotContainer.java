@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-
+import frc.robot.commands.ResetGyro;
 
 
 /*
@@ -40,7 +40,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 public class RobotContainer implements Logged {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final IntakeSubsystem m_robotIntake = new IntakeSubsystem();
+  //private final IntakeSubsystem m_robotIntake = new IntakeSubsystem();
   //private final UmbrellaSubsystem m_umbrella  = new UmbrellaSubsystem();
   //private final ShooterSubsystem m_shooter = new ShooterSubsystem();
 
@@ -52,7 +52,6 @@ public class RobotContainer implements Logged {
   private DoublePreference umbrellaPower = new DoublePreference( "umbrella/Power", 0.25);
   private DoublePreference shooterPower = new DoublePreference("shooter/Power", 0.25);
   private DoublePreference shooterRPM = new DoublePreference("shooter/RPM", 500);
-
   private final SendableChooser<Command> autonChooser;
 
   private final double pathSpeed = 2;
@@ -77,6 +76,7 @@ public class RobotContainer implements Logged {
     autonChooser.addOption("Forward 2, Back 2 with Rotation", AutoBuilder.buildAuto("Forward 2, Back 2 with Rotation"));
     autonChooser.addOption("Circle Around Stage", AutoBuilder.buildAuto("Circle Around Stage"));
     autonChooser.addOption("None", null);
+    autonChooser.addOption("de test", AutoBuilder.buildAuto("de test"));
     SmartDashboard.putData("Autonomous", autonChooser);
 
     // Configure default commands
@@ -104,12 +104,12 @@ public class RobotContainer implements Logged {
   private void configureButtonBindings() {
     new JoystickButton(m_driverController, XboxController.Button.kX.value)
         .whileTrue(new ParkCommand(m_robotDrive));
-    new JoystickButton(m_driverController, XboxController.Button.kA.value)
+    new JoystickButton(m_driverController, XboxController.Button.kBack.value)
         .onTrue(new ResetGyro(m_robotDrive));
-    new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
-        .whileTrue(new RunIntake(m_robotIntake, intakePower, intakePosition));
-    new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
-    .whileTrue(new RunIntake(m_robotIntake, outtakePower, intakePosition));
+    // new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
+    //     .whileTrue(new RunIntake(m_robotIntake, intakePower, intakePosition));
+    // new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
+    // .whileTrue(new RunIntake(m_robotIntake, outtakePower, intakePosition));
     new JoystickButton(m_driverController, XboxController.Button.kY.value)
         .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
     new JoystickButton(m_driverController, XboxController.Button.kB.value)

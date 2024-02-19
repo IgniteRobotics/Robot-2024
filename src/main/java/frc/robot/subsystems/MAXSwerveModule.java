@@ -61,6 +61,11 @@ public class MAXSwerveModule implements Logged{
   @Log.NT
   @Log.File
   private double m_moduleDesiredSpeed = 0;
+  @Log.NT
+  @Log.File
+  private double m_moduleDesiredPosition = 0;
+  
+
 
   /**
    * Constructs a MAXSwerveModule and configures the driving and turning motor,
@@ -191,6 +196,7 @@ public class MAXSwerveModule implements Logged{
     m_drivingPIDController.setReference(optimizedDesiredState.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
     m_turningPIDController.setReference(optimizedDesiredState.angle.getRadians(), CANSparkMax.ControlType.kPosition);
     m_moduleDesiredSpeed = optimizedDesiredState.speedMetersPerSecond;
+    m_moduleDesiredPosition = optimizedDesiredState.angle.getDegrees();
     m_desiredState = desiredState;
   }
 

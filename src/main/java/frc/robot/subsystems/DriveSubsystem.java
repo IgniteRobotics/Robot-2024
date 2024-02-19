@@ -15,6 +15,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -30,6 +31,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.util.WPIUtilJNI;
@@ -37,6 +39,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.comm.preferences.DoublePreference;
 import frc.utils.SwerveUtils;
 import monologue.Logged;
 import monologue.Annotations.Log;
@@ -91,6 +94,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
   private final PhotonCameraWrapper m_photonCameraWrapper;
   private final SwerveDrivePoseEstimator poseEstimator;
+  private final SwerveDrivePoseEstimator autonPoseEstimator;
 
   private SwerveModuleState[] m_moduleStates = new SwerveModuleState[4];
 
@@ -108,6 +112,22 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   @Log.NT
 @Log.File
   private PathPlannerPath logged_path; 
+
+  @Log.NT
+  @Log.File
+  private double targetposeX;
+
+  @Log.NT
+  @Log.File
+  private double targetposeY;
+
+  @Log.NT
+  @Log.File
+  private double targetrotation;
+
+  @Log.NT
+  @Log.File
+  private double gyro_rotation;
 
   private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRate);
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
@@ -128,9 +148,15 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   SysIdRoutine m_DriveSysIdRoutine;
   SysIdRoutine m_TurnSysIdRoutine;
 
+  DoublePreference autoDValue = new DoublePreference("auto/D", 0.1);
+  DoublePreference autoPValue = new DoublePreference("auto/P", 0.4);
+  DoublePreference autoRotationPValue = new DoublePreference("auto/rotationP", 1);
+  DoublePreference autoRotationDValue = new DoublePreference("auto/rotationD", 0);
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-  
+    
+
+
     m_photonCameraWrapper = new PhotonCameraWrapper();
     poseEstimator = new SwerveDrivePoseEstimator(
                           DriveConstants.kDriveKinematics, 
@@ -145,18 +171,32 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
                             VecBuilder.fill(0.95, 0.95, 0.95), 
                             VecBuilder.fill(0.05, 0.05, 0.05)
                           );
+    
+    autonPoseEstimator = new SwerveDrivePoseEstimator(
+      DriveConstants.kDriveKinematics, 
+      this.getYaw(),
+      new SwerveModulePosition[] {
+        m_frontLeft.getPosition(),
+        m_frontRight.getPosition(),
+        m_rearLeft.getPosition(),
+        m_rearRight.getPosition()
+        },
+        new Pose2d(),
+        VecBuilder.fill(0.05, 0.05, 0.05), 
+        VecBuilder.fill(0.95, 0.95, 0.95)
+      );
 
   // Configure AutoBuilder last
   AutoBuilder.configureHolonomic(
-    this::getPose, // Robot pose supplier
+    this::getAutonPose, // Robot pose supplier
     this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
     this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
     this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
     new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+            new PIDConstants(autoPValue.get(), 0.0, autoDValue.get()), // Translation PID constants
+            new PIDConstants(autoRotationPValue.get(), 0.0, autoRotationDValue.get()), // Rotation PID constants
             4.5, // Max module speed, in m/s
-            0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+            Units.inchesToMeters(17.34), // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
     ),
     () -> {
@@ -191,6 +231,14 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       ) 
     );
 
+    PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+        // Do whatever you want with the pose here
+        targetposeX = pose.getTranslation().getX();
+        targetposeY = pose.getTranslation().getY();
+
+        targetrotation = pose.getRotation().getRadians();
+    });
+
    
   }
 
@@ -199,11 +247,13 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   ) {
     // Update the odometry in the periodic block
 
+
     m_frontLeft.periodic();
     m_frontRight.periodic();
     m_rearLeft.periodic();
     m_rearRight.periodic();
 
+    gyro_rotation = getYaw().getRadians();
     
     m_odometry.update(
         Rotation2d.fromDegrees(getAngle()),
@@ -214,6 +264,9 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
             m_rearRight.getPosition()
   
         });
+
+    
+    
     SmartDashboard.putNumber("left front turn", m_frontLeft.getPosition().angle.getDegrees());
     SmartDashboard.putNumber("left front drive", m_frontLeft.getState().speedMetersPerSecond);
     SmartDashboard.putNumber("left back turn", m_rearLeft.getPosition().angle.getDegrees());
@@ -278,6 +331,15 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       m_rearRight.getPosition()
     });
 
+    if(DriverStation.isAutonomous()) {
+      autonPoseEstimator.update(new Rotation2d(m_gyro.getYaw()), new SwerveModulePosition[] {
+        m_frontLeft.getPosition(),
+        m_frontRight.getPosition(),
+        m_rearLeft.getPosition(),
+        m_rearRight.getPosition()
+      });
+    }
+
   }
 
   /**
@@ -289,6 +351,12 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   @Log.File
   public Pose2d getPose() {
     return poseEstimator.getEstimatedPosition();
+  }
+
+  @Log.NT
+  @Log.File
+  public Pose2d getAutonPose() {
+    return autonPoseEstimator.getEstimatedPosition();
   }
 
   /**
@@ -423,7 +491,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     m_frontLeft.setTurnVolts(volts);
     m_frontRight.setTurnVolts(volts);
     m_rearLeft.setTurnVolts(volts);
-    m_rearLeft.setTurnVolts(volts);
+    m_rearRight.setTurnVolts(volts);
   }
 
   /**
@@ -517,10 +585,10 @@ public  Command followPathCommand(String pathName, double speed) {
                 this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+                        new PIDConstants(1, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(1, 0.0, 0.0), // Rotation PID constants
                         speed, // Max module speed, in m/s
-                        0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+                        Units.inchesToMeters(17.34), // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig() // Default path replanning config. See the API for the options here
                 ),
                 () -> {
