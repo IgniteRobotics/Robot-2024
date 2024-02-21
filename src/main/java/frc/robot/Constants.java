@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -118,6 +120,14 @@ public final class Constants {
     public static final int kDrivingMotorCurrentLimit = 50; // amps
     public static final int kTurningMotorCurrentLimit = 20; // amps
   }
+  public static final class ShooterConstants {
+
+    public static final int kShooterPostionMotorPinionTeeth = 64;
+    public static final double kpositionF = 1;
+    public static final double kpositionP = 1;
+    public static final double kpositionI = 1;
+    public static final double kpositionD = 1;
+  }
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
@@ -162,5 +172,6 @@ public static final int INTAKE_ROLLER_MOTOR_1 = 1;
 public static final int UMBRELLA_MOTOR_1 = 3;
 
 public static final int SHOOTER_MOTOR_LEADER = 5;
-public static final int SHOOTER_MOTOR_FOLLOWER = 6;
+public static final int SHOOTER_INDEX_MOTOR = 6;
+public static final int SHOOTER_POSITION_MOTOR = 7;
 }
