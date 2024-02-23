@@ -31,7 +31,7 @@ public class UmbrellaSubsystem extends SubsystemBase implements Logged{
 
 
   public UmbrellaSubsystem() {
-    umbrellaMotor = new CANSparkFlex(Constants.UMBRELLA_MOTOR_1, MotorType.kBrushless);
+    umbrellaMotor = new CANSparkFlex(Constants.CANConstants.UMBRELLA_MOTOR_1, MotorType.kBrushless);
 
     //configuring motor
     umbrellaMotor.setInverted(false);//TODO: fix when certain

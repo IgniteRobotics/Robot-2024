@@ -57,15 +57,7 @@ public final class Constants {
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
     // SPARK MAX CAN IDs
-    public static final int kFrontLeftDrivingCanId = 11;
-    public static final int kRearLeftDrivingCanId = 13;
-    public static final int kFrontRightDrivingCanId = 15;
-    public static final int kRearRightDrivingCanId = 17;
-
-    public static final int kFrontLeftTurningCanId = 10;
-    public static final int kRearLeftTurningCanId = 12;
-    public static final int kFrontRightTurningCanId = 14;
-    public static final int kRearRightTurningCanId = 16;
+    
 
     public static final boolean kGyroReversed = false;
   }
@@ -127,6 +119,20 @@ public final class Constants {
     public static final double kpositionP = 1;
     public static final double kpositionI = 1;
     public static final double kpositionD = 1;
+
+    public static final double kRPMP = 1;
+    public static final double kRPMI = 1;
+    public static final double kRPMD = 1;
+
+    public static final double shooterRollerkP = 6e-5; 
+    public static final double shooterRollerkI = 0;
+    public static final double shooterRollerkD = 0; 
+    public static final double shooterRollerkFF = 0.000015; 
+    public static final double shooterRollerkMaxOutput = 1;
+    public static final double shooterRollerkMinOutput = -1;
+    public static final double shooterRollermaxRPM = 5700;
+
+
   }
 
   public static final class OIConstants {
@@ -166,12 +172,28 @@ public final class Constants {
     public static final Transform3d photonCameraTransformRearLeft = new Transform3d(new Translation3d(-.324, 0.298, 0.235), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 195.0/180 * Math.PI));
 
   }
-public static final int INTAKE_POSITION_MOTOR_1 = 2;
 
-public static final int INTAKE_ROLLER_MOTOR_1 = 1;
-public static final int UMBRELLA_MOTOR_1 = 3;
 
-public static final int SHOOTER_MOTOR_LEADER = 5;
-public static final int SHOOTER_INDEX_MOTOR = 6;
-public static final int SHOOTER_POSITION_MOTOR = 7;
+public class CANConstants {
+  public static final int INTAKE_POSITION_MOTOR_1 = 2;
+  public static final int INTAKE_ROLLER_MOTOR_1 = 1;
+  public static final int UMBRELLA_MOTOR_1 = 3;
+  
+  public static final int kshooterPositionMotorCanId = 7;
+  public static final int SHOOTER_MOTOR_LEADERCanId = 8;
+  public static final int SHOOTER_INDEX_MOTORCanId = 9;
+
+  public static final int kFrontLeftDrivingCanId = 11;
+  public static final int kRearLeftDrivingCanId = 13;
+  public static final int kFrontRightDrivingCanId = 15;
+  public static final int kRearRightDrivingCanId = 17;
+
+  public static final int kFrontLeftTurningCanId = 10;
+  public static final int kRearLeftTurningCanId = 12;
+  public static final int kFrontRightTurningCanId = 14;
+  public static final int kRearRightTurningCanId = 16;
+
+}
+
+
 }

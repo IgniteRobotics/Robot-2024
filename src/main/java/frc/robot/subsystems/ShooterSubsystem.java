@@ -13,6 +13,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants;
+import frc.robot.comm.preferences.DoublePreference;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import monologue.Logged;
@@ -29,9 +31,19 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   private final SparkPIDController m_PidController;
 
   
-  
-  private double kP, kI, kD, kFF, kMaxOutput, kMinOutput, maxRPM;
+  //TODO change these name
+  private Slot0Configs slot0Configs = new Slot0Configs();
 
+// shooterPosition variables
+private double shooterPositionkV;
+private double shooterPositionkP;
+private double shooterPositionkI;
+private double shooterPostionkD;
+
+// shooterRoller preferences
+private DoublePreference shooterkPPreference = new DoublePreference("shooter/kP", Constants.ShooterConstants.kRPMP);
+private DoublePreference shooterkIPreference = new DoublePreference("shooter/kI", Constants.ShooterConstants.kRPMI);
+private DoublePreference shooterkDPreference = new DoublePreference("shooter/kD", Constants.ShooterConstants.kRPMD);
 
   @Log.File
   @Log.NT
@@ -59,36 +71,40 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
-    kP = 6e-5; 
-    kI = 0;
-    kD = 0; 
-    kFF = 0.000015; 
-    kMaxOutput = 1;
-    kMinOutput = -1;
-    maxRPM = 5700;
 
-    shooterMotor = new CANSparkMax(Constants.SHOOTER_MOTOR_LEADER, MotorType.kBrushless);
-    shooterIndexMotor = new CANSparkMax(Constants.SHOOTER_INDEX_MOTOR, MotorType.kBrushless);
-    shooterPositionMotor = new TalonFX(7);
+
+
+    shooterMotor = new CANSparkMax(Constants.CANConstants.SHOOTER_MOTOR_LEADERCanId, MotorType.kBrushless);
+    shooterIndexMotor = new CANSparkMax(Constants.CANConstants.SHOOTER_INDEX_MOTORCanId, MotorType.kBrushless);
+    //TODO move canID to contants class
+    shooterPositionMotor = new TalonFX(Constants.CANConstants.kshooterPositionMotorCanId);
  
-    
-    
-
     shooterMotor.setInverted(false);
 
     shooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
   
+     
+    slot0Configs.kV = shooterPositionkV;
+    slot0Configs.kP = shooterPositionkP;
+    slot0Configs.kI = shooterPositionkI;
+    slot0Configs.kD = shooterPostionkD;
 
     //TODO: Make actual constants
     shooterMotor.setSmartCurrentLimit(40);
  
-
     shooterMotor.setClosedLoopRampRate(1);
     
     shooterMotor.burnFlash();
  
 
     m_PidController = shooterMotor.getPIDController();
+    m_PidController.setP(shooterkPPreference.get());
+    m_PidController.setD(shooterkDPreference.get());
+    m_PidController.setI(shooterkIPreference.get());
+    m_PidController.setOutputRange(Constants.ShooterConstants.shooterRollerkMinOutput, Constants.ShooterConstants.shooterRollerkMaxOutput);
+    m_PidController.setFF(Constants.ShooterConstants.shooterRollerkFF);
+  
+
   }
 
   public void spinPower(double power) {
@@ -96,7 +112,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   }
 
   public void spinRPM(double rpm) {
-    m_PidController.setReference(MathUtil.clamp(rpm, -maxRPM, maxRPM), CANSparkFlex.ControlType.kVelocity);
+    m_PidController.setReference(MathUtil.clamp(rpm, -Constants.ShooterConstants.shooterRollermaxRPM, Constants.ShooterConstants.shooterRollermaxRPM), CANSparkFlex.ControlType.kVelocity);
   }
 
   public void stop() {
@@ -113,30 +129,14 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     velocityIndex = shooterIndexMotor.getEncoder().getVelocity();
     currentIndex = shooterIndexMotor.getOutputCurrent();
 
-    double p = SmartDashboard.getNumber("P Gain", 0);
-    double i = SmartDashboard.getNumber("I Gain", 0);
-    double d = SmartDashboard.getNumber("D Gain", 0);
-    double ff = SmartDashboard.getNumber("Feed Forward", 0);
-    double max = SmartDashboard.getNumber("Max Output", 0);
-    double min = SmartDashboard.getNumber("Min Output", 0);
+ 
+    
 
-    // if PID coefficients on SmartDashboard have changed, write new values to controller
-    if((p != kP)) { m_PidController.setP(p); kP = p; }
-    if((i != kI)) { m_PidController.setI(i); kI = i; }
-    if((d != kD)) { m_PidController.setD(d); kD = d; }
-    if((ff != kFF)) { m_PidController.setFF(ff); kFF = ff; }
-    if((max != kMaxOutput) || (min != kMinOutput)) { 
-      m_PidController.setOutputRange(min, max); 
-      kMinOutput = min; kMaxOutput = max; 
-    }
 
-    // set slot 0 gains
-    var slot0Configs = new Slot0Configs();
-    slot0Configs.kV = 0.12;
-    slot0Configs.kP = 0.11;
-    slot0Configs.kI = 0.5;
-    slot0Configs.kD = 0.001;
-
+    m_PidController.setP(shooterkPPreference.get());
+    m_PidController.setI(shooterkIPreference.get());
+    m_PidController.setD(shooterkDPreference.get());
+    
     // apply gains, 50 ms total timeout
     shooterPositionMotor.getConfigurator().apply(slot0Configs, 0.050);
   

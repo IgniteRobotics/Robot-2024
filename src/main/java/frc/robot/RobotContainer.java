@@ -52,7 +52,7 @@ public class RobotContainer implements Logged {
   private DoublePreference umbrellaPower = new DoublePreference( "umbrella/Power", 0.25);
   private DoublePreference shooterPower = new DoublePreference("shooter/Power", 0.25);
   private DoublePreference shooterRPM = new DoublePreference("shooter/RPM", 500);
-
+  
   private final SendableChooser<Command> autonChooser;
 
   private final double pathSpeed = 2;
