@@ -338,7 +338,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       double directionSlewRate;
       if (m_currentTranslationMag != 0.0) {
         
-        directionSlewRate = Math.abs(DriveConstants.kDirectionSlewRate / m_currentTranslationMag);
+        directionSlewRate = Math.abs(m_kDirectionSlewRate / m_currentTranslationMag);
 
       } else {
         directionSlewRate = 500.0; //some high number that means the slew rate is effectively instantaneous
