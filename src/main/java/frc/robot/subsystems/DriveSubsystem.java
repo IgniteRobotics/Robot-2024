@@ -109,8 +109,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   @Log.NT
 @Log.File
   private PathPlannerPath logged_path; 
-  private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRate);
-  private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
 
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
@@ -319,7 +317,11 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
    *                      field.
    * @param rateLimit     Whether to enable rate limiting for smoother control.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit, SlewRateLimiter magLimiter, SlewRateLimiter rotLimiter, double kDirectionSlewRate) {
+    
+    SlewRateLimiter m_magLimiter = magLimiter;
+    SlewRateLimiter m_rotLimiter = rotLimiter;
+    double m_kDirectionSlewRate = kDirectionSlewRate;
     double xSpeedCommanded;
     double ySpeedCommanded;
 
