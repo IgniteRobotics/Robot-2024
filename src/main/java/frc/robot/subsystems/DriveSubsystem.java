@@ -108,11 +108,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   @Log.NT
 @Log.File
   private PathPlannerPath logged_path; 
+  private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRate);
+  private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
 
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
-
-  SlewRateLimiter m_magLimiter = new SlewRateLimiter(Constants.DriveConstants.kMagnitudeSlewRate);
-  SlewRateLimiter m_rotLimiter = new SlewRateLimiter(Constants.DriveConstants.kRotationalSlewRate);
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -320,7 +319,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
    * @param rateLimit     Whether to enable rate limiting for smoother control.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
-
     double xSpeedCommanded;
     double ySpeedCommanded;
 
@@ -337,6 +335,9 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       double directionSlewRate;
       if (m_currentTranslationMag != 0.0) {
         directionSlewRate = Math.abs(Constants.DriveConstants.kDirectionSlewRate / m_currentTranslationMag);
+
+        directionSlewRate = Math.abs(DriveConstants.kDirectionSlewRate / m_currentTranslationMag);
+
       } else {
         directionSlewRate = 500.0; //some high number that means the slew rate is effectively instantaneous
       }
