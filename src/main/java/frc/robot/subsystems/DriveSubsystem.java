@@ -76,7 +76,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       DriveConstants.kBackLeftChassisAngularOffset);
 
   private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
-      Constants.CANConstants.REAR_LEFT_DRIVE,
+      Constants.CANConstants.REAR_RIGHT_DRIVE,
       Constants.CANConstants.REAR_RIGHT_TURN,
       DriveConstants.kBackRightChassisAngularOffset);
 
