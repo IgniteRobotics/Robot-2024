@@ -15,6 +15,7 @@ import frc.robot.commands.ParkCommand;
 import frc.robot.commands.ResetGyro;
 import frc.robot.commands.RunUmbrella;
 import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.StowIntake;
 import frc.robot.commands.RunShooterPower;
 import frc.robot.commands.RunShooterRPM;
 import frc.robot.subsystems.DriveSubsystem;
@@ -103,6 +104,8 @@ public class RobotContainer implements Logged {
                 new SlewRateLimiter(m_kMagnitudeSlewRate.get()), new SlewRateLimiter(m_kRotationalSlewRate.get()),
                 m_kDirectionSlewRate.get()),
             m_robotDrive));
+
+    m_robotIntakesubsystem.setDefaultCommand(new StowIntake(m_robotIntakesubsystem));
   }
 
   /**
@@ -129,6 +132,8 @@ public class RobotContainer implements Logged {
         .whileTrue(m_robotDrive.turnSysIdTestBuilder(10, 5));
     new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
         .whileTrue(m_robotIntakesubsystem.intakeCommand());
+    new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
+        .whileTrue(new StowIntake(m_robotIntakesubsystem));
   }
 
   /**

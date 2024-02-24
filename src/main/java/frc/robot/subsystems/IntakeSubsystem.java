@@ -32,10 +32,10 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
   private final SparkPIDController positionController;
 
   // intakepostion constants 
-  private final static float positionUp = 1;
-  private final static float positionDown = 100;
-  private final static double positionInputmin = -.1;
-  private final static double positionInputmax = .1;
+  private final static float  positionUp = 1;
+  private final static float  positionDown = 110;
+  private final static double positionInputmin = -1;
+  private final static double positionInputmax = 1;
 
   private DoublePreference positionkP = new DoublePreference("intake/positionkP", Constants.IntakeConstants.POSITION_kP);
   private DoublePreference positionkI = new DoublePreference("intake/positionkI", Constants.IntakeConstants.POSITION_kI);
@@ -80,10 +80,12 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
   }
 
   private void configurePositionController(SparkPIDController controller) {
-    controller.setP(positionkP.get());
+    controller.setP(0.5);
     controller.setI(positionkI.get());
     controller.setD(positionkD.get());
+    controller.setFeedbackDevice(this.positionMotor.getEncoder());
     controller.setOutputRange(positionInputmin, positionInputmax);
+    this.positionMotor.burnFlash();
   }
 
   private void configurePosistionMotor(CANSparkMax motor) {
@@ -95,6 +97,8 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
     motor.setSoftLimit(SoftLimitDirection.kReverse, positionUp);
     motor.enableSoftLimit(SoftLimitDirection.kForward, true);
     motor.setSoftLimit(SoftLimitDirection.kForward, positionDown);
+    motor.getEncoder().setPositionConversionFactor(10);
+    motor.getEncoder().setPosition(positionUp);
     motor.burnFlash();
   }
 
@@ -102,7 +106,7 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
   private void configureIntakeMotor(CANSparkMax motor) {
     motor.setInverted(false);
     motor.setIdleMode(IdleMode.kBrake);
-    motor.setSmartCurrentLimit(25);
+    motor.setSmartCurrentLimit(40);
     motor.burnFlash();
 
   }
@@ -114,7 +118,7 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
   }
 
   public void setPosition (double position){
-    positionController.setReference(position, ControlType.kSmartMotion);
+    positionController.setReference(position, ControlType.kPosition);
     positionTarget = position;
   }
   
@@ -123,12 +127,24 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
    //      return getIntakePosition() >= positionTarget - Constants.IntakeConstants.POSITION_TOLERANCE
     //         && getIntakePosition() <= positionTarget + Constants.IntakeConstants.POSITION_TOLERANCE;
  // }
+
+ @Log.File
+ @Log.NT
   public double getIntakePosition() {
     return positionMotor.getEncoder().getPosition();
   }
+
+  @Log.File
+  @Log.NT
+   public double getPositionCF() {
+     return positionMotor.getEncoder().getPositionConversionFactor();
+   }
   
   public void stop(){
     intakeMotor.stopMotor();
+  }
+  public void stopPositionMotor(){
+    positionMotor.stopMotor();
   }
 
   public void periodic() {
@@ -143,20 +159,19 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
    }
 
 
-  
+
     public Command dogetDefaultCommand(){
-      return runEnd(() -> {
+      return runOnce(() -> {
         setSpeed(0);
-        setPosition(0);
-      }, this::stop);
+        setPosition(positionUp);
+      });
     }
     
     public Command intakeCommand(){
       return runEnd(()  ->{
-        setSpeed(0);
+        setSpeed(.75);
         setPosition(positionDown);
        }, this::stop);
-
     }
 
 }

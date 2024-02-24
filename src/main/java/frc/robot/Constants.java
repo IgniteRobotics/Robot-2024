@@ -135,11 +135,11 @@ public final class Constants {
   }
 
   public static final class IntakeConstants {
-    public static double POSITION_kP = 0;
+    public static double POSITION_kP = .5;
     public static double POSITION_kI = 0;
     public static double POSITION_kD = 0;
 
-    public static final double POSITION_TOLERANCE = 50;
+    public static final double POSITION_TOLERANCE = 0.5;
     
   }
   public static final class OIConstants {
