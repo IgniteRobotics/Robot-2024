@@ -31,24 +31,22 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   private final CANSparkMax shooterIndexMotor;
   private final TalonFX shooterPositionMotor;
 
-  private final SparkPIDController m_PidController;
+  private final SparkPIDController m_RollerPidController;
 
   
   //TODO change these name
-  private Slot0Configs slot0Configs = new Slot0Configs();
+  private Slot0Configs positionSlot0Configs = new Slot0Configs();
 
-// shooterPosition variables
-private double shooterPositionkV;
-private double shooterPositionkP;
-private double shooterPositionkI;
-private double shooterPostionkD;
+  // shooterRoller preferences
+  private DoublePreference shooterkPPreference = new DoublePreference("shooter/RPMkP", Constants.ShooterConstants.ROLLER_kP);
+  private DoublePreference shooterkIPreference = new DoublePreference("shooter/RPMkI", Constants.ShooterConstants.ROLLER_kI);
+  private DoublePreference shooterkDPreference = new DoublePreference("shooter/RPMkD", Constants.ShooterConstants.ROLLER_kD);
 
-// shooterRoller preferences
-private DoublePreference shooterkPPreference = new DoublePreference("shooter/kP", Constants.ShooterConstants.kRPMP);
-private DoublePreference shooterkIPreference = new DoublePreference("shooter/kI", Constants.ShooterConstants.kRPMI);
-private DoublePreference shooterkDPreference = new DoublePreference("shooter/kD", Constants.ShooterConstants.kRPMD);
-
-private double TOLERANCE = ShooterConstants.POSITION_TOLERANCE;
+  // position PID preferences
+  private DoublePreference positionkPPreference = new DoublePreference("shooter/PositionkP", Constants.ShooterConstants.POSITION_kD);
+  private DoublePreference positionkIPreference = new DoublePreference("shooter/PositionkI", Constants.ShooterConstants.POSITION_kD);
+  private DoublePreference positionkDPreference = new DoublePreference("shooter/PositionkD", Constants.ShooterConstants.POSITION_kD);
+  
   @Log.File
   @Log.NT
   private double temp;
@@ -86,41 +84,35 @@ private double TOLERANCE = ShooterConstants.POSITION_TOLERANCE;
 
     shooterMotor = new CANSparkMax(Constants.CANConstants.SHOOTER_MOTOR_LEADERCanId, MotorType.kBrushless);
     shooterIndexMotor = new CANSparkMax(Constants.CANConstants.SHOOTER_INDEX_MOTORCanId, MotorType.kBrushless);
-    //TODO move canID to contants class
     shooterPositionMotor = new TalonFX(Constants.CANConstants.kshooterPositionMotorCanId);
  
     shooterMotor.setInverted(false);
-
     shooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
-  
-     
-    slot0Configs.kV = shooterPositionkV;
-    slot0Configs.kP = shooterPositionkP;
-    slot0Configs.kI = shooterPositionkI;
-    slot0Configs.kD = shooterPostionkD;
-
     //TODO: Make actual constants
     shooterMotor.setSmartCurrentLimit(40);
- 
     shooterMotor.setClosedLoopRampRate(1);
-    
     shooterMotor.burnFlash();
  
 
-    m_PidController = shooterMotor.getPIDController();
-    m_PidController.setP(shooterkPPreference.get());
-    m_PidController.setD(shooterkDPreference.get());
-    m_PidController.setI(shooterkIPreference.get());
-    m_PidController.setOutputRange(Constants.ShooterConstants.shooterRollerkMinOutput, Constants.ShooterConstants.shooterRollerkMaxOutput);
-    m_PidController.setFF(Constants.ShooterConstants.shooterRollerkFF);
+    m_RollerPidController = shooterMotor.getPIDController();
+    m_RollerPidController.setP(shooterkPPreference.get());
+    m_RollerPidController.setD(shooterkDPreference.get());
+    m_RollerPidController.setI(shooterkIPreference.get());
+    m_RollerPidController.setOutputRange(Constants.ShooterConstants.ROLLER_MIN_OUTPUT, Constants.ShooterConstants.ROLLER_MAX_OUTPUT);
+    m_RollerPidController.setFF(Constants.ShooterConstants.ROLLER_kFF);
+
+    positionSlot0Configs.kV = Constants.ShooterConstants.POSITION_kV;
+    positionSlot0Configs.kP = positionkPPreference.get();
+    positionSlot0Configs.kI = positionkIPreference.get();
+    positionSlot0Configs.kD = positionkDPreference.get();
   }
 
   public void spinPower(double power) {
-    shooterMotor.set(MathUtil.clamp(power, -1, 1));
+    shooterMotor.set(MathUtil.clamp(power, Constants.ShooterConstants.ROLLER_MIN_OUTPUT, Constants.ShooterConstants.ROLLER_MAX_OUTPUT));
   }
 
   public void spinRPM(double rpm) {
-    m_PidController.setReference(MathUtil.clamp(rpm, -Constants.ShooterConstants.shooterRollermaxRPM, Constants.ShooterConstants.shooterRollermaxRPM), CANSparkFlex.ControlType.kVelocity);
+    m_RollerPidController.setReference(MathUtil.clamp(rpm, -Constants.ShooterConstants.ROLLER_MAX_RPM, Constants.ShooterConstants.ROLLER_MAX_RPM), CANSparkFlex.ControlType.kVelocity);
   }
 
   @Log.File
@@ -136,7 +128,7 @@ private double TOLERANCE = ShooterConstants.POSITION_TOLERANCE;
 
   public boolean atSetpoint() {
     if(Robot.isSimulation()) return true;
-    return getPosition() >= targetSetPoint - TOLERANCE && getPosition() <= targetSetPoint + 500; 
+    return getPosition() >= targetSetPoint - Constants.ShooterConstants.POSITION_TOLERANCE && getPosition() <= targetSetPoint + Constants.ShooterConstants.POSITION_TOLERANCE; 
   }
 
   public void stop() {
@@ -156,13 +148,18 @@ private double TOLERANCE = ShooterConstants.POSITION_TOLERANCE;
  
     
 
-
-    m_PidController.setP(shooterkPPreference.get());
-    m_PidController.setI(shooterkIPreference.get());
-    m_PidController.setD(shooterkDPreference.get());
+    //TODO remove once tuned.
+    m_RollerPidController.setP(shooterkPPreference.get());
+    m_RollerPidController.setI(shooterkIPreference.get());
+    m_RollerPidController.setD(shooterkDPreference.get());
     
     // apply gains, 50 ms total timeout
-    shooterPositionMotor.getConfigurator().apply(slot0Configs, 0.050);
+    //TODO remove once tuned.
+    positionSlot0Configs.kP = positionkPPreference.get();
+    positionSlot0Configs.kI = positionkIPreference.get();
+    positionSlot0Configs.kD = positionkDPreference.get();
+    
+    shooterPositionMotor.getConfigurator().apply(positionSlot0Configs, 0.050);
   
 }
 }

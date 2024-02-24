@@ -115,13 +115,16 @@ public final class Constants {
   public static final class ShooterConstants {
 
     public static final double POSITION_kF = 1;
-    public static final double POSITION_kP = 1;
-    public static final double POSITION_kI = 1;
+    public static final double POSITION_kP = 4.8;
+    public static final double POSITION_kI = 0;
     public static final double POSITION_kD = 1;
+    public static final double POSITION_kS = 0.24;
+    public static final double POSITION_kV = 0.12;
+
 
     public static final double ROLLER_kP = 6e-5; 
     public static final double ROLLER_kI = 0;
-    public static final double ROLLER__kD = 0; 
+    public static final double ROLLER_kD = 0; 
     public static final double ROLLER_kFF = 0.000015; 
     public static final double ROLLER_MAX_OUTPUT = 1;
     public static final double ROLLER_MIN_OUTPUT = -1;
