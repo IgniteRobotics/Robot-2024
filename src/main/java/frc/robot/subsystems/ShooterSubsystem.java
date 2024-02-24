@@ -4,8 +4,10 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkFlex;
@@ -14,6 +16,7 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Robot;
 import frc.robot.comm.preferences.DoublePreference;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -45,6 +48,7 @@ private DoublePreference shooterkPPreference = new DoublePreference("shooter/kP"
 private DoublePreference shooterkIPreference = new DoublePreference("shooter/kI", Constants.ShooterConstants.kRPMI);
 private DoublePreference shooterkDPreference = new DoublePreference("shooter/kD", Constants.ShooterConstants.kRPMD);
 
+private double TOLERANCE = ShooterConstants.POSITION_TOLERANCE;
   @Log.File
   @Log.NT
   private double temp;
@@ -68,6 +72,12 @@ private DoublePreference shooterkDPreference = new DoublePreference("shooter/kD"
   @Log.File
   @Log.NT
   private double velocityIndex;
+
+  @Log.File
+  @Log.NT
+  private double targetSetPoint = 0;
+
+  public MotionMagicVoltage shooterPosition = new MotionMagicVoltage(0);
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -103,8 +113,6 @@ private DoublePreference shooterkDPreference = new DoublePreference("shooter/kD"
     m_PidController.setI(shooterkIPreference.get());
     m_PidController.setOutputRange(Constants.ShooterConstants.shooterRollerkMinOutput, Constants.ShooterConstants.shooterRollerkMaxOutput);
     m_PidController.setFF(Constants.ShooterConstants.shooterRollerkFF);
-  
-
   }
 
   public void spinPower(double power) {
@@ -113,6 +121,22 @@ private DoublePreference shooterkDPreference = new DoublePreference("shooter/kD"
 
   public void spinRPM(double rpm) {
     m_PidController.setReference(MathUtil.clamp(rpm, -Constants.ShooterConstants.shooterRollermaxRPM, Constants.ShooterConstants.shooterRollermaxRPM), CANSparkFlex.ControlType.kVelocity);
+  }
+
+  @Log.File
+  @Log.NT
+  public double getPosition(){
+    return shooterPositionMotor.getPosition().getValueAsDouble();
+  }
+
+  public void setPosition(double position) {
+    this.targetSetPoint = position;
+    shooterPositionMotor.setControl(shooterPosition.withPosition(position));
+  }
+
+  public boolean atSetpoint() {
+    if(Robot.isSimulation()) return true;
+    return getPosition() >= targetSetPoint - TOLERANCE && getPosition() <= targetSetPoint + 500; 
   }
 
   public void stop() {

@@ -132,7 +132,8 @@ public final class Constants {
     public static final double shooterRollerkMinOutput = -1;
     public static final double shooterRollermaxRPM = 5700;
 
-
+    //TODO: TUNE
+    public static final double POSITION_TOLERANCE = 2;
   }
 
   public static final class OIConstants {
