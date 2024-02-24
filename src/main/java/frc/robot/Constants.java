@@ -134,6 +134,14 @@ public final class Constants {
     public static final double POSITION_TOLERANCE = 2;
   }
 
+  public static final class IntakeConstants {
+    public static double POSITION_kP = 0;
+    public static double POSITION_kI = 0;
+    public static double POSITION_kD = 0;
+
+    public static final double POSITION_TOLERANCE = 50;
+    
+  }
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
     public static final int kManipControllerPort = 1;
@@ -173,26 +181,26 @@ public final class Constants {
   }
 
 
-public class CANConstants {
-  public static final int INTAKE_POSITION_MOTOR = 2;
-  public static final int INTAKE_ROLLER_MOTOR = 1;
-  public static final int UMBRELLA_MOTOR_1 = 3;
-  
-  public static final int SHOOTER_POSITION_MOTOR = 7;
-  public static final int SHOOTER_MOTOR_LEADERCanId = 8;
-  public static final int SHOOTER_INDEX_MOTOR = 9;
+  public class CANConstants {
+    public static final int INTAKE_POSITION_MOTOR = 2;
+    public static final int INTAKE_ROLLER_MOTOR = 1;
+    public static final int UMBRELLA_MOTOR_1 = 3;
+    
+    public static final int SHOOTER_POSITION_MOTOR = 7;
+    public static final int SHOOTER_MOTOR_LEADERCanId = 8;
+    public static final int SHOOTER_INDEX_MOTOR = 9;
 
-  public static final int FRONT_LEFT_DRIVE = 11;
-  public static final int REAR_LEFT_DRIVE = 13;
-  public static final int FRONT_RIGHT_DRIVE = 15;
-  public static final int REAR_RIGHT_DRIVE = 17;
+    public static final int FRONT_LEFT_DRIVE = 11;
+    public static final int REAR_LEFT_DRIVE = 13;
+    public static final int FRONT_RIGHT_DRIVE = 15;
+    public static final int REAR_RIGHT_DRIVE = 17;
 
-  public static final int FRONT_LEFT_TURN = 10;
-  public static final int REAR_LEFT_TURN = 12;
-  public static final int FRONT_RIGHT_TURN = 14;
-  public static final int REAR_RIGHT_TURN = 16;
+    public static final int FRONT_LEFT_TURN = 10;
+    public static final int REAR_LEFT_TURN = 12;
+    public static final int FRONT_RIGHT_TURN = 14;
+    public static final int REAR_RIGHT_TURN = 16;
 
-}
+  }
 
 
 }
