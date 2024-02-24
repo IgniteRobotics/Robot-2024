@@ -89,16 +89,19 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
 
   // Slew rate filter variables for controlling lateral acceleration
   @Log.NT
-@Log.File
+  @Log.File
   private double m_currentRotation = 0.0;
+  
   @Log.NT
-@Log.File
+  @Log.File
   private double m_currentTranslationDir = 0.0;
+  
   @Log.NT
-@Log.File
+  @Log.File
   private double m_currentTranslationMag = 0.0;
+  
   @Log.NT
-@Log.File
+  @Log.File
   private PathPlannerPath logged_path; 
 
   @Log.NT
@@ -174,33 +177,33 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
         VecBuilder.fill(0.95, 0.95, 0.95)
       );
 
-  // Configure AutoBuilder last
-  AutoBuilder.configureHolonomic(
-    this::getAutonPose, // Robot pose supplier
-    this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-    this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-    this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-    new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-            new PIDConstants(autoPValue.get(), 0.0, autoDValue.get()), // Translation PID constants
-            new PIDConstants(autoRotationPValue.get(), 0.0, autoRotationDValue.get()), // Rotation PID constants
-            4.5, // Max module speed, in m/s
-            Units.inchesToMeters(17.34), // Drive base radius in meters. Distance from robot center to furthest module.
-            new ReplanningConfig() // Default path replanning config. See the API for the options here
-    ),
-    () -> {
-        // Boolean supplier that controls when the path will be mirrored for the red alliance
-        // This will flip the path being followed to the red side of the field.
-        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    // Configure AutoBuilder last
+    AutoBuilder.configureHolonomic(
+      this::getAutonPose, // Robot pose supplier
+      this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+      this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+      this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+      new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+              new PIDConstants(autoPValue.get(), 0.0, autoDValue.get()), // Translation PID constants
+              new PIDConstants(autoRotationPValue.get(), 0.0, autoRotationDValue.get()), // Rotation PID constants
+              4.5, // Max module speed, in m/s
+              Units.inchesToMeters(17.34), // Drive base radius in meters. Distance from robot center to furthest module.
+              new ReplanningConfig() // Default path replanning config. See the API for the options here
+      ),
+      () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent()) {
-          return alliance.get() == DriverStation.Alliance.Red;
-      }
-      return false;
-        },
-    this // Reference to this subsystem to set requirements
-    );
-    
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+          },
+      this // Reference to this subsystem to set requirements
+      );
+      
     m_DriveSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(),
       new SysIdRoutine.Mechanism(
@@ -263,9 +266,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     SmartDashboard.putNumber("right front drive", m_frontRight.getState().speedMetersPerSecond);
     SmartDashboard.putNumber("right back turn", m_rearRight.getPosition().angle.getDegrees());
     SmartDashboard.putNumber("right back drive", m_rearRight.getState().speedMetersPerSecond);
-
-
-        
 
     m_moduleStates[0] = m_frontLeft.getState();
     m_moduleStates[1] = m_frontRight.getState();
@@ -558,40 +558,40 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
 
   
   
-  // Assuming this method is part of a drivetrain subsystem that provides the necessary methods
-public  Command followPathCommand(String pathName, double speed) {
-  //PathPlannerTrajectory​(PathPlannerPath path, ChassisSpeeds startingSpeeds, Rotation2d startingRotation)
-  // PathPlannerTrajectory traj = new PathPlannerTrajectory();
+    // Assuming this method is part of a drivetrain subsystem that provides the necessary methods
+  public  Command followPathCommand(String pathName, double speed) {
+    //PathPlannerTrajectory​(PathPlannerPath path, ChassisSpeeds startingSpeeds, Rotation2d startingRotation)
+    // PathPlannerTrajectory traj = new PathPlannerTrajectory();
 
-  PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-  logged_path = path;
+    PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+    logged_path = path;
 
-  
-   return new FollowPathHolonomic(
-                path,
-                this::getPose, // Robot pose supplier
-                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-                this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-                new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                        new PIDConstants(1, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(1, 0.0, 0.0), // Rotation PID constants
-                        speed, // Max module speed, in m/s
-                        Units.inchesToMeters(17.34), // Drive base radius in meters. Distance from robot center to furthest module.
-                        new ReplanningConfig() // Default path replanning config. See the API for the options here
-                ),
-                () -> {
-                    // Boolean supplier that controls when the path will be mirrored for the red alliance
-                    // This will flip the path being followed to the red side of the field.
-                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    
+    return new FollowPathHolonomic(
+                  path,
+                  this::getPose, // Robot pose supplier
+                  this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                  this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+                  new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+                          new PIDConstants(1, 0.0, 0.0), // Translation PID constants
+                          new PIDConstants(1, 0.0, 0.0), // Rotation PID constants
+                          speed, // Max module speed, in m/s
+                          Units.inchesToMeters(17.34), // Drive base radius in meters. Distance from robot center to furthest module.
+                          new ReplanningConfig() // Default path replanning config. See the API for the options here
+                  ),
+                  () -> {
+                      // Boolean supplier that controls when the path will be mirrored for the red alliance
+                      // This will flip the path being followed to the red side of the field.
+                      // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                    var alliance = DriverStation.getAlliance();
-                    if (alliance.isPresent()) {
-                        return alliance.get() == DriverStation.Alliance.Red;
-                    }
-                    return false;
-                },
-                this // Reference to this subsystem to set requirements
-        );
+                      var alliance = DriverStation.getAlliance();
+                      if (alliance.isPresent()) {
+                          return alliance.get() == DriverStation.Alliance.Red;
+                      }
+                      return false;
+                  },
+                  this // Reference to this subsystem to set requirements
+          );
 
 
 
