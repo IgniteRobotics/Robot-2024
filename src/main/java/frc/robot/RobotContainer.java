@@ -54,10 +54,12 @@ public class RobotContainer implements Logged {
   private DoublePreference shooterPower = new DoublePreference("shooter/Power", 0.25);
   private DoublePreference shooterRPM = new DoublePreference("shooter/RPM", 500);
   
-  //preferences for slew rates
-  private DoublePreference m_kDirectionSlewRate = new DoublePreference("Direction Slew Rate", Constants.DriveConstants.kDirectionSlewRate);
-  private DoublePreference m_kMagnitudeSlewRate = new DoublePreference("Magnitude Slew Rate", Constants.DriveConstants.kMagnitudeSlewRate);
-  private DoublePreference m_kRotationalSlewRate = new DoublePreference("Rotational Slew Rate", Constants.DriveConstants.kRotationalSlewRate);
+
+   //preferences for slew rates
+   private DoublePreference m_kDirectionSlewRate = new DoublePreference("Direction Slew Rate", Constants.DriveConstants.kDirectionSlewRate);
+   private DoublePreference m_kMagnitudeSlewRate = new DoublePreference("Magnitude Slew Rate", Constants.DriveConstants.kMagnitudeSlewRate);
+   private DoublePreference m_kRotationalSlewRate = new DoublePreference("Rotational Slew Rate", Constants.DriveConstants.kRotationalSlewRate);
+
  
   private final SendableChooser<Command> autonChooser;
 

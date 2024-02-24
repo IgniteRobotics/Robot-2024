@@ -64,7 +64,7 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
   @Log.NT
   private double positionTarget;
   public IntakeSubsystem() {
-    intakeMotor = new CANSparkMax (Constants.INTAKE_ROLLER_MOTOR_1, MotorType.kBrushless);
+    intakeMotor = new CANSparkMax (Constants.CANConstants.INTAKE_ROLLER_MOTOR_1, MotorType.kBrushless);
     // additionalIntakeMotor = new CANSparkMax(Constants.CANConstants.INTAKE_MOTOR_2, MotorType.kBrushless);
 
         // Configuring the main intake motor
@@ -74,7 +74,7 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
         intakeMotor.burnFlash();
 
       // postion control motor neo 550
-        positionMotor = new CANSparkMax (Constants.INTAKE_POSITION_MOTOR_1, MotorType.kBrushless);
+        positionMotor = new CANSparkMax (Constants.CANConstants.INTAKE_POSITION_MOTOR_1, MotorType.kBrushless);
         positionMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
         positionMotor.setSmartCurrentLimit(25);
         positionMotor.burnFlash();
