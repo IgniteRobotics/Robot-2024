@@ -151,6 +151,10 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     shooterIndexMotor.stopMotor();
   }
 
+  public void stopPositioner(){
+    shooterPositionMotor.stopMotor();
+  }
+
   public void resetPosition(){
     this.setPosition(0);
   }

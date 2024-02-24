@@ -10,12 +10,12 @@ import java.util.function.Supplier;
 
 public class PositionShooter extends Command {
   private final ShooterSubsystem m_shooter;
-  private final Supplier<Double> m_RPM;
+  private final Supplier<Double> m_targetPosition;
 
   /** Creates a new RunShooterRPM. */
-  public PositionShooter(ShooterSubsystem shooter, Supplier<Double> RPM) {
+  public PositionShooter(ShooterSubsystem shooter, Supplier<Double> position) {
     m_shooter = shooter;
-    m_RPM = RPM;
+    m_targetPosition = position;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_shooter);
   }
@@ -27,18 +27,18 @@ public class PositionShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.spinRPM(m_RPM.get());
+    m_shooter.setPosition(m_targetPosition.get());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.stopRoller();
+    m_shooter.stopPositioner();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_shooter.atSetpoint();
   }
 }
