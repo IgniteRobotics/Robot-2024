@@ -1,6 +1,7 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
+//...
 
 package frc.robot.subsystems;
 
@@ -109,8 +110,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
 @Log.File
   private PathPlannerPath logged_path; 
 
-  private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRate);
-  private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
   // Odometry class for tracking robot pose
@@ -318,8 +317,11 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
    *                      field.
    * @param rateLimit     Whether to enable rate limiting for smoother control.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit, SlewRateLimiter magLimiter, SlewRateLimiter rotLimiter, double kDirectionSlewRate) {
     
+    SlewRateLimiter m_magLimiter = magLimiter;
+    SlewRateLimiter m_rotLimiter = rotLimiter;
+    double m_kDirectionSlewRate = kDirectionSlewRate;
     double xSpeedCommanded;
     double ySpeedCommanded;
 
@@ -335,7 +337,9 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       // Calculate the direction slew rate based on an estimate of the lateral acceleration
       double directionSlewRate;
       if (m_currentTranslationMag != 0.0) {
-        directionSlewRate = Math.abs(DriveConstants.kDirectionSlewRate / m_currentTranslationMag);
+        
+        directionSlewRate = Math.abs(m_kDirectionSlewRate / m_currentTranslationMag);
+
       } else {
         directionSlewRate = 500.0; //some high number that means the slew rate is effectively instantaneous
       }
