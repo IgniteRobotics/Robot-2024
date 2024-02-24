@@ -114,23 +114,18 @@ public final class Constants {
   }
   public static final class ShooterConstants {
 
-    public static final int kShooterPostionMotorPinionTeeth = 64;
-    public static final double kpositionF = 1;
-    public static final double kpositionP = 1;
-    public static final double kpositionI = 1;
-    public static final double kpositionD = 1;
+    public static final double POSITION_kF = 1;
+    public static final double POSITION_kP = 1;
+    public static final double POSITION_kI = 1;
+    public static final double POSITION_kD = 1;
 
-    public static final double kRPMP = 1;
-    public static final double kRPMI = 1;
-    public static final double kRPMD = 1;
-
-    public static final double shooterRollerkP = 6e-5; 
-    public static final double shooterRollerkI = 0;
-    public static final double shooterRollerkD = 0; 
-    public static final double shooterRollerkFF = 0.000015; 
-    public static final double shooterRollerkMaxOutput = 1;
-    public static final double shooterRollerkMinOutput = -1;
-    public static final double shooterRollermaxRPM = 5700;
+    public static final double ROLLER_kP = 6e-5; 
+    public static final double ROLLER_kI = 0;
+    public static final double ROLLER__kD = 0; 
+    public static final double ROLLER_kFF = 0.000015; 
+    public static final double ROLLER_MAX_OUTPUT = 1;
+    public static final double ROLLER_MIN_OUTPUT = -1;
+    public static final double ROLLER_MAX_RPM = 5700;
 
     //TODO: TUNE
     public static final double POSITION_TOLERANCE = 2;
