@@ -83,8 +83,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
 
     shooterMotor = new CANSparkMax(Constants.CANConstants.SHOOTER_MOTOR_LEADERCanId, MotorType.kBrushless);
-    shooterIndexMotor = new CANSparkMax(Constants.CANConstants.SHOOTER_INDEX_MOTORCanId, MotorType.kBrushless);
-    shooterPositionMotor = new TalonFX(Constants.CANConstants.kshooterPositionMotorCanId);
+    shooterIndexMotor = new CANSparkMax(Constants.CANConstants.SHOOTER_INDEX_MOTOR, MotorType.kBrushless);
+    shooterPositionMotor = new TalonFX(Constants.CANConstants.SHOOTER_POSITION_MOTOR);
  
     shooterMotor.setInverted(false);
     shooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);

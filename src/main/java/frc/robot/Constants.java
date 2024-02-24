@@ -174,23 +174,23 @@ public final class Constants {
 
 
 public class CANConstants {
-  public static final int INTAKE_POSITION_MOTOR_1 = 2;
-  public static final int INTAKE_ROLLER_MOTOR_1 = 1;
+  public static final int INTAKE_POSITION_MOTOR = 2;
+  public static final int INTAKE_ROLLER_MOTOR = 1;
   public static final int UMBRELLA_MOTOR_1 = 3;
   
-  public static final int kshooterPositionMotorCanId = 7;
+  public static final int SHOOTER_POSITION_MOTOR = 7;
   public static final int SHOOTER_MOTOR_LEADERCanId = 8;
-  public static final int SHOOTER_INDEX_MOTORCanId = 9;
+  public static final int SHOOTER_INDEX_MOTOR = 9;
 
-  public static final int kFrontLeftDrivingCanId = 11;
-  public static final int kRearLeftDrivingCanId = 13;
-  public static final int kFrontRightDrivingCanId = 15;
-  public static final int kRearRightDrivingCanId = 17;
+  public static final int FRONT_LEFT_DRIVE = 11;
+  public static final int REAR_LEFT_DRIVE = 13;
+  public static final int FRONT_RIGHT_DRIVE = 15;
+  public static final int REAR_RIGHT_DRIVE = 17;
 
-  public static final int kFrontLeftTurningCanId = 10;
-  public static final int kRearLeftTurningCanId = 12;
-  public static final int kFrontRightTurningCanId = 14;
-  public static final int kRearRightTurningCanId = 16;
+  public static final int FRONT_LEFT_TURN = 10;
+  public static final int REAR_LEFT_TURN = 12;
+  public static final int FRONT_RIGHT_TURN = 14;
+  public static final int REAR_RIGHT_TURN = 16;
 
 }
 

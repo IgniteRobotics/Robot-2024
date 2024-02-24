@@ -61,23 +61,23 @@ import frc.robot.subsystems.drive.PhotonCameraWrapper.Side;
 public class DriveSubsystem extends SubsystemBase implements Logged{
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
-      Constants.CANConstants.kFrontLeftDrivingCanId,
-      Constants.CANConstants.kFrontLeftTurningCanId,
+      Constants.CANConstants.FRONT_LEFT_DRIVE,
+      Constants.CANConstants.FRONT_LEFT_TURN,
       DriveConstants.kFrontLeftChassisAngularOffset);
 
   private final MAXSwerveModule m_frontRight = new MAXSwerveModule(
-      Constants.CANConstants.kFrontRightDrivingCanId,
-      Constants.CANConstants.kFrontRightTurningCanId,
+      Constants.CANConstants.FRONT_RIGHT_DRIVE,
+      Constants.CANConstants.FRONT_RIGHT_TURN,
       DriveConstants.kFrontRightChassisAngularOffset);
 
   private final MAXSwerveModule m_rearLeft = new MAXSwerveModule(
-      Constants.CANConstants.kRearLeftDrivingCanId,
-      Constants.CANConstants.kRearLeftTurningCanId,
+      Constants.CANConstants.REAR_LEFT_DRIVE,
+      Constants.CANConstants.REAR_LEFT_TURN,
       DriveConstants.kBackLeftChassisAngularOffset);
 
   private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
-      Constants.CANConstants.kRearRightDrivingCanId,
-      Constants.CANConstants.kRearRightTurningCanId,
+      Constants.CANConstants.REAR_LEFT_DRIVE,
+      Constants.CANConstants.REAR_RIGHT_TURN,
       DriveConstants.kBackRightChassisAngularOffset);
 
   // The gyro sensor
