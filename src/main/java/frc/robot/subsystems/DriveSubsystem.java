@@ -256,17 +256,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   
         });
 
-    
-    
-    SmartDashboard.putNumber("left front turn", m_frontLeft.getPosition().angle.getDegrees());
-    SmartDashboard.putNumber("left front drive", m_frontLeft.getState().speedMetersPerSecond);
-    SmartDashboard.putNumber("left back turn", m_rearLeft.getPosition().angle.getDegrees());
-    SmartDashboard.putNumber("left back drive", m_rearLeft.getState().speedMetersPerSecond);
-    SmartDashboard.putNumber("right front turn", m_frontRight.getPosition().angle.getDegrees());
-    SmartDashboard.putNumber("right front drive", m_frontRight.getState().speedMetersPerSecond);
-    SmartDashboard.putNumber("right back turn", m_rearRight.getPosition().angle.getDegrees());
-    SmartDashboard.putNumber("right back drive", m_rearRight.getState().speedMetersPerSecond);
-
     m_moduleStates[0] = m_frontLeft.getState();
     m_moduleStates[1] = m_frontRight.getState();
     m_moduleStates[2] = m_rearLeft.getState();
