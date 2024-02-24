@@ -105,6 +105,14 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     positionSlot0Configs.kP = positionkPPreference.get();
     positionSlot0Configs.kI = positionkIPreference.get();
     positionSlot0Configs.kD = positionkDPreference.get();
+
+    //configure indexer motor
+    shooterIndexMotor.setInverted(false);
+    shooterIndexMotor.setIdleMode(CANSparkFlex.IdleMode.kBrake);
+    //TODO: Make actual constants
+    shooterIndexMotor.setSmartCurrentLimit(40);
+    shooterIndexMotor.setClosedLoopRampRate(1);
+    shooterIndexMotor.burnFlash();
   }
 
   public void spinPower(double power) {
@@ -113,6 +121,10 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   public void spinRPM(double rpm) {
     m_RollerPidController.setReference(MathUtil.clamp(rpm, -Constants.ShooterConstants.ROLLER_MAX_RPM, Constants.ShooterConstants.ROLLER_MAX_RPM), CANSparkFlex.ControlType.kVelocity);
+  }
+
+  public void runIndex(double power){
+    shooterIndexMotor.set(MathUtil.clamp(power, -1, 1));
   }
 
   @Log.File
@@ -131,9 +143,24 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     return getPosition() >= targetSetPoint - Constants.ShooterConstants.POSITION_TOLERANCE && getPosition() <= targetSetPoint + Constants.ShooterConstants.POSITION_TOLERANCE; 
   }
 
-  public void stop() {
+  public void stopRoller() {
     shooterMotor.stopMotor();
   }
+
+  public void stopIndexer() {
+    shooterIndexMotor.stopMotor();
+  }
+
+  public void resetPosition(){
+    this.setPosition(0);
+  }
+
+  public void stopAll(){
+    this.stopRoller();
+    this.stopIndexer();
+    this.resetPosition();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
