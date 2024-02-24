@@ -32,6 +32,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import frc.robot.commands.ResetGyro;
 
 
+
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -41,6 +42,7 @@ import frc.robot.commands.ResetGyro;
 public class RobotContainer implements Logged {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final IntakeSubsystem m_robotIntakesubsystem = new IntakeSubsystem();
   //private final IntakeSubsystem m_robotIntake = new IntakeSubsystem();
   //private final UmbrellaSubsystem m_umbrella  = new UmbrellaSubsystem();
   //private final ShooterSubsystem m_shooter = new ShooterSubsystem();
@@ -125,6 +127,8 @@ public class RobotContainer implements Logged {
         .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
     new JoystickButton(m_driverController, XboxController.Button.kB.value)
         .whileTrue(m_robotDrive.turnSysIdTestBuilder(10, 5));
+    new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
+        .whileTrue(m_robotIntakesubsystem.intakeCommand());
   }
 
   /**

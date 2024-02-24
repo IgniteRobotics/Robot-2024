@@ -31,6 +31,12 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
   private final CANSparkMax intakeMotor, positionMotor;
   private final SparkPIDController positionController;
 
+  // intakepostion constants 
+  private final static float positionUp = 1;
+  private final static float positionDown = 100;
+  private final static double positionInputmin = -.1;
+  private final static double positionInputmax = .1;
+
   private DoublePreference positionkP = new DoublePreference("intake/positionkP", Constants.IntakeConstants.POSITION_kP);
   private DoublePreference positionkI = new DoublePreference("intake/positionkI", Constants.IntakeConstants.POSITION_kI);
   private DoublePreference positionkD = new DoublePreference("intake/positionkD", Constants.IntakeConstants.POSITION_kD);
@@ -77,7 +83,7 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
     controller.setP(positionkP.get());
     controller.setI(positionkI.get());
     controller.setD(positionkD.get());
-    controller.setOutputRange(-1, 1);
+    controller.setOutputRange(positionInputmin, positionInputmax);
   }
 
   private void configurePosistionMotor(CANSparkMax motor) {
@@ -86,9 +92,9 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
     motor.setSmartCurrentLimit(20);
     // the variable numbers for the softlimit are from 2023 they need to be fixed
     motor.enableSoftLimit(SoftLimitDirection.kReverse, true);
-    motor.setSoftLimit(SoftLimitDirection.kReverse, 150);
+    motor.setSoftLimit(SoftLimitDirection.kReverse, positionUp);
     motor.enableSoftLimit(SoftLimitDirection.kForward, true);
-    motor.setSoftLimit(SoftLimitDirection.kForward, 1125);
+    motor.setSoftLimit(SoftLimitDirection.kForward, positionDown);
     motor.burnFlash();
   }
 
@@ -112,11 +118,11 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
     positionTarget = position;
   }
   
-  public boolean atSetpoint() {
-        if(Robot.isSimulation()) return true;
-         return getIntakePosition() >= positionTarget - Constants.IntakeConstants.POSITION_TOLERANCE
-             && getIntakePosition() <= positionTarget + Constants.IntakeConstants.POSITION_TOLERANCE;
-  }
+ // public boolean atSetpoint() {
+  //      if(Robot.isSimulation()) return true;
+   //      return getIntakePosition() >= positionTarget - Constants.IntakeConstants.POSITION_TOLERANCE
+    //         && getIntakePosition() <= positionTarget + Constants.IntakeConstants.POSITION_TOLERANCE;
+ // }
   public double getIntakePosition() {
     return positionMotor.getEncoder().getPosition();
   }
@@ -144,6 +150,13 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
         setPosition(0);
       }, this::stop);
     }
+    
+    public Command intakeCommand(){
+      return runEnd(()  ->{
+        setSpeed(0);
+        setPosition(positionDown);
+       }, this::stop);
 
+    }
 
 }
