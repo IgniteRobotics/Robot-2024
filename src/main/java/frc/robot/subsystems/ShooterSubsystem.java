@@ -23,6 +23,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import monologue.Logged;
 import monologue.Annotations.Log;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.geometry.Pose2d;
+import java.lang.Math;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 
 
 
@@ -131,6 +136,15 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   @Log.NT
   public double getPosition(){
     return shooterPositionMotor.getPosition().getValueAsDouble();
+  }
+
+  public double getAngle(){
+    return getPosition();
+  }
+
+  public Pose3d getPose3d(Pose2d robot){
+    return new Pose3d(new Translation3d(robot.getX()+Math.cos(getAngle())*ShooterConstants.LENGTH, robot.getY(), 
+              Math.sin(getAngle())*ShooterConstants.LENGTH), new Rotation3d(0, getAngle(),0));
   }
 
   public void setPosition(double position) {

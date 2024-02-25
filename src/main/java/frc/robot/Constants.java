@@ -132,6 +132,8 @@ public final class Constants {
 
     //TODO: TUNE
     public static final double POSITION_TOLERANCE = 2;
+
+    public static final double LENGTH = 1.5;
   }
 
   public static final class IntakeConstants {
