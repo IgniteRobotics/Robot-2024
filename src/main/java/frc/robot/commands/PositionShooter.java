@@ -4,9 +4,14 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
 import java.util.function.Supplier;
+import monologue.Logged;
+import monologue.Annotations.Log;
+
 
 public class PositionShooter extends Command {
   private final ShooterSubsystem m_shooter;
