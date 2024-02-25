@@ -100,9 +100,9 @@ public class RobotContainer implements Logged {
                 -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                true, true,
-                new SlewRateLimiter(m_kMagnitudeSlewRate.get()), new SlewRateLimiter(m_kRotationalSlewRate.get()),
-                m_kDirectionSlewRate.get()),
+                true, true),
+                //new SlewRateLimiter(m_kMagnitudeSlewRate.get()), new SlewRateLimiter(m_kRotationalSlewRate.get()),
+                //m_kDirectionSlewRate.get()),
             m_robotDrive));
 
     m_robotIntakesubsystem.setDefaultCommand(new StowIntake(m_robotIntakesubsystem));
