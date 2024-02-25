@@ -82,7 +82,11 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   @Log.File
   @Log.NT
-  private Pose2d robotPose2d;
+  public double robotVelocity;
+
+  @Log.File
+  @Log.NT
+  public Pose2d robotPose2d;
 
   public MotionMagicVoltage shooterPosition = new MotionMagicVoltage(0);
 
@@ -152,10 +156,12 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     return new Pose3d(new Translation3d(robotPose2d.getX()+Math.cos(getAngle())*ShooterConstants.LENGTH, robotPose2d.getY(), 
               Math.sin(getAngle())*ShooterConstants.LENGTH), new Rotation3d(0, getAngle(),0));
   }
-
-  public double getShootingVelocity(double robotvelocity)
+  
+  @Log.File
+  @Log.NT
+  public double getShootingVelocity()
   {
-    return velocity+robotvelocity;
+    return velocity+robotVelocity;
   }
 
   public void setPosition(double position) {
