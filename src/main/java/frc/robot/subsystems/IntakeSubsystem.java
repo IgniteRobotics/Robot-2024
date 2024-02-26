@@ -92,7 +92,6 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
     motor.setInverted(false);
     motor.setIdleMode(IdleMode.kBrake);
     motor.setSmartCurrentLimit(20);
-    // the variable numbers for the softlimit are from 2023 they need to be fixed
     motor.enableSoftLimit(SoftLimitDirection.kReverse, true);
     motor.setSoftLimit(SoftLimitDirection.kReverse, positionUp);
     motor.enableSoftLimit(SoftLimitDirection.kForward, true);
@@ -108,6 +107,7 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
     motor.setIdleMode(IdleMode.kBrake);
     motor.setSmartCurrentLimit(40);
     motor.burnFlash();
+    motor.setOpenLoopRampRate(0);
 
   }
 
@@ -169,9 +169,21 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
     
     public Command intakeCommand(){
       return runEnd(()  ->{
-        setSpeed(.75);
+        setSpeed(1);
         setPosition(positionDown);
        }, this::stop);
     }
+    public Command extakeCommand(){
+      return runEnd(()   ->{
+        setSpeed(-.85);
+        setPosition(positionDown);
+      }, this::stop);
+    }
+     public Command spinRollers(){
+        return runEnd(() ->{
+          setSpeed(.85);
+        }, this::stop);
 
+      }
+     
 }
