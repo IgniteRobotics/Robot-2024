@@ -134,6 +134,8 @@ public final class Constants {
     public static final double POSITION_TOLERANCE = 2;
 
     public static final double LENGTH = 1.5;
+
+    public static final double DEGREE_PER_REVOLUTION = 1;
   }
 
   public static final class IntakeConstants {

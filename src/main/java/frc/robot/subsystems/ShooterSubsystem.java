@@ -147,7 +147,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   }
 
   public double getAngle(){
-    return getPosition();
+    return getPosition()*ShooterConstants.DEGREE_PER_REVOLUTION;
   }
 
   @Log.File
@@ -167,6 +167,10 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   public void setPosition(double position) {
     this.targetSetPoint = position;
     shooterPositionMotor.setControl(shooterPosition.withPosition(position));
+  }
+
+  public void setAngle(double angle){
+    setPosition(angle/ShooterConstants.DEGREE_PER_REVOLUTION);
   }
 
   public boolean atSetpoint() {
