@@ -11,6 +11,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import java.util.function.Supplier;
 import monologue.Logged;
 import monologue.Annotations.Log;
+import edu.wpi.first.math.MathUtil;
 
 
 public class PositionShooter extends Command {
@@ -32,7 +33,7 @@ public class PositionShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.setAngle(m_targetAngle.get());
+    m_shooter.setAngle(MathUtil.clamp(m_targetAngle.get(), 0, 120));
   }
 
   // Called once the command ends or is interrupted.
