@@ -33,6 +33,7 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
   private final CANSparkMax intakeMotor, positionMotor;
   private final SparkPIDController positionController;
   private final RelativeEncoder positionEncoder;
+  private final RelativeEncoder intakeEncoder;
 
   // intakepostion constants 
   private final static float  positionUp = 1;
@@ -77,31 +78,33 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
   
   public IntakeSubsystem() {
     intakeMotor = new CANSparkMax (Constants.CANConstants.INTAKE_ROLLER_MOTOR, MotorType.kBrushless);
-    
+    intakeEncoder = intakeMotor.getEncoder();
+
+
     // postion control motor neo 550
     positionMotor = new CANSparkMax (Constants.CANConstants.INTAKE_POSITION_MOTOR, MotorType.kBrushless);
 
     this.positionController = positionMotor.getPIDController();
     this.positionEncoder = positionMotor.getEncoder();
 
-    configurePosistionMotor(positionMotor);    
-    configurePositionController(positionController);
+    configurePosistionMotor(positionMotor, positionEncoder);    
+    configurePositionController(positionController, positionEncoder);
     
     configureIntakeMotor(intakeMotor);
   
 
   }
 
-  private void configurePositionController(SparkPIDController controller) {
+  private void configurePositionController(SparkPIDController controller, RelativeEncoder encoder) {
     controller.setP(positionkP.get());
     controller.setI(positionkI.get());
     controller.setD(positionkD.get());
-    controller.setFeedbackDevice(this.positionEncoder);
+    controller.setFeedbackDevice(encoder);
     controller.setOutputRange(positionInputmin, positionInputmax);
     this.positionMotor.burnFlash();
   }
 
-  private void configurePosistionMotor(CANSparkMax motor) {
+  private void configurePosistionMotor(CANSparkMax motor, RelativeEncoder encoder) {
     motor.setInverted(false);
     motor.setIdleMode(IdleMode.kBrake);
     motor.setSmartCurrentLimit(20);
@@ -109,8 +112,9 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
     motor.setSoftLimit(SoftLimitDirection.kReverse, positionUp);
     motor.enableSoftLimit(SoftLimitDirection.kForward, true);
     motor.setSoftLimit(SoftLimitDirection.kForward, positionDown);
-    this.positionEncoder.setPositionConversionFactor(10);
-    this.positionEncoder.setPosition(positionUp);
+    encoder.setPositionConversionFactor(10);
+    //Assume intake is up on power-on.
+    encoder.setPosition(positionUp);
     motor.burnFlash();
   }
 
@@ -163,13 +167,14 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
   public void periodic() {
 
     intaketemperature = intakeMotor.getMotorTemperature();
-    intakevelocity = intakeMotor.getEncoder().getVelocity();
+    intakevelocity = this.intakeEncoder.getVelocity();
     intakecurrent = intakeMotor.getOutputCurrent();
     positiontemperature = positionMotor.getMotorTemperature();
     positionvelocity = this.positionEncoder.getVelocity();
     postioncurrent = positionMotor.getOutputCurrent();
     this.kP = this.positionController.getP();
     this.kD = this.positionController.getD();
+    //TODO remove once comfortable with PID
     this.positionController.setP(positionkP.get());
     this.positionController.setI(positionkI.get());
     this.positionController.setD(positionkD.get());

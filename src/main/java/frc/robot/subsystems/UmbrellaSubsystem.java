@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkFlex;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,6 +19,8 @@ import monologue.Annotations.Log;
 public class UmbrellaSubsystem extends SubsystemBase implements Logged{
 
   private final CANSparkFlex  umbrellaMotor; 
+  private final RelativeEncoder m_umbrellaEncoder;
+
 
   @Log.File
   @Log.NT
@@ -32,6 +35,7 @@ public class UmbrellaSubsystem extends SubsystemBase implements Logged{
 
   public UmbrellaSubsystem() {
     umbrellaMotor = new CANSparkFlex(Constants.CANConstants.UMBRELLA_MOTOR_1, MotorType.kBrushless);
+    m_umbrellaEncoder = umbrellaMotor.getEncoder();
 
     //configuring motor
     umbrellaMotor.setInverted(false);//TODO: fix when certain
@@ -52,7 +56,7 @@ public class UmbrellaSubsystem extends SubsystemBase implements Logged{
   public void periodic() {
 
     temperature = umbrellaMotor.getMotorTemperature();
-    velocity = umbrellaMotor.getEncoder().getVelocity();
+    velocity = m_umbrellaEncoder.getVelocity();
     current =umbrellaMotor.getOutputCurrent();
     SmartDashboard.putNumber("umbrella/outputCurrent", current);
     SmartDashboard.putNumber("umbrella/temperature", temperature);
