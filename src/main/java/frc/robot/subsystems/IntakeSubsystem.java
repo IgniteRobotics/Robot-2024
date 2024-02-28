@@ -1,4 +1,5 @@
 // Copyright (c) FIRST and other WPILib contributors.
+
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -12,6 +13,7 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
@@ -30,6 +32,7 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
   
   private final CANSparkMax intakeMotor, positionMotor;
   private final SparkPIDController positionController;
+  private final RelativeEncoder positionEncoder;
 
   // intakepostion constants 
   private final static float  positionUp = 1;
@@ -62,6 +65,15 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
   @Log.File
   @Log.NT
   private double positionTarget;
+
+  @Log.File
+  @Log.NT
+  private double kP;
+
+  @Log.File
+  @Log.NT
+  private double kD;
+
   
   public IntakeSubsystem() {
     intakeMotor = new CANSparkMax (Constants.CANConstants.INTAKE_ROLLER_MOTOR, MotorType.kBrushless);
@@ -70,6 +82,7 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
     positionMotor = new CANSparkMax (Constants.CANConstants.INTAKE_POSITION_MOTOR, MotorType.kBrushless);
 
     this.positionController = positionMotor.getPIDController();
+    this.positionEncoder = positionMotor.getEncoder();
 
     configurePosistionMotor(positionMotor);    
     configurePositionController(positionController);
@@ -80,10 +93,10 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
   }
 
   private void configurePositionController(SparkPIDController controller) {
-    controller.setP(0.5);
+    controller.setP(positionkP.get());
     controller.setI(positionkI.get());
     controller.setD(positionkD.get());
-    controller.setFeedbackDevice(this.positionMotor.getEncoder());
+    controller.setFeedbackDevice(this.positionEncoder);
     controller.setOutputRange(positionInputmin, positionInputmax);
     this.positionMotor.burnFlash();
   }
@@ -96,8 +109,8 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
     motor.setSoftLimit(SoftLimitDirection.kReverse, positionUp);
     motor.enableSoftLimit(SoftLimitDirection.kForward, true);
     motor.setSoftLimit(SoftLimitDirection.kForward, positionDown);
-    motor.getEncoder().setPositionConversionFactor(10);
-    motor.getEncoder().setPosition(positionUp);
+    this.positionEncoder.setPositionConversionFactor(10);
+    this.positionEncoder.setPosition(positionUp);
     motor.burnFlash();
   }
 
@@ -131,13 +144,13 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
  @Log.File
  @Log.NT
   public double getIntakePosition() {
-    return positionMotor.getEncoder().getPosition();
+    return this.positionEncoder.getPosition();
   }
 
   @Log.File
   @Log.NT
    public double getPositionCF() {
-     return positionMotor.getEncoder().getPositionConversionFactor();
+     return this.positionEncoder.getPositionConversionFactor();
    }
   
   public void stop(){
@@ -153,8 +166,14 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
     intakevelocity = intakeMotor.getEncoder().getVelocity();
     intakecurrent = intakeMotor.getOutputCurrent();
     positiontemperature = positionMotor.getMotorTemperature();
-    positionvelocity = positionMotor.getEncoder().getVelocity();
+    positionvelocity = this.positionEncoder.getVelocity();
     postioncurrent = positionMotor.getOutputCurrent();
+    this.kP = this.positionController.getP();
+    this.kD = this.positionController.getD();
+    this.positionController.setP(positionkP.get());
+    this.positionController.setI(positionkI.get());
+    this.positionController.setD(positionkD.get());
+    this.positionMotor.burnFlash();
 
    }
 
