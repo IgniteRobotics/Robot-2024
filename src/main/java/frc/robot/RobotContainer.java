@@ -16,6 +16,7 @@ import frc.robot.commands.ParkCommand;
 import frc.robot.commands.ResetGyro;
 import frc.robot.commands.RunUmbrella;
 import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.StowIntake;
 import frc.robot.commands.RunShooterPower;
 import frc.robot.commands.RunShooterRPM;
 import frc.robot.commands.PositionShooter;
@@ -37,6 +38,7 @@ import java.util.function.Supplier;
 import com.pathplanner.lib.auto.AutoBuilder;
 import frc.robot.commands.ResetGyro;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+
 
 
 /*
@@ -70,10 +72,10 @@ public class RobotContainer implements Logged {
 
 
     private final Command resetGyro = new ResetGyro(null);
-
-
-
- 
+    private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
+    private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
+    private final Command parkCommand = new ParkCommand(m_robotDrive);
+    
   private final SendableChooser<Command> autonChooser;
 
   private final double pathSpeed = 2;
@@ -136,10 +138,12 @@ private static class Operator {
                 -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                true, true,
-                new SlewRateLimiter(m_kMagnitudeSlewRate.get()), new SlewRateLimiter(m_kRotationalSlewRate.get()),
-                m_kDirectionSlewRate.get()),
+                true, true),
+                //new SlewRateLimiter(m_kMagnitudeSlewRate.get()), new SlewRateLimiter(m_kRotationalSlewRate.get()),
+                //m_kDirectionSlewRate.get()),
             m_robotDrive));
+
+    m_robotIntake.setDefaultCommand(new StowIntake(m_robotIntake));
   }
 
   /**
@@ -154,7 +158,9 @@ private static class Operator {
   private void configureButtonBindings() {
     
    Operator.driver_start.whileTrue(resetGyro);
-   Operator.driver_rightBumper.whileTrue()
+   Operator.driver_rightBumper.whileTrue(intakeCommand);
+   Operator.driver_leftBumper.whileTrue(extakeCommand);
+   Operator.driver_back.onTrue(parkCommand);
      
     new JoystickButton(m_driverController, XboxController.Button.kX.value)
         .whileTrue(new ParkCommand(m_robotDrive));
