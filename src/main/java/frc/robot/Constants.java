@@ -136,6 +136,10 @@ public final class Constants {
     public static final double LENGTH = 1.5;
 
     public static final double DEGREE_PER_REVOLUTION = 1;
+
+    public static final double ELEVATION = 0.25;
+
+    public static final double TRANSLATION_OFFSET = 0.5;
   }
 
   public static final class IntakeConstants {

@@ -27,7 +27,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import java.lang.Math;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 
 
 
@@ -146,16 +148,35 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     return shooterPositionMotor.getPosition().getValueAsDouble();
   }
 
+ //in radians
   public double getAngle(){
-    return getPosition()*ShooterConstants.DEGREE_PER_REVOLUTION;
+    return Units.degreesToRadians(getPosition()*ShooterConstants.DEGREE_PER_REVOLUTION);
   }
+
 
   @Log.File
   @Log.NT
-  public Pose3d getPose3d(){
-    return new Pose3d(new Translation3d(robotPose2d.getX()+Math.cos(getAngle())*ShooterConstants.LENGTH, robotPose2d.getY(), 
-              Math.sin(getAngle())*ShooterConstants.LENGTH), new Rotation3d(0, getAngle(),0));
+  public Pose3d getStartPose3d(){
+    return new Pose3d(robotPose2d).plus(new Transform3d(ShooterConstants.TRANSLATION_OFFSET, 0, ShooterConstants.ELEVATION,
+    new Rotation3d(0, getAngle(), 0)));
   }
+  /* 
+  @Log.File
+  @Log.NT
+  public Pose3d getStartPose3d(){
+    return new Pose3d(new Translation3d(robotPose2d.getX(), robotPose2d.getY(), ShooterConstants.ELEVATION), 
+    new Rotation3d(0, getAngle(), 0));
+  }
+
+  
+  @Log.File
+  @Log.NT
+  public Pose3d getEndPose3d(){
+    return new Pose3d(new Translation3d(robotPose3d.getX()+Math.cos(getAngle())*ShooterConstants.LENGTH, robotPose3d.getY(), 
+              Math.sin(getAngle())*ShooterConstants.LENGTH + ShooterConstants.ELEVATION), new Rotation3d(0, getAngle(),0));
+  }
+
+  */
   
   @Log.File
   @Log.NT
