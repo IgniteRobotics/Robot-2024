@@ -146,4 +146,23 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
     }
 
 
+     public Command intakeCommand(){
+      return runEnd(()  ->{
+        setSpeed(1);
+        setPosition(positionDown);
+       }, this::stop);
+    }
+    public Command extakeCommand(){
+      return runEnd(()   ->{
+        setSpeed(-.85);
+        setPosition(positionDown);
+      }, this::stop);
+    }
+     public Command spinRollers(){
+        return runEnd(() ->{
+          setSpeed(.85);
+        }, this::stop);
+
+      }
+
 }
