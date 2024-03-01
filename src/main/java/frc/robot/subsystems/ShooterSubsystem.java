@@ -160,6 +160,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     return new Pose3d(robotPose2d).plus(new Transform3d(ShooterConstants.TRANSLATION_OFFSET, 0, ShooterConstants.ELEVATION,
     new Rotation3d(0, getAngle(), Math.PI)));
   }
+
+
   /* 
   @Log.File
   @Log.NT
