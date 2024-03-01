@@ -79,6 +79,7 @@ public class Robot extends TimedRobot implements Logged {
    */
   @Override
   public void robotPeriodic() {
+    //TODO:Do something better than this
     m_robotContainer.m_shooter.robotPose2d = m_robotContainer.m_robotDrive.getPose();
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,

@@ -16,13 +16,20 @@ import edu.wpi.first.math.MathUtil;
 
 public class PositionShooter extends Command {
   private final ShooterSubsystem m_shooter;
-  private final Supplier<Double> m_targetAngle;
+  private final double m_targetAngle;
 
   /** Creates a new RunShooterRPM. */
   public PositionShooter(ShooterSubsystem shooter, Supplier<Double> angle) {
     m_shooter = shooter;
-    m_targetAngle = angle;
+    m_targetAngle = angle.get();
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(m_shooter);
+  }
+
+  public PositionShooter(ShooterSubsystem shooter, double angle)
+  {
+    m_shooter = shooter;
+    m_targetAngle = angle;
     addRequirements(m_shooter);
   }
 
@@ -33,7 +40,7 @@ public class PositionShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.setAngle(MathUtil.clamp(m_targetAngle.get(), 0, 120));
+    m_shooter.setAngle(MathUtil.clamp(m_targetAngle, 0, 120));
   }
 
   // Called once the command ends or is interrupted.

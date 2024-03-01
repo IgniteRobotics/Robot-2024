@@ -158,7 +158,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   @Log.NT
   public Pose3d getStartPose3d(){
     return new Pose3d(robotPose2d).plus(new Transform3d(ShooterConstants.TRANSLATION_OFFSET, 0, ShooterConstants.ELEVATION,
-    new Rotation3d(0, getAngle(), Math.PI)));
+    new Rotation3d(0, -getAngle(), Math.PI)));
   }
 
 
@@ -242,5 +242,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     
     shooterPositionMotor.getConfigurator().apply(positionSlot0Configs, 0.050);
   
+}
+public void simulationPeriodic(){
+  shooterPositionMotor.setPosition(targetSetPoint);
 }
 }
