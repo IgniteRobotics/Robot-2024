@@ -104,6 +104,18 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   @Log.NT
   public Pose2d robotPose2d;
 
+  @Log.File
+  @Log.NT
+  public double armPosition;
+
+  @Log.File
+  @Log.NT
+  public double armVelocity;
+
+  @Log.File
+  @Log.NT
+  public double armPower;
+
   public MotionMagicVoltage shooterPosition = new MotionMagicVoltage(0);
 
   private RobotState m_robotState = RobotState.getInstance();
@@ -274,21 +286,25 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     velocityIndex = m_shooterIndexEncoder.getVelocity();
     currentIndex = m_shooterIndexMotor.getOutputCurrent();
 
+   armPower = m_shooterPositionMotor.get();
+   armPosition = m_shooterPositionMotor.getPosition().getValueAsDouble();
+   armVelocity = m_shooterPositionMotor.getVelocity().getValueAsDouble();
+    
  
     
 
     //TODO remove once tuned.
-    m_RollerPidController.setP(shooterkPPreference.get());
-    m_RollerPidController.setI(shooterkIPreference.get());
-    m_RollerPidController.setD(shooterkDPreference.get());
+    // m_RollerPidController.setP(shooterkPPreference.get());
+    // m_RollerPidController.setI(shooterkIPreference.get());
+    // m_RollerPidController.setD(shooterkDPreference.get());
     
-    // apply gains, 50 ms total timeout
-    //TODO remove once tuned.
-    positionSlot0Configs.kP = positionkPPreference.get();
-    positionSlot0Configs.kI = positionkIPreference.get();
-    positionSlot0Configs.kD = positionkDPreference.get();
+    // // apply gains, 50 ms total timeout
+    // //TODO remove once tuned.
+    // positionSlot0Configs.kP = positionkPPreference.get();
+    // positionSlot0Configs.kI = positionkIPreference.get();
+    // positionSlot0Configs.kD = positionkDPreference.get();
     
-    m_shooterPositionMotor.getConfigurator().apply(positionSlot0Configs, 0.050);
+    // m_shooterPositionMotor.getConfigurator().apply(positionSlot0Configs, 0.050);
 
     robotPose2d = m_robotState.getRobotPose();
   
