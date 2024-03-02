@@ -24,6 +24,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import monologue.Logged;
 import monologue.Annotations.Log;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.geometry.Pose2d;
+import java.lang.Math;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 
 
 
@@ -77,6 +84,14 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   @Log.File
   @Log.NT
   private double targetSetPoint = 0;
+
+  @Log.File
+  @Log.NT
+  public double robotVelocity;
+
+  @Log.File
+  @Log.NT
+  public Pose2d robotPose2d;
 
   public MotionMagicVoltage shooterPosition = new MotionMagicVoltage(0);
 
@@ -140,9 +155,44 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     return m_shooterPositionMotor.getPosition().getValueAsDouble();
   }
 
+ //in radians
+  public double getAngle(){
+    return Units.degreesToRadians(getPosition()*ShooterConstants.DEGREE_PER_REVOLUTION);
+  }
+
+
+  @Log.File
+  @Log.NT
+  public Pose3d getStartPose3d(){
+    return new Pose3d(robotPose2d).plus(new Transform3d(ShooterConstants.TRANSLATION_OFFSET, 0, ShooterConstants.ELEVATION,
+    new Rotation3d(0, -getAngle(), Math.PI)));
+  }
+
+
+  /* 
+  @Log.File
+  @Log.NT
+  public Pose3d getEndPose3d(){
+    return new Pose3d(new Translation3d(robotPose3d.getX()+Math.cos(getAngle())*ShooterConstants.LENGTH, robotPose3d.getY(), 
+              Math.sin(getAngle())*ShooterConstants.LENGTH + ShooterConstants.ELEVATION), new Rotation3d(0, getAngle(),0));
+  }
+
+  */
+  
+  @Log.File
+  @Log.NT
+  public double getShootingVelocity()
+  {
+    return velocity+robotVelocity;
+  }
+
   public void setPosition(double position) {
     this.targetSetPoint = position;
     m_shooterPositionMotor.setControl(shooterPosition.withPosition(position));
+  }
+
+  public void setAngle(double angle){
+    setPosition(angle/ShooterConstants.DEGREE_PER_REVOLUTION);
   }
 
   public boolean atSetpoint() {
@@ -156,6 +206,10 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   public void stopIndexer() {
     m_shooterIndexMotor.stopMotor();
+  }
+
+  public void stopPositioner(){
+    m_shooterPositionMotor.stopMotor();
   }
 
   public void resetPosition(){
@@ -195,5 +249,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     
     m_shooterPositionMotor.getConfigurator().apply(positionSlot0Configs, 0.050);
   
+}
+public void simulationPeriodic(){
+  m_shooterPositionMotor.setPosition(targetSetPoint);
 }
 }

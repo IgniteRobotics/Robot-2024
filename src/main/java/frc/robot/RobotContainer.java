@@ -18,6 +18,7 @@ import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.StowIntake;
 import frc.robot.commands.RunShooterPower;
 import frc.robot.commands.RunShooterRPM;
+import frc.robot.commands.PositionShooter;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -31,6 +32,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import frc.robot.commands.ResetGyro;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 
 
@@ -42,11 +44,15 @@ import frc.robot.commands.ResetGyro;
  */
 public class RobotContainer implements Logged {
   // The robot's subsystems
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+
+
+
+  public final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final IntakeSubsystem m_robotIntakesubsystem = new IntakeSubsystem();
+
   //private final IntakeSubsystem m_robotIntake = new IntakeSubsystem();
   //private final UmbrellaSubsystem m_umbrella  = new UmbrellaSubsystem();
-  //private final ShooterSubsystem m_shooter = new ShooterSubsystem();
+  public final ShooterSubsystem m_shooter = new ShooterSubsystem();
 
 
   //Robot preferences
@@ -56,6 +62,7 @@ public class RobotContainer implements Logged {
   private DoublePreference umbrellaPower = new DoublePreference( "umbrella/Power", 0.25);
   private DoublePreference shooterPower = new DoublePreference("shooter/Power", 0.25);
   private DoublePreference shooterRPM = new DoublePreference("shooter/RPM", 500);
+  private DoublePreference shooterPosition = new DoublePreference("shooter/Position", 40);
   
 
    //preferences for slew rates
@@ -118,26 +125,27 @@ public class RobotContainer implements Logged {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverController, XboxController.Button.kX.value)
-        .whileTrue(new ParkCommand(m_robotDrive));
     new JoystickButton(m_driverController, XboxController.Button.kBack.value)
         .onTrue(new ResetGyro(m_robotDrive));
-    // new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
-    //     .whileTrue(new RunIntake(m_robotIntake, intakePower, intakePosition));
+    //new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
+    //    .whileTrue(new RunIntake(m_robotIntake, intakePower, intakePosition));
     // new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
     // .whileTrue(new RunIntake(m_robotIntake, outtakePower, intakePosition));
     new JoystickButton(m_driverController, XboxController.Button.kY.value)
         .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
     new JoystickButton(m_driverController, XboxController.Button.kB.value)
         .whileTrue(m_robotDrive.turnSysIdTestBuilder(10, 5));
+    new POVButton(m_driverController, 90)
+        .whileTrue(new PositionShooter(m_shooter, 0));
+    new POVButton(m_driverController, 180)
+        .whileTrue(new PositionShooter(m_shooter, shooterPosition));
     new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
         .whileTrue(m_robotIntakesubsystem.intakeCommand());
     new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
         .whileTrue(new StowIntake(m_robotIntakesubsystem));
-    new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
-        .whileTrue((m_robotIntakesubsystem.extakeCommand()));
     new JoystickButton(m_driverController, XboxController.Button.kX.value)
         .whileTrue((m_robotIntakesubsystem.spinRollers()));
+
   }
 
   /**
