@@ -35,7 +35,7 @@ public final class Constants {
     public static final double kMaxSpeedMetersPerSecond = 4.8;
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
-    public static final double kDirectionSlewRate = 3; // radians per second
+    public static final double kDirectionSlewRate = 1.2; // radians per second
     public static final double kMagnitudeSlewRate = 3; // percent per second (1 = 100%)
     public static final double kRotationalSlewRate = 6; // percent per second (1 = 100%)
 
@@ -130,7 +130,7 @@ public final class Constants {
     public static final double ROLLER_MIN_OUTPUT = -1;
     public static final double ROLLER_MAX_RPM = 5700;
 
-    //TODO: TUNE
+    //TODO: TUNEF
     public static final double POSITION_TOLERANCE = 2;
 
     public static final double LENGTH = 1.5;
@@ -145,11 +145,11 @@ public final class Constants {
   }
 
   public static final class IntakeConstants {
-    public static double POSITION_kP = 0;
+    public static double POSITION_kP = .5;
     public static double POSITION_kI = 0;
     public static double POSITION_kD = 0;
 
-    public static final double POSITION_TOLERANCE = 50;
+    public static final double POSITION_TOLERANCE = 0.5;
     
   }
   public static final class OIConstants {

@@ -15,6 +15,7 @@ import frc.robot.commands.ParkCommand;
 import frc.robot.commands.ResetGyro;
 import frc.robot.commands.RunUmbrella;
 import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.StowIntake;
 import frc.robot.commands.RunShooterPower;
 import frc.robot.commands.RunShooterRPM;
 import frc.robot.commands.PositionShooter;
@@ -34,6 +35,7 @@ import frc.robot.commands.ResetGyro;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 
+
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -42,7 +44,12 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
  */
 public class RobotContainer implements Logged {
   // The robot's subsystems
-  public final DriveSubsystem m_robotDrive = new DriveSubsystem();
+
+
+
+  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final IntakeSubsystem m_robotIntakesubsystem = new IntakeSubsystem();
+
   //private final IntakeSubsystem m_robotIntake = new IntakeSubsystem();
   //private final UmbrellaSubsystem m_umbrella  = new UmbrellaSubsystem();
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
@@ -100,10 +107,12 @@ public class RobotContainer implements Logged {
                 -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                true, true,
-                new SlewRateLimiter(m_kMagnitudeSlewRate.get()), new SlewRateLimiter(m_kRotationalSlewRate.get()),
-                m_kDirectionSlewRate.get()),
+                true, true),
+                //new SlewRateLimiter(m_kMagnitudeSlewRate.get()), new SlewRateLimiter(m_kRotationalSlewRate.get()),
+                //m_kDirectionSlewRate.get()),
             m_robotDrive));
+
+    m_robotIntakesubsystem.setDefaultCommand(new StowIntake(m_robotIntakesubsystem));
   }
 
   /**
@@ -116,8 +125,6 @@ public class RobotContainer implements Logged {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverController, XboxController.Button.kX.value)
-        .whileTrue(new ParkCommand(m_robotDrive));
     new JoystickButton(m_driverController, XboxController.Button.kBack.value)
         .onTrue(new ResetGyro(m_robotDrive));
     //new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
@@ -132,6 +139,13 @@ public class RobotContainer implements Logged {
         .whileTrue(new PositionShooter(m_shooter, 0));
     new POVButton(m_driverController, 180)
         .whileTrue(new PositionShooter(m_shooter, shooterPosition));
+    new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
+        .whileTrue(m_robotIntakesubsystem.intakeCommand());
+    new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
+        .whileTrue(new StowIntake(m_robotIntakesubsystem));
+    new JoystickButton(m_driverController, XboxController.Button.kX.value)
+        .whileTrue((m_robotIntakesubsystem.spinRollers()));
+
   }
 
   /**

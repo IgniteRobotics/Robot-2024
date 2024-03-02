@@ -367,11 +367,9 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
    *                      field.
    * @param rateLimit     Whether to enable rate limiting for smoother control.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit, SlewRateLimiter magLimiter, SlewRateLimiter rotLimiter, double kDirectionSlewRate) {
+  //public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit, SlewRateLimiter magLimiter, SlewRateLimiter rotLimiter, double kDirectionSlewRate) {
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
     
-    SlewRateLimiter m_magLimiter = magLimiter;
-    SlewRateLimiter m_rotLimiter = rotLimiter;
-    double m_kDirectionSlewRate = kDirectionSlewRate;
     double xSpeedCommanded;
     double ySpeedCommanded;
 
@@ -388,7 +386,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       double directionSlewRate;
       if (m_currentTranslationMag != 0.0) {
         
-        directionSlewRate = Math.abs(m_kDirectionSlewRate / m_currentTranslationMag);
+        directionSlewRate = Math.abs(DriveConstants.kDirectionSlewRate / m_currentTranslationMag);
 
       } else {
         directionSlewRate = 500.0; //some high number that means the slew rate is effectively instantaneous

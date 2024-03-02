@@ -12,6 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import frc.robot.Constants;
@@ -34,10 +35,12 @@ import edu.wpi.first.math.geometry.Transform3d;
 
 
 public class ShooterSubsystem extends SubsystemBase implements Logged {
-  private final CANSparkMax shooterMotor;
-  private final CANSparkMax shooterIndexMotor;
-  private final TalonFX shooterPositionMotor;
+  private final CANSparkMax m_shooterMotor;
+  private final CANSparkMax m_shooterIndexMotor;
+  private final TalonFX m_shooterPositionMotor;
 
+  private final RelativeEncoder m_shooterEncoder;
+  private final RelativeEncoder m_shooterIndexEncoder;
   private final SparkPIDController m_RollerPidController;
 
   
@@ -97,22 +100,26 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
 
 
-    shooterMotor = new CANSparkMax(Constants.CANConstants.SHOOTER_MOTOR_LEADERCanId, MotorType.kBrushless);
-    shooterIndexMotor = new CANSparkMax(Constants.CANConstants.SHOOTER_INDEX_MOTOR, MotorType.kBrushless);
-    shooterPositionMotor = new TalonFX(Constants.CANConstants.SHOOTER_POSITION_MOTOR);
+    m_shooterMotor = new CANSparkMax(Constants.CANConstants.SHOOTER_MOTOR_LEADERCanId, MotorType.kBrushless);
+    m_shooterIndexMotor = new CANSparkMax(Constants.CANConstants.SHOOTER_INDEX_MOTOR, MotorType.kBrushless);
+    m_shooterPositionMotor = new TalonFX(Constants.CANConstants.SHOOTER_POSITION_MOTOR);
+
+    m_shooterEncoder = m_shooterMotor.getEncoder();
+    m_shooterIndexEncoder = m_shooterIndexMotor.getEncoder();
  
-    shooterMotor.setInverted(false);
-    shooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
+    m_shooterMotor.setInverted(false);
+    m_shooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
     //TODO: Make actual constants
-    shooterMotor.setSmartCurrentLimit(40);
-    shooterMotor.setClosedLoopRampRate(1);
-    shooterMotor.burnFlash();
+    m_shooterMotor.setSmartCurrentLimit(40);
+    m_shooterMotor.setClosedLoopRampRate(1);
+    m_shooterMotor.burnFlash();
  
 
-    m_RollerPidController = shooterMotor.getPIDController();
+    m_RollerPidController = m_shooterMotor.getPIDController();
     m_RollerPidController.setP(shooterkPPreference.get());
     m_RollerPidController.setD(shooterkDPreference.get());
     m_RollerPidController.setI(shooterkIPreference.get());
+    m_RollerPidController.setFeedbackDevice(m_shooterEncoder);
     m_RollerPidController.setOutputRange(Constants.ShooterConstants.ROLLER_MIN_OUTPUT, Constants.ShooterConstants.ROLLER_MAX_OUTPUT);
     m_RollerPidController.setFF(Constants.ShooterConstants.ROLLER_kFF);
 
@@ -122,16 +129,16 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     positionSlot0Configs.kD = positionkDPreference.get();
 
     //configure indexer motor
-    shooterIndexMotor.setInverted(false);
-    shooterIndexMotor.setIdleMode(CANSparkFlex.IdleMode.kBrake);
+    m_shooterIndexMotor.setInverted(false);
+    m_shooterIndexMotor.setIdleMode(CANSparkFlex.IdleMode.kBrake);
     //TODO: Make actual constants
-    shooterIndexMotor.setSmartCurrentLimit(40);
-    shooterIndexMotor.setClosedLoopRampRate(1);
-    shooterIndexMotor.burnFlash();
+    m_shooterIndexMotor.setSmartCurrentLimit(40);
+    m_shooterIndexMotor.setClosedLoopRampRate(1);
+    m_shooterIndexMotor.burnFlash();
   }
 
   public void spinPower(double power) {
-    shooterMotor.set(MathUtil.clamp(power, Constants.ShooterConstants.ROLLER_MIN_OUTPUT, Constants.ShooterConstants.ROLLER_MAX_OUTPUT));
+    m_shooterMotor.set(MathUtil.clamp(power, Constants.ShooterConstants.ROLLER_MIN_OUTPUT, Constants.ShooterConstants.ROLLER_MAX_OUTPUT));
   }
 
   public void spinRPM(double rpm) {
@@ -139,13 +146,13 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   }
 
   public void runIndex(double power){
-    shooterIndexMotor.set(MathUtil.clamp(power, -1, 1));
+    m_shooterIndexMotor.set(MathUtil.clamp(power, -1, 1));
   }
 
   @Log.File
   @Log.NT
   public double getPosition(){
-    return shooterPositionMotor.getPosition().getValueAsDouble();
+    return m_shooterPositionMotor.getPosition().getValueAsDouble();
   }
 
  //in radians
@@ -181,7 +188,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   public void setPosition(double position) {
     this.targetSetPoint = position;
-    shooterPositionMotor.setControl(shooterPosition.withPosition(position));
+    m_shooterPositionMotor.setControl(shooterPosition.withPosition(position));
   }
 
   public void setAngle(double angle){
@@ -194,11 +201,11 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   }
 
   public void stopRoller() {
-    shooterMotor.stopMotor();
+    m_shooterMotor.stopMotor();
   }
 
   public void stopIndexer() {
-    shooterIndexMotor.stopMotor();
+    m_shooterIndexMotor.stopMotor();
   }
 
   public void stopPositioner(){
@@ -218,13 +225,13 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    temp = shooterMotor.getMotorTemperature();
-    velocity = shooterMotor.getEncoder().getVelocity();
-    current = shooterMotor.getOutputCurrent();
+    temp = m_shooterMotor.getMotorTemperature();
+    velocity = m_shooterEncoder.getVelocity();
+    current = m_shooterMotor.getOutputCurrent();
     
-    tempIndex = shooterIndexMotor.getMotorTemperature();
-    velocityIndex = shooterIndexMotor.getEncoder().getVelocity();
-    currentIndex = shooterIndexMotor.getOutputCurrent();
+    tempIndex = m_shooterIndexMotor.getMotorTemperature();
+    velocityIndex = m_shooterIndexEncoder.getVelocity();
+    currentIndex = m_shooterIndexMotor.getOutputCurrent();
 
  
     
@@ -240,7 +247,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     positionSlot0Configs.kI = positionkIPreference.get();
     positionSlot0Configs.kD = positionkDPreference.get();
     
-    shooterPositionMotor.getConfigurator().apply(positionSlot0Configs, 0.050);
+    m_shooterPositionMotor.getConfigurator().apply(positionSlot0Configs, 0.050);
   
 }
 public void simulationPeriodic(){
