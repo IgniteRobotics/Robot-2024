@@ -38,6 +38,7 @@ import java.util.function.Supplier;
 import com.pathplanner.lib.auto.AutoBuilder;
 import frc.robot.commands.ResetGyro;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 
 
@@ -100,10 +101,8 @@ private static class Operator {
     private static JoystickButton driver_back = new JoystickButton(driver, XboxController.Button.kBack.value);
     private static JoystickButton driver_leftBumper = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private static JoystickButton driver_rightBumper = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-   
-
-    
-
+    private static POVButton driver_rightTrigger = new POVButton(driver, XboxController.Axis.kRightTrigger.value);
+    private static POVButton driver_leftTrigger = new POVButton(driver, XboxController.Axis.kLeftTrigger.value);
 
     // subsystems
 
