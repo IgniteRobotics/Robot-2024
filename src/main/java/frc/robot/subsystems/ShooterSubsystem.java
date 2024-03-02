@@ -6,11 +6,14 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ForwardLimitValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
@@ -63,6 +66,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   
   private SoftwareLimitSwitchConfigs m_positionSoftLimitConfig = new SoftwareLimitSwitchConfigs();
   private MotionMagicConfigs m_positionMotionMagicConfigs = new MotionMagicConfigs();
+  private MotorOutputConfigs m_positionMotorConfig = new MotorOutputConfigs();
   
   @Log.File
   @Log.NT
@@ -129,6 +133,10 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     m_RollerPidController.setFeedbackDevice(m_shooterEncoder);
     m_RollerPidController.setOutputRange(Constants.ShooterConstants.ROLLER_MIN_OUTPUT, Constants.ShooterConstants.ROLLER_MAX_OUTPUT);
     m_RollerPidController.setFF(Constants.ShooterConstants.ROLLER_kFF);
+
+    m_positionMotorConfig.NeutralMode = NeutralModeValue.Brake;
+
+    m_shooterPositionMotor.getConfigurator().apply(m_positionMotorConfig, 0.050);
 
     positionSlot0Configs.kV = Constants.ShooterConstants.POSITION_kV;
     positionSlot0Configs.kP = positionkPPreference.get();

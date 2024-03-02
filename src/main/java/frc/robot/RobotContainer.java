@@ -17,8 +17,10 @@ import frc.robot.commands.ResetGyro;
 import frc.robot.commands.RunUmbrella;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.StowIntake;
+import frc.robot.input.AxisButton;
 import frc.robot.commands.Shooter.RunShooterPower;
 import frc.robot.commands.Shooter.RunShooterRPM;
+import frc.robot.commands.Shooter.IndexPower;
 import frc.robot.commands.Shooter.PositionShooter;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -66,7 +68,8 @@ public class RobotContainer implements Logged {
   private DoublePreference umbrellaPower = new DoublePreference( "umbrella/Power", 0.25);
   private DoublePreference shooterPower = new DoublePreference("shooter/Power", 0.25);
   private DoublePreference shooterRPM = new DoublePreference("shooter/RPM", 500);
-  private DoublePreference shooterPosition = new DoublePreference("shooter/Position", 40);
+  private DoublePreference shooterPosition = new DoublePreference("shooter/Position", Constants.ShooterConstants.TARGET_POSITION_DEGREES);
+  private DoublePreference indexPower = new DoublePreference("shooter/IndexPower", 0.5);
   
 
    //preferences for slew rates
@@ -75,10 +78,14 @@ public class RobotContainer implements Logged {
    private DoublePreference m_kRotationalSlewRate = new DoublePreference("Rotational Slew Rate", Constants.DriveConstants.kRotationalSlewRate);
 
 
-    private final Command resetGyro = new ResetGyro(null);
+    private final Command resetGyro = new ResetGyro(m_robotDrive);
     private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
     private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
     private final Command parkCommand = new ParkCommand(m_robotDrive);
+    private final Command stowShooter = new PositionShooter(m_shooter, Constants.ShooterConstants.SHOOTER_HOME_DEGREES);
+    private final Command raiseShooter = new PositionShooter(m_shooter, shooterPosition);
+    private final Command spinShooter = new RunShooterPower(m_shooter, shooterPower);
+    private final Command spinIndex = new IndexPower(m_shooter, indexPower);
     
   private final SendableChooser<Command> autonChooser;
 
@@ -104,8 +111,8 @@ private static class Operator {
     private static JoystickButton driver_back = new JoystickButton(driver, XboxController.Button.kBack.value);
     private static JoystickButton driver_leftBumper = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private static JoystickButton driver_rightBumper = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    private static POVButton driver_rightTrigger = new POVButton(driver, XboxController.Axis.kRightTrigger.value);
-    private static POVButton driver_leftTrigger = new POVButton(driver, XboxController.Axis.kLeftTrigger.value);
+    private static AxisButton driver_rightTrigger = new AxisButton(driver, XboxController.Axis.kRightTrigger.value, 0.25);
+    private static AxisButton driver_leftTrigger = new AxisButton(driver, XboxController.Axis.kLeftTrigger.value, 0.25);
     private static POVButton driver_dpad_up = new POVButton(driver, 0);
     private static POVButton driver_dpad_right = new POVButton(driver, 90);
     private static POVButton driver_dpad_down= new POVButton(driver, 180);
@@ -171,6 +178,11 @@ private static class Operator {
    Operator.driver_back.onTrue(parkCommand);
    Operator.driver_dpad_up.whileTrue(new RunCommand(()-> m_shooter.moveArm(.1)));
    Operator.driver_dpad_down.whileTrue(new RunCommand(() -> m_shooter.moveArm(-.1)));
+   Operator.driver_leftTrigger.whileTrue(spinIndex);
+   Operator.driver_rightTrigger.whileTrue(spinShooter);
+   Operator.driver_y.onTrue(raiseShooter);
+   Operator.driver_b.onTrue(stowShooter);
+
     // new JoystickButton(m_driverController, XboxController.Button.kY.value)
     //     .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
     // new JoystickButton(m_driverController, XboxController.Button.kB.value)

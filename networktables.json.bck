@@ -1,5 +1,29 @@
 [
   {
+    "name": "/Preferences/arm/arm/kP",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/arm/arm/kI",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/arm/arm/kD",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
     "name": "/Preferences/intake/intakePower",
     "type": "double",
     "value": 0.5,
@@ -40,57 +64,9 @@
     }
   },
   {
-    "name": "/Preferences/arm/arm/kP",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/arm/arm/kI",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/arm/arm/kD",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
     "name": "/Preferences/intake/intakePosition",
     "type": "double",
     "value": 100.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Direction Slew Rate",
-    "type": "double",
-    "value": 1.2,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Magnitude Slew Rate",
-    "type": "double",
-    "value": 1.8,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Rotational Slew Rate",
-    "type": "double",
-    "value": 2.0,
     "properties": {
       "persistent": true
     }
@@ -121,6 +97,30 @@
   },
   {
     "name": "/Preferences/auto/rotationD",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/intake/positionkP",
+    "type": "double",
+    "value": 0.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/intake/positionkI",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/intake/positionkD",
     "type": "double",
     "value": 0.0,
     "properties": {
@@ -171,14 +171,6 @@
     "name": "/Preferences/shooter/PositionkD",
     "type": "double",
     "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/Position",
-    "type": "double",
-    "value": 40.0,
     "properties": {
       "persistent": true
     }
