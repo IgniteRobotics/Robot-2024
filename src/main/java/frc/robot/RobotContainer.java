@@ -47,7 +47,7 @@ public class RobotContainer implements Logged {
 
 
 
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  public final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final IntakeSubsystem m_robotIntakesubsystem = new IntakeSubsystem();
 
   //private final IntakeSubsystem m_robotIntake = new IntakeSubsystem();

@@ -209,7 +209,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   }
 
   public void stopPositioner(){
-    shooterPositionMotor.stopMotor();
+    m_shooterPositionMotor.stopMotor();
   }
 
   public void resetPosition(){
@@ -251,6 +251,6 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   
 }
 public void simulationPeriodic(){
-  shooterPositionMotor.setPosition(targetSetPoint);
+  m_shooterPositionMotor.setPosition(targetSetPoint);
 }
 }
