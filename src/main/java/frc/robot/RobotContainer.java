@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.OIConstants;
 import frc.robot.comm.preferences.DoublePreference;
@@ -29,10 +30,16 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.IntakeSubsystem;
+
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import frc.robot.commands.ResetGyro;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 
 
 
@@ -45,12 +52,9 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 public class RobotContainer implements Logged {
   // The robot's subsystems
 
-
-
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final IntakeSubsystem m_robotIntakesubsystem = new IntakeSubsystem();
-
-  //private final IntakeSubsystem m_robotIntake = new IntakeSubsystem();
+  
+  private final IntakeSubsystem m_robotIntake = new IntakeSubsystem();
   //private final UmbrellaSubsystem m_umbrella  = new UmbrellaSubsystem();
   private final ShooterSubsystem m_shooter = new ShooterSubsystem();
 
@@ -70,14 +74,43 @@ public class RobotContainer implements Logged {
    private DoublePreference m_kMagnitudeSlewRate = new DoublePreference("Magnitude Slew Rate", Constants.DriveConstants.kMagnitudeSlewRate);
    private DoublePreference m_kRotationalSlewRate = new DoublePreference("Rotational Slew Rate", Constants.DriveConstants.kRotationalSlewRate);
 
- 
+
+    private final Command resetGyro = new ResetGyro(null);
+    private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
+    private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
+    private final Command parkCommand = new ParkCommand(m_robotDrive);
+    
   private final SendableChooser<Command> autonChooser;
 
   private final double pathSpeed = 2;
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
-  XboxController m_manipController = new XboxController(OIConstants.kManipControllerPort);
+  XboxController m_manipController = new XboxController(OIConstants.kManipControllerPort);  
+    
+private static class Operator {
+
+    private static Joystick driver = new Joystick(0);
+
+    private static DoubleSupplier driver_axisLX = () -> MathUtil.applyDeadband(driver.getRawAxis(0), Constants.OIConstants.kDriveDeadband);
+    private static DoubleSupplier driver_axisLY = () -> MathUtil.applyDeadband(-driver.getRawAxis(1), Constants.OIConstants.kDriveDeadband);
+    private static DoubleSupplier driver_axisRY = () -> MathUtil.applyDeadband(-driver.getRawAxis(5), Constants.OIConstants.kDriveDeadband);
+
+    private static JoystickButton driver_x = new JoystickButton(driver, XboxController.Button.kX.value);
+    private static JoystickButton driver_a = new JoystickButton(driver, XboxController.Button.kA.value);
+    private static JoystickButton driver_b = new JoystickButton(driver, XboxController.Button.kB.value);
+    private static JoystickButton driver_y = new JoystickButton(driver, XboxController.Button.kY.value);
+    private static JoystickButton driver_start = new JoystickButton(driver, XboxController.Button.kStart.value);
+    private static JoystickButton driver_back = new JoystickButton(driver, XboxController.Button.kBack.value);
+    private static JoystickButton driver_leftBumper = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    private static JoystickButton driver_rightBumper = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+    private static POVButton driver_rightTrigger = new POVButton(driver, XboxController.Axis.kRightTrigger.value);
+    private static POVButton driver_leftTrigger = new POVButton(driver, XboxController.Axis.kLeftTrigger.value);
+
+    // subsystems
+
+
+}
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -112,7 +145,7 @@ public class RobotContainer implements Logged {
                 //m_kDirectionSlewRate.get()),
             m_robotDrive));
 
-    m_robotIntakesubsystem.setDefaultCommand(new StowIntake(m_robotIntakesubsystem));
+    m_robotIntake.setDefaultCommand(new StowIntake(m_robotIntake));
   }
 
   /**
@@ -125,27 +158,23 @@ public class RobotContainer implements Logged {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverController, XboxController.Button.kBack.value)
-        .onTrue(new ResetGyro(m_robotDrive));
-    //new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
-    //    .whileTrue(new RunIntake(m_robotIntake, intakePower, intakePosition));
-    // new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
-    // .whileTrue(new RunIntake(m_robotIntake, outtakePower, intakePosition));
+
+    
+   Operator.driver_start.whileTrue(resetGyro);
+   Operator.driver_rightBumper.whileTrue(intakeCommand);
+   Operator.driver_leftBumper.whileTrue(extakeCommand);
+   Operator.driver_back.onTrue(parkCommand);
+     
     new JoystickButton(m_driverController, XboxController.Button.kY.value)
         .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
     new JoystickButton(m_driverController, XboxController.Button.kB.value)
         .whileTrue(m_robotDrive.turnSysIdTestBuilder(10, 5));
-    new POVButton(m_driverController, 90)
+    new POVButton(m_driverController, 0)
         .whileTrue(new PositionShooter(m_shooter, 0));
     new POVButton(m_driverController, 180)
         .whileTrue(new PositionShooter(m_shooter, shooterPosition));
-    new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
-        .whileTrue(m_robotIntakesubsystem.intakeCommand());
-    new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
-        .whileTrue(new StowIntake(m_robotIntakesubsystem));
-    new JoystickButton(m_driverController, XboxController.Button.kX.value)
-        .whileTrue((m_robotIntakesubsystem.spinRollers()));
 
+   
   }
 
   /**
