@@ -14,11 +14,11 @@ import frc.robot.comm.preferences.DoublePreference;
 import frc.robot.commands.ParkCommand;
 import frc.robot.commands.ResetGyro;
 import frc.robot.commands.RunUmbrella;
+import frc.robot.commands.Shooter.PositionShooter;
+import frc.robot.commands.Shooter.RunShooterPower;
+import frc.robot.commands.Shooter.RunShooterRPM;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.StowIntake;
-import frc.robot.commands.RunShooterPower;
-import frc.robot.commands.RunShooterRPM;
-import frc.robot.commands.PositionShooter;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -136,7 +136,7 @@ public class RobotContainer implements Logged {
     new JoystickButton(m_driverController, XboxController.Button.kB.value)
         .whileTrue(m_robotDrive.turnSysIdTestBuilder(10, 5));
     new POVButton(m_driverController, 90)
-        .whileTrue(new PositionShooter(m_shooter, 0));
+        .whileTrue(new PositionShooter(m_shooter, Constants.ShooterConstants.SHOOTER_Home));
     new POVButton(m_driverController, 180)
         .whileTrue(new PositionShooter(m_shooter, shooterPosition));
     new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)

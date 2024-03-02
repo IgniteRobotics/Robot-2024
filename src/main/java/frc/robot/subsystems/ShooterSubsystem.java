@@ -7,13 +7,16 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ForwardLimitValue;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
@@ -58,6 +61,9 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   private DoublePreference positionkIPreference = new DoublePreference("shooter/PositionkI", Constants.ShooterConstants.POSITION_kD);
   private DoublePreference positionkDPreference = new DoublePreference("shooter/PositionkD", Constants.ShooterConstants.POSITION_kD);
   
+  private SoftwareLimitSwitchConfigs m_positionSoftLimitConfig = new SoftwareLimitSwitchConfigs();
+  private MotionMagicConfigs m_positionMotionMagicConfigs = new MotionMagicConfigs();
+  
   @Log.File
   @Log.NT
   private double temp;
@@ -100,9 +106,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
-
-
-
+    
     m_shooterMotor = new CANSparkMax(Constants.CANConstants.SHOOTER_MOTOR_LEADERCanId, MotorType.kBrushless);
     m_shooterIndexMotor = new CANSparkMax(Constants.CANConstants.SHOOTER_INDEX_MOTOR, MotorType.kBrushless);
     m_shooterPositionMotor = new TalonFX(Constants.CANConstants.SHOOTER_POSITION_MOTOR);
@@ -131,6 +135,22 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     positionSlot0Configs.kI = positionkIPreference.get();
     positionSlot0Configs.kD = positionkDPreference.get();
 
+    m_shooterPositionMotor.getConfigurator().apply(positionSlot0Configs, 0.050);
+
+
+    m_positionSoftLimitConfig.ForwardSoftLimitEnable = true;
+    m_positionSoftLimitConfig.ForwardSoftLimitThreshold = ShooterConstants.POSITION_ForwardsLimit;
+    m_positionSoftLimitConfig.ReverseSoftLimitEnable = true;
+    m_positionSoftLimitConfig.ReverseSoftLimitThreshold = ShooterConstants.POSITION_ReverseLimit;
+
+    m_shooterPositionMotor.getConfigurator().apply(m_positionSoftLimitConfig, 0.050);
+
+    m_positionMotionMagicConfigs.MotionMagicCruiseVelocity = ShooterConstants.MOTION_MAGIC_CRUISE_VELOCITY;
+    m_positionMotionMagicConfigs.MotionMagicAcceleration = ShooterConstants.MOTION_MAGIC_ACCELERATION;
+    m_positionMotionMagicConfigs.MotionMagicJerk = ShooterConstants.MOTION_MAGIC_JERK;
+
+    m_shooterPositionMotor.getConfigurator().apply(m_positionMotionMagicConfigs);
+
     //configure indexer motor
     m_shooterIndexMotor.setInverted(false);
     m_shooterIndexMotor.setIdleMode(CANSparkFlex.IdleMode.kBrake);
@@ -138,6 +158,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     m_shooterIndexMotor.setSmartCurrentLimit(40);
     m_shooterIndexMotor.setClosedLoopRampRate(1);
     m_shooterIndexMotor.burnFlash();
+
+      
   }
 
   public void spinPower(double power) {
@@ -152,15 +174,18 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     m_shooterIndexMotor.set(MathUtil.clamp(power, -1, 1));
   }
 
-  @Log.File
-  @Log.NT
-  public double getPosition(){
+  public double getPositionRevolutions(){
     return m_shooterPositionMotor.getPosition().getValueAsDouble();
   }
 
- //in radians
-  public double getAngle(){
-    return Units.degreesToRadians(getPosition()*ShooterConstants.DEGREE_PER_REVOLUTION);
+  @Log.File
+  @Log.NT
+  public double getAngleDegrees(){
+    return getPositionRevolutions()*ShooterConstants.POSITION_DEGREE_PER_MOTOR_REV;
+  }
+
+  public double getAngleRadians(){
+    return Units.degreesToRadians(getAngleDegrees());
   }
 
 
@@ -168,7 +193,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   @Log.NT
   public Pose3d getStartPose3d(){
     return new Pose3d(robotPose2d).plus(new Transform3d(ShooterConstants.TRANSLATION_OFFSET, 0, ShooterConstants.ELEVATION,
-    new Rotation3d(0, -getAngle(), Math.PI)));
+    new Rotation3d(0, -getAngleRadians(), Math.PI)));
   }
 
 
@@ -189,23 +214,28 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     return velocity+robotVelocity;
   }
 
-  public void setPosition(double position) {
+  public void setPositionRevolutions(double position) {
     this.targetSetPoint = position;
     m_shooterPositionMotor.setControl(shooterPosition.withPosition(position));
   }
 
-  public void setAngle(double angle){
-    setPosition(angle/ShooterConstants.DEGREE_PER_REVOLUTION);
+  public void setAngleDegrees(double angle){
+    setPositionRevolutions(angle/ShooterConstants.POSITION_DEGREE_PER_MOTOR_REV);
   }
 
   public boolean atSetpoint() {
     if(Robot.isSimulation()) return true;
-    return getPosition() >= targetSetPoint - Constants.ShooterConstants.POSITION_TOLERANCE && getPosition() <= targetSetPoint + Constants.ShooterConstants.POSITION_TOLERANCE; 
+    return getPositionRevolutions() >= targetSetPoint - Constants.ShooterConstants.POSITION_TOLERANCE && getPositionRevolutions() <= targetSetPoint + Constants.ShooterConstants.POSITION_TOLERANCE; 
   }
 
   public void stopRoller() {
     m_shooterMotor.stopMotor();
   }
+
+  public void moveArm(double motorpower) {
+    m_shooterPositionMotor.set(MathUtil.clamp(motorpower, -1, 1));
+  }
+
 
   public void stopIndexer() {
     m_shooterIndexMotor.stopMotor();
@@ -216,7 +246,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   }
 
   public void resetPosition(){
-    this.setPosition(0);
+    this.setPositionRevolutions(0);
   }
 
   public void stopAll(){
@@ -258,4 +288,10 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 public void simulationPeriodic(){
   m_shooterPositionMotor.setPosition(targetSetPoint);
 }
+
+
+
+
+
+
 }

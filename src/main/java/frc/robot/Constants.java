@@ -120,6 +120,8 @@ public final class Constants {
     public static final double POSITION_kD = 1;
     public static final double POSITION_kS = 0.24;
     public static final double POSITION_kV = 0.12;
+    public static final double POSITION_ForwardsLimit = 50;
+    public static final double POSITION_ReverseLimit = 1;
 
 
     public static final double ROLLER_kP = 6e-5; 
@@ -130,18 +132,28 @@ public final class Constants {
     public static final double ROLLER_MIN_OUTPUT = -1;
     public static final double ROLLER_MAX_RPM = 5700;
 
-    //TODO: TUNEF
+    public static final double TARGET_Positon = 50;
+    public static final double SHOOTER_Home = 5;
+
+    
+
+    //TODO: TUNE
     public static final double POSITION_TOLERANCE = 2;
 
     public static final double LENGTH = 1.5;
 
-    public static final double DEGREE_PER_REVOLUTION = 1;
+    public static final double POSITION_DEGREE_PER_MOTOR_REV = 1;
 
     
     public static final double ELEVATION = Units.inchesToMeters(9.46);
 
    
     public static final double TRANSLATION_OFFSET = Units.inchesToMeters(1.66);
+
+    // shooter motion magic constants
+    public static final double MOTION_MAGIC_CRUISE_VELOCITY = .5 * 360 / POSITION_DEGREE_PER_MOTOR_REV;
+    public static final double MOTION_MAGIC_ACCELERATION = 1 * 360 / POSITION_DEGREE_PER_MOTOR_REV;
+    public static final double MOTION_MAGIC_JERK = 10 * MOTION_MAGIC_ACCELERATION;
   }
 
   public static final class IntakeConstants {
