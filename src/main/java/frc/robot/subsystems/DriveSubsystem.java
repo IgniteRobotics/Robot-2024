@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.RobotState;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.comm.preferences.DoublePreference;
 import frc.utils.SwerveUtils;
@@ -127,6 +128,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
 
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
+
+  private RobotState m_robotState = RobotState.getInstance();
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -321,7 +324,12 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       });
     }
 
+    if(DriverStation.isAutonomous()) m_robotState.setRobotPose(getAutonPose());
+    else m_robotState.setRobotPose(getPose());
+
   }
+
+
 
   /**
    * Returns the currently-estimated pose of the robot.
