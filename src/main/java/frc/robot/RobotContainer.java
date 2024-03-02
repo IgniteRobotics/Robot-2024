@@ -42,6 +42,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 
 
+
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -50,10 +51,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer implements Logged {
   // The robot's subsystems
-  public final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final IntakeSubsystem m_robotIntake = new IntakeSubsystem();
-  private final UmbrellaSubsystem m_umbrella  = new UmbrellaSubsystem();
-  public final ShooterSubsystem m_shooter = new ShooterSubsystem();
+
+  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final IntakeSubsystem m_robotIntakesubsystem = new IntakeSubsystem();
+
+  //private final IntakeSubsystem m_robotIntake = new IntakeSubsystem();
+  //private final UmbrellaSubsystem m_umbrella  = new UmbrellaSubsystem();
+  private final ShooterSubsystem m_shooter = new ShooterSubsystem();
 
 
   //Robot preferences
@@ -155,28 +159,23 @@ private static class Operator {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
+
     
    Operator.driver_start.whileTrue(resetGyro);
    Operator.driver_rightBumper.whileTrue(intakeCommand);
    Operator.driver_leftBumper.whileTrue(extakeCommand);
    Operator.driver_back.onTrue(parkCommand);
      
-    new JoystickButton(m_driverController, XboxController.Button.kX.value)
-        .whileTrue(new ParkCommand(m_robotDrive));
-    new JoystickButton(m_driverController, XboxController.Button.kBack.value)
-        .onTrue(new ResetGyro(m_robotDrive));
-    new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
-        .whileTrue(new RunIntake(m_robotIntake, intakePower, intakePosition));
-    new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
-        .whileTrue(new RunIntake(m_robotIntake, outtakePower, intakePosition));
     new JoystickButton(m_driverController, XboxController.Button.kY.value)
         .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
     new JoystickButton(m_driverController, XboxController.Button.kB.value)
         .whileTrue(m_robotDrive.turnSysIdTestBuilder(10, 5));
-    new POVButton(m_driverController, 90)
-        .whileTrue(new PositionShooter(m_shooter, shooterPosition));
+    new POVButton(m_driverController, 0)
+        .whileTrue(new PositionShooter(m_shooter, 0));
     new POVButton(m_driverController, 180)
         .whileTrue(new PositionShooter(m_shooter, shooterPosition));
+
+   
   }
 
   /**

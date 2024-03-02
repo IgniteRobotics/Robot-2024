@@ -132,6 +132,16 @@ public final class Constants {
 
     //TODO: TUNEF
     public static final double POSITION_TOLERANCE = 2;
+
+    public static final double LENGTH = 1.5;
+
+    public static final double DEGREE_PER_REVOLUTION = 1;
+
+    
+    public static final double ELEVATION = Units.inchesToMeters(9.46);
+
+   
+    public static final double TRANSLATION_OFFSET = Units.inchesToMeters(1.66);
   }
 
   public static final class IntakeConstants {
