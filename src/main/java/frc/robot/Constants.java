@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import frc.utils.Zone;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -60,6 +61,11 @@ public final class Constants {
     
 
     public static final boolean kGyroReversed = false;
+  }
+
+  public static final class ZoneConstants {
+    public static final Zone BlueStage = new Zone(1, 1, 3, 3);
+    public static final Zone RedStage = new Zone(5, 5, 7, 7);
   }
 
   public static final class ModuleConstants {

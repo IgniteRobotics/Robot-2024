@@ -4,6 +4,11 @@
 
 package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.Constants.ZoneConstants;
+import frc.utils.Zone;
+
 
 /** Add your docs here. */
 public class RobotState {
@@ -30,4 +35,13 @@ public class RobotState {
     public Pose2d getRobotPose(){
         return m_robotPose2d;
     }
+
+    public boolean inStage(){
+        Alliance alliance;
+        if(!DriverStation.getAlliance().isPresent()) alliance = Alliance.Blue;
+        else alliance = DriverStation.getAlliance().get();
+        if(alliance == Alliance.Blue) return ZoneConstants.BlueStage.inZone(m_robotPose2d);
+        else return ZoneConstants.RedStage.inZone(m_robotPose2d);
+    }
+
 }
