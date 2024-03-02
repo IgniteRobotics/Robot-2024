@@ -31,6 +31,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import frc.robot.RobotState;
 
 
 
@@ -94,6 +95,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   public Pose2d robotPose2d;
 
   public MotionMagicVoltage shooterPosition = new MotionMagicVoltage(0);
+
+  private RobotState m_robotState = RobotState.getInstance();
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -248,6 +251,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     positionSlot0Configs.kD = positionkDPreference.get();
     
     m_shooterPositionMotor.getConfigurator().apply(positionSlot0Configs, 0.050);
+
+    robotPose2d = m_robotState.getRobotPose();
   
 }
 public void simulationPeriodic(){
