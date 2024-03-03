@@ -77,7 +77,10 @@ public class RobotContainer implements Logged {
   private DoublePreference shooterOuttakePower = new DoublePreference("shooter/OuttakePower", -0.1);  
   private DoublePreference shooterPosition = new DoublePreference("shooter/shootingPosition", 65); 
   private DoublePreference outdexPower = new DoublePreference("shooter/OutdexPower", -0.1);
-  
+
+  //For tuning
+  private DoublePreference tuningPower = new DoublePreference("shooter/tuning_power", 0.25);
+  private DoublePreference tuningPosition = new DoublePreference("shooter/tuning_Position", 65);
 
 
   //Low Angle, Mid Angle, High Angle
@@ -105,11 +108,13 @@ public class RobotContainer implements Logged {
     private final Command raiseShooter = new PositionShooter(m_shooter, intakeShooterPosition);
     private final Command spinShooter = new RunShooterPower(m_shooter, shooterPower);
     private final Command spinIndex = new IndexPower(m_shooter, outdexPower, outtakePower);
-    private final Command shootPiece = new ShootPiece(m_shooter, shooterPosition, shooterPower, indexPower, () -> Operator.driver_rightTrigger.getAsBoolean());
     private final Command shootHighAngle = new ShootPiece(m_shooter, shooterHighAngle, shooterPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command shootMidAngle = new ShootPiece(m_shooter, shooterMidAngle, shooterPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command shootLowAngle = new ShootPiece(m_shooter, shooterLowAngle, shooterHighPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
-  private final SendableChooser<Command> autonChooser;
+    private final Command spinRPM = new RunShooterRPM(m_shooter, shooterRPM);
+
+    private final Command shooterTune = new ShootPiece(m_shooter, tuningPosition, tuningPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final SendableChooser<Command> autonChooser;
 
   private final double pathSpeed = 2;
 
@@ -193,10 +198,12 @@ private static class Operator {
    Operator.driver_a.whileTrue(shootHighAngle);
    Operator.driver_b.whileTrue(shootMidAngle);
    Operator.driver_y.whileTrue(shootLowAngle);
+   Operator.driver_x.whileTrue(shooterTune);
 
    //Operator.driver_y.whileTrue(raiseShooter);
    //Operator.driver_b.onTrue(stowShooter);
    Operator.driver_dpad_left.whileTrue(spinIndex);
+   Operator.driver_dpad_right.whileTrue(spinRPM);
 
     // new JoystickButton(m_driverController, XboxController.Button.kY.value)
     //     .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
