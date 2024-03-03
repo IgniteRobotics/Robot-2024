@@ -94,7 +94,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   @Log.File
   @Log.NT
-  private double targetSetPoint = 0;
+  private double targetPosition = 0;
 
   @Log.File
   @Log.NT
@@ -115,6 +115,15 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   @Log.File
   @Log.NT
   public double armPower;
+
+  @Log.File
+  @Log.NT
+  public double armVoltage;
+
+  @Log.File
+  @Log.NT
+  public double armTemp;
+
 
   public MotionMagicVoltage shooterPosition = new MotionMagicVoltage(0);
 
@@ -235,7 +244,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   }
 
   public void setPositionRevolutions(double position) {
-    this.targetSetPoint = position;
+    this.targetPosition = position;
     m_shooterPositionMotor.setControl(shooterPosition.withPosition(position));
   }
 
@@ -245,7 +254,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   public boolean atSetpoint() {
     if(Robot.isSimulation()) return true;
-    return getPositionRevolutions() >= targetSetPoint - Constants.ShooterConstants.POSITION_TOLERANCE && getPositionRevolutions() <= targetSetPoint + Constants.ShooterConstants.POSITION_TOLERANCE; 
+    return getPositionRevolutions() >= targetPosition - Constants.ShooterConstants.POSITION_TOLERANCE && getPositionRevolutions() <= targetPosition + Constants.ShooterConstants.POSITION_TOLERANCE; 
   }
 
   public void stopRoller() {
@@ -289,7 +298,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
    armPower = m_shooterPositionMotor.get();
    armPosition = m_shooterPositionMotor.getPosition().getValueAsDouble();
    armVelocity = m_shooterPositionMotor.getVelocity().getValueAsDouble();
-    
+   armVoltage = m_shooterPositionMotor.getMotorVoltage().getValueAsDouble();
+   armTemp = m_shooterPositionMotor.getDeviceTemp().getValueAsDouble();
  
     
 
@@ -310,7 +320,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   
 }
 public void simulationPeriodic(){
-  m_shooterPositionMotor.setPosition(targetSetPoint);
+  m_shooterPositionMotor.setPosition(targetPosition);
 }
 
 

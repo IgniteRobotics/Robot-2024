@@ -121,7 +121,7 @@ public final class Constants {
     public static final double POSITION_kS = 0.24;
     public static final double POSITION_kV = 0.12;
     public static final double POSITION_ForwardsLimit = 33;
-    public static final double POSITION_ReverseLimit = 0;
+    public static final double POSITION_ReverseLimit = -8;
 
 
     public static final double ROLLER_kP = 6e-5; 

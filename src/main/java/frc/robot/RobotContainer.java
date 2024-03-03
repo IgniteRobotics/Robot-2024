@@ -73,9 +73,12 @@ public class RobotContainer implements Logged {
   private DoublePreference shooterRPM = new DoublePreference("shooter/RPM", 500);
   private DoublePreference intakeShooterPosition = new DoublePreference("shooter/Position", Constants.ShooterConstants.TARGET_POSITION_DEGREES);
   private DoublePreference indexPower = new DoublePreference("shooter/IndexPower", 0.5);
-  private DoublePreference intakeIndexPower = new DoublePreference("shooter/IndexPower", 0.25);  
+  private DoublePreference intakeIndexPower = new DoublePreference("shooter/IndexPower", 0.25);
+  private DoublePreference shooterOuttakePower = new DoublePreference("shooter/OuttakePower", -0.1);  
   private DoublePreference shooterPosition = new DoublePreference("shooter/shootingPosition", 65); 
   private DoublePreference outdexPower = new DoublePreference("shooter/OutdexPower", -0.1);
+  
+
 
   //Low Angle, Mid Angle, High Angle
   private DoublePreference shooterLowAngle = new DoublePreference("shooter/lowAngle", 35);
@@ -95,13 +98,13 @@ public class RobotContainer implements Logged {
     private final Command resetGyro = new ResetGyro(m_robotDrive);
     private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
     private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
-    private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, intakeIndexPower, intakeShooterPosition);
+    private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
     private final Command stowIntake = new StowIntake(m_robotIntake);
     private final Command parkCommand = new ParkCommand(m_robotDrive);
     private final Command stowShooter = new PositionShooter(m_shooter, Constants.ShooterConstants.SHOOTER_HOME_DEGREES);
     private final Command raiseShooter = new PositionShooter(m_shooter, intakeShooterPosition);
     private final Command spinShooter = new RunShooterPower(m_shooter, shooterPower);
-    private final Command spinIndex = new IndexPower(m_shooter, outdexPower);
+    private final Command spinIndex = new IndexPower(m_shooter, outdexPower, outtakePower);
     private final Command shootPiece = new ShootPiece(m_shooter, shooterPosition, shooterPower, indexPower, () -> Operator.driver_rightTrigger.getAsBoolean());
     private final Command shootHighAngle = new ShootPiece(m_shooter, shooterHighAngle, shooterPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command shootMidAngle = new ShootPiece(m_shooter, shooterMidAngle, shooterPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
