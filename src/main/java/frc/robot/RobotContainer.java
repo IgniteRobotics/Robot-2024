@@ -132,6 +132,7 @@ private static class Operator {
 
     // Configure the button bindings
     configureButtonBindings();
+    configureDefaultCommands();
 
 
 
@@ -144,21 +145,7 @@ private static class Operator {
     autonChooser.addOption("de test", AutoBuilder.buildAuto("de test"));
     SmartDashboard.putData("Autonomous", autonChooser);
 
-    // Configure default commands
-    m_robotDrive.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
-        new RunCommand(
-            () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                true, true),
-                //new SlewRateLimiter(m_kMagnitudeSlewRate.get()), new SlewRateLimiter(m_kRotationalSlewRate.get()),
-                //m_kDirectionSlewRate.get()),
-            m_robotDrive));
 
-    m_robotIntake.setDefaultCommand(new StowIntake(m_robotIntake));
   }
 
   /**
@@ -193,6 +180,21 @@ private static class Operator {
    
   }
 
+  private void configureDefaultCommands(){
+    // Configure default commands
+    m_robotDrive.setDefaultCommand(
+      // The left stick controls translation of the robot.
+      // Turning is controlled by the X axis of the right stick.
+      new RunCommand(
+          () -> m_robotDrive.drive(
+              -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
+              -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+              -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
+              true, true),
+          m_robotDrive));
+
+    m_robotIntake.setDefaultCommand(new StowIntake(m_robotIntake));
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
