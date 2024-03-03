@@ -79,7 +79,7 @@ public class RobotContainer implements Logged {
   private DoublePreference outdexPower = new DoublePreference("shooter/OutdexPower", -0.1);
 
   //For tuning
-  private DoublePreference tuningPower = new DoublePreference("shooter/tuning_power", 0.25);
+  private DoublePreference tuningPower = new DoublePreference("shooter/tuning_rpm", 2500);
   private DoublePreference tuningPosition = new DoublePreference("shooter/tuning_Position", 65);
 
 
