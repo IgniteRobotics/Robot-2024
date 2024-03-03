@@ -71,8 +71,18 @@ public class RobotContainer implements Logged {
   private DoublePreference umbrellaPower = new DoublePreference( "umbrella/Power", 0.25);
   private DoublePreference shooterPower = new DoublePreference("shooter/Power", 0.25);
   private DoublePreference shooterRPM = new DoublePreference("shooter/RPM", 500);
-  private DoublePreference shooterPosition = new DoublePreference("shooter/Position", Constants.ShooterConstants.TARGET_POSITION_DEGREES);
-  private DoublePreference indexPower = new DoublePreference("shooter/IndexPower", 0.5);
+  private DoublePreference intakeShooterPosition = new DoublePreference("shooter/Position", Constants.ShooterConstants.TARGET_POSITION_DEGREES);
+  private DoublePreference indexPower = new DoublePreference("shooter/IndexPower", 0.5); 
+  private DoublePreference shooterPosition = new DoublePreference("shooter/shootingPosition", 65); 
+  private DoublePreference outdexPower = new DoublePreference("shooter/OutdexPower", -0.1);
+
+  //Low Angle, Mid Angle, High Angle
+  private DoublePreference shooterLowAngle = new DoublePreference("shooter/lowAngle", 35);
+  private DoublePreference shooterMidAngle = new DoublePreference("shooter/midAngle", 50);
+  private DoublePreference shooterHighAngle = new DoublePreference("shooter/highAngle", 75);
+
+  //High power
+  private DoublePreference shooterHighPower = new DoublePreference("shooter/highPower", 78);
   
 
    //preferences for slew rates
@@ -84,15 +94,17 @@ public class RobotContainer implements Logged {
     private final Command resetGyro = new ResetGyro(m_robotDrive);
     private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
     private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
-    private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakePosition);
+    private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
     private final Command stowIntake = new StowIntake(m_robotIntake);
     private final Command parkCommand = new ParkCommand(m_robotDrive);
     private final Command stowShooter = new PositionShooter(m_shooter, Constants.ShooterConstants.SHOOTER_HOME_DEGREES);
-    private final Command raiseShooter = new PositionShooter(m_shooter, shooterPosition);
+    private final Command raiseShooter = new PositionShooter(m_shooter, intakeShooterPosition);
     private final Command spinShooter = new RunShooterPower(m_shooter, shooterPower);
-    private final Command spinIndex = new IndexPower(m_shooter, indexPower);
+    private final Command spinIndex = new IndexPower(m_shooter, outdexPower);
     private final Command shootPiece = new ShootPiece(m_shooter, shooterPosition, shooterPower, indexPower, () -> Operator.driver_rightTrigger.getAsBoolean());
-    
+    private final Command shootHighAngle = new ShootPiece(m_shooter, shooterHighAngle, shooterPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command shootMidAngle = new ShootPiece(m_shooter, shooterMidAngle, shooterPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command shootLowAngle = new ShootPiece(m_shooter, shooterLowAngle, shooterHighPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
   private final SendableChooser<Command> autonChooser;
 
   private final double pathSpeed = 2;
@@ -169,13 +181,18 @@ private static class Operator {
    Operator.driver_rightBumper.whileTrue(intakePiece);
    Operator.driver_leftBumper.whileTrue(extakeCommand);
    Operator.driver_back.onTrue(parkCommand);
-   Operator.driver_dpad_up.whileTrue(new InstantCommand(()-> m_shooter.moveArm(.1)));
-   Operator.driver_dpad_down.whileTrue(new InstantCommand(() -> m_shooter.moveArm(-.1)));
+   Operator.driver_dpad_up.whileTrue(new InstantCommand(()-> m_shooter.moveArm(.1), m_shooter));
+   Operator.driver_dpad_down.whileTrue(new InstantCommand(() -> m_shooter.moveArm(-.1), m_shooter));
   //  Operator.driver_leftTrigger.whileTrue(spinIndex);
   //  Operator.driver_rightTrigger.whileTrue(spinShooter);
-   Operator.driver_leftTrigger.whileTrue(shootPiece);
-   Operator.driver_y.onTrue(raiseShooter);
-   Operator.driver_b.onTrue(stowShooter);
+   //Operator.driver_leftTrigger.whileTrue(shootPiece);
+   Operator.driver_a.whileTrue(shootHighAngle);
+   Operator.driver_b.whileTrue(shootMidAngle);
+   Operator.driver_y.whileTrue(shootLowAngle);
+
+   //Operator.driver_y.whileTrue(raiseShooter);
+   //Operator.driver_b.onTrue(stowShooter);
+   Operator.driver_dpad_left.whileTrue(spinIndex);
 
     // new JoystickButton(m_driverController, XboxController.Button.kY.value)
     //     .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
@@ -200,7 +217,7 @@ private static class Operator {
           m_robotDrive));
 
     m_robotIntake.setDefaultCommand(stowIntake);
-    m_shooter.setDefaultCommand(stowShooter);
+    //m_shooter.setDefaultCommand(stowShooter);
 
   }
   /**
