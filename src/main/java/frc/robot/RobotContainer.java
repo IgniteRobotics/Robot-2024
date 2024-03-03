@@ -67,7 +67,7 @@ public class RobotContainer implements Logged {
   //Robot preferences
   private DoublePreference intakePower = new DoublePreference("intake/intakePower", 0.5);
   private DoublePreference intakePosition = new DoublePreference("intake/intakePosition", 100);
-  private DoublePreference outtakePower = new DoublePreference("intake/outtakePower", 0.5);
+  private DoublePreference outtakePower = new DoublePreference("intake/outtakePower", -0.75);
   private DoublePreference umbrellaPower = new DoublePreference( "umbrella/Power", 0.25);
   private DoublePreference shooterPower = new DoublePreference("shooter/Power", 0.25);
   private DoublePreference shooterRPM = new DoublePreference("shooter/RPM", 500);
