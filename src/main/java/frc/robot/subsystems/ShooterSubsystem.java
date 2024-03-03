@@ -82,6 +82,10 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   @Log.File
   @Log.NT
+  private double targetVelocity;
+
+  @Log.File
+  @Log.NT
   private double tempIndex;
 
   @Log.File
@@ -196,6 +200,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   }
 
   public void spinRPM(double rpm) {
+    targetVelocity = rpm;
     m_RollerPidController.setReference(MathUtil.clamp(rpm, -Constants.ShooterConstants.ROLLER_MAX_RPM, Constants.ShooterConstants.ROLLER_MAX_RPM), CANSparkFlex.ControlType.kVelocity);
   }
 
