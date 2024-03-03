@@ -76,6 +76,9 @@ public final class Constants {
     //Sources
     public static final Zone BlueSource = new Zone(14.5,0,16.54,1.7);
     public static final Zone RedSource = new Zone(0, 0, 2, 1.7);
+    //Wings
+    public static final Zone BlueWing = new Zone(0, 0, 5.8, 8.3);
+    public static final Zone RedWing = new Zone(14.2,0,16.54,8.3);
   }
 
   public static final class ModuleConstants {
