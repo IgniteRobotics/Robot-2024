@@ -82,6 +82,7 @@ public class RobotContainer implements Logged {
     private final Command resetGyro = new ResetGyro(m_robotDrive);
     private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
     private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
+    private final Command stowIntake = new StowIntake(m_robotIntake);
     private final Command parkCommand = new ParkCommand(m_robotDrive);
     private final Command stowShooter = new PositionShooter(m_shooter, Constants.ShooterConstants.SHOOTER_HOME_DEGREES);
     private final Command raiseShooter = new PositionShooter(m_shooter, shooterPosition);
@@ -193,7 +194,9 @@ private static class Operator {
               true, true),
           m_robotDrive));
 
-    m_robotIntake.setDefaultCommand(new StowIntake(m_robotIntake));
+    m_robotIntake.setDefaultCommand(stowIntake);
+    m_shooter.setDefaultCommand(stowShooter);
+
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
