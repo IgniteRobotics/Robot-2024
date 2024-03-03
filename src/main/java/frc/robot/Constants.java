@@ -64,8 +64,18 @@ public final class Constants {
   }
 
   public static final class ZoneConstants {
-    public static final Zone BlueStage = new Zone(1, 1, 3, 3);
-    public static final Zone RedStage = new Zone(5, 5, 7, 7);
+    //Stages
+    public static final Zone BlueStage = new Zone(2.63, 2.05, 5.95, 6);
+    public static final Zone RedStage = new Zone(10, 2.05, 14, 6);
+    //Speakers
+    public static final Zone BlueSpeaker = new Zone(0, 4.52 ,1.3, 6.58);
+    public static final Zone RedSpeaker = new Zone(15, 4.52, 16.54, 6.58);
+    //Amps
+    public static final Zone BlueAmp = new Zone(0, 7.5, 3.26, 8.3);
+    public static final Zone RedAmp = new Zone(13.3,7.5,16.54,8.3);
+    //Sources
+    public static final Zone BlueSource = new Zone(14.5,0,16.54,1.7);
+    public static final Zone RedSource = new Zone(0, 0, 2, 1.7);
   }
 
   public static final class ModuleConstants {
