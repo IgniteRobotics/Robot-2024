@@ -124,6 +124,28 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   @Log.File
   private double gyro_rotation;
 
+  //inZones
+  @Log.NT
+  @Log.File
+  private boolean inWing;
+  
+  @Log.NT
+  @Log.File
+  private boolean inStage;
+
+  @Log.NT
+  @Log.File
+  private boolean inAmp;
+
+  @Log.NT
+  @Log.File
+  private boolean inSource;
+
+  @Log.NT
+  @Log.File
+  private boolean inSpeaker;
+
+
   private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRate);
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
 
@@ -327,6 +349,11 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     if(DriverStation.isAutonomous()) m_robotState.setRobotPose(getAutonPose());
     else m_robotState.setRobotPose(getPose());
 
+    inWing = m_robotState.inWing();
+    inStage = m_robotState.inStage();
+    inAmp = m_robotState.inAmp();
+    inSpeaker = m_robotState.inSpeaker();
+    inSource = m_robotState.inSource();
   }
 
 

@@ -36,12 +36,36 @@ public class RobotState {
         return m_robotPose2d;
     }
 
-    public boolean inStage(){
+    public Alliance getAlliance(){
         Alliance alliance;
         if(!DriverStation.getAlliance().isPresent()) alliance = Alliance.Blue;
         else alliance = DriverStation.getAlliance().get();
-        if(alliance == Alliance.Blue) return ZoneConstants.BlueStage.inZone(m_robotPose2d);
+        return alliance;
+    }
+
+    public boolean inWing(){
+        if(getAlliance() == Alliance.Blue) return ZoneConstants.BlueWing.inZone(m_robotPose2d);
+        else return ZoneConstants.RedWing.inZone(m_robotPose2d);
+    }
+
+    public boolean inStage(){
+        if(getAlliance() == Alliance.Blue) return ZoneConstants.BlueStage.inZone(m_robotPose2d);
         else return ZoneConstants.RedStage.inZone(m_robotPose2d);
+    }
+
+    public boolean inSpeaker(){
+        if(getAlliance()== Alliance.Blue) return ZoneConstants.BlueSpeaker.inZone(m_robotPose2d);
+        else return ZoneConstants.RedSpeaker.inZone(m_robotPose2d);
+    }
+
+    public boolean inAmp(){
+        if(getAlliance() == Alliance.Blue) return ZoneConstants.BlueAmp.inZone(m_robotPose2d);
+        else return ZoneConstants.RedAmp.inZone(m_robotPose2d);
+    }
+
+    public boolean inSource(){
+        if(getAlliance() == Alliance.Blue) return ZoneConstants.BlueSource.inZone(m_robotPose2d);
+        else return ZoneConstants.RedSource.inZone(m_robotPose2d);
     }
 
 }
