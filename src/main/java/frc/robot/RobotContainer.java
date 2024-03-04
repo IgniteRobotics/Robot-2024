@@ -15,11 +15,13 @@ import frc.robot.comm.preferences.DoublePreference;
 import frc.robot.commands.ParkCommand;
 import frc.robot.commands.ResetGyro;
 import frc.robot.commands.RunUmbrella;
+import frc.robot.commands.intake.IntakePiece;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.StowIntake;
 import frc.robot.input.AxisButton;
 import frc.robot.commands.Shooter.RunShooterPower;
 import frc.robot.commands.Shooter.RunShooterRPM;
+import frc.robot.commands.Shooter.ShootPiece;
 import frc.robot.commands.Shooter.IndexPower;
 import frc.robot.commands.Shooter.PositionShooter;
 import frc.robot.subsystems.DriveSubsystem;
@@ -82,11 +84,14 @@ public class RobotContainer implements Logged {
     private final Command resetGyro = new ResetGyro(m_robotDrive);
     private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
     private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
+    private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakePosition);
+    private final Command stowIntake = new StowIntake(m_robotIntake);
     private final Command parkCommand = new ParkCommand(m_robotDrive);
     private final Command stowShooter = new PositionShooter(m_shooter, Constants.ShooterConstants.SHOOTER_HOME_DEGREES);
     private final Command raiseShooter = new PositionShooter(m_shooter, shooterPosition);
     private final Command spinShooter = new RunShooterPower(m_shooter, shooterPower);
     private final Command spinIndex = new IndexPower(m_shooter, indexPower);
+    private final Command shootPiece = new ShootPiece(m_shooter, shooterPosition, shooterPower, indexPower, () -> Operator.driver_rightTrigger.getAsBoolean());
     
   private final SendableChooser<Command> autonChooser;
 
@@ -132,6 +137,7 @@ private static class Operator {
 
     // Configure the button bindings
     configureButtonBindings();
+    configureDefaultCommands();
 
 
 
@@ -144,21 +150,7 @@ private static class Operator {
     autonChooser.addOption("de test", AutoBuilder.buildAuto("de test"));
     SmartDashboard.putData("Autonomous", autonChooser);
 
-    // Configure default commands
-    m_robotDrive.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
-        new RunCommand(
-            () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                true, true),
-                //new SlewRateLimiter(m_kMagnitudeSlewRate.get()), new SlewRateLimiter(m_kRotationalSlewRate.get()),
-                //m_kDirectionSlewRate.get()),
-            m_robotDrive));
 
-    m_robotIntake.setDefaultCommand(new StowIntake(m_robotIntake));
   }
 
   /**
@@ -174,13 +166,14 @@ private static class Operator {
 
     
    Operator.driver_start.whileTrue(resetGyro);
-   Operator.driver_rightBumper.whileTrue(intakeCommand);
+   Operator.driver_rightBumper.whileTrue(intakePiece);
    Operator.driver_leftBumper.whileTrue(extakeCommand);
    Operator.driver_back.onTrue(parkCommand);
    Operator.driver_dpad_up.whileTrue(new InstantCommand(()-> m_shooter.moveArm(.1)));
    Operator.driver_dpad_down.whileTrue(new InstantCommand(() -> m_shooter.moveArm(-.1)));
-   Operator.driver_leftTrigger.whileTrue(spinIndex);
-   Operator.driver_rightTrigger.whileTrue(spinShooter);
+  //  Operator.driver_leftTrigger.whileTrue(spinIndex);
+  //  Operator.driver_rightTrigger.whileTrue(spinShooter);
+   Operator.driver_leftTrigger.whileTrue(shootPiece);
    Operator.driver_y.onTrue(raiseShooter);
    Operator.driver_b.onTrue(stowShooter);
 
@@ -193,6 +186,23 @@ private static class Operator {
    
   }
 
+  private void configureDefaultCommands(){
+    // Configure default commands
+    m_robotDrive.setDefaultCommand(
+      // The left stick controls translation of the robot.
+      // Turning is controlled by the X axis of the right stick.
+      new RunCommand(
+          () -> m_robotDrive.drive(
+              -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
+              -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+              -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
+              true, true),
+          m_robotDrive));
+
+    m_robotIntake.setDefaultCommand(stowIntake);
+    m_shooter.setDefaultCommand(stowShooter);
+
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
