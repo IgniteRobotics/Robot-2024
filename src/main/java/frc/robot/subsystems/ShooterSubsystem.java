@@ -67,6 +67,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   private SoftwareLimitSwitchConfigs m_positionSoftLimitConfig = new SoftwareLimitSwitchConfigs();
   private MotionMagicConfigs m_positionMotionMagicConfigs = new MotionMagicConfigs();
   private MotorOutputConfigs m_positionMotorConfig = new MotorOutputConfigs();
+  private TalonFXConfiguration fxCfg = new TalonFXConfiguration();
   
   @Log.File
   @Log.NT
@@ -128,6 +129,22 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   @Log.NT
   public double armTemp;
 
+  @Log.File
+  @Log.NT
+  public double armCurrent;
+
+  @Log.File
+  @Log.NT
+  private String armNeutralMode;
+
+  @Log.File
+  @Log.NT
+  private boolean armCurrentFault;
+
+  @Log.File
+  @Log.NT
+  private boolean armRevLimiFault;
+
 
   public MotionMagicVoltage shooterPosition = new MotionMagicVoltage(0);
 
@@ -141,59 +158,76 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     m_shooterPositionMotor = new TalonFX(Constants.CANConstants.SHOOTER_POSITION_MOTOR);
 
     m_shooterEncoder = m_shooterMotor.getEncoder();
-    m_shooterEncoder.setVelocityConversionFactor(1);
     m_shooterIndexEncoder = m_shooterIndexMotor.getEncoder();
- 
-    m_shooterMotor.setInverted(false);
-    m_shooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
-    //TODO: Make actual constants
-    m_shooterMotor.setSmartCurrentLimit(40);
-    m_shooterMotor.setClosedLoopRampRate(1);
-    m_shooterMotor.burnFlash();
- 
-
+    
     m_RollerPidController = m_shooterMotor.getPIDController();
-    m_RollerPidController.setP(shooterkPPreference.get());
-    m_RollerPidController.setD(shooterkDPreference.get());
-    m_RollerPidController.setI(shooterkIPreference.get());
-    m_RollerPidController.setFeedbackDevice(m_shooterEncoder);
-    m_RollerPidController.setOutputRange(Constants.ShooterConstants.ROLLER_MIN_OUTPUT, Constants.ShooterConstants.ROLLER_MAX_OUTPUT);
-    m_RollerPidController.setFF(shooterkFPreference.get());
-
-    m_positionMotorConfig.NeutralMode = NeutralModeValue.Brake;
-
-    m_shooterPositionMotor.getConfigurator().apply(m_positionMotorConfig, 0.050);
-
-    positionSlot0Configs.kV = Constants.ShooterConstants.POSITION_kV;
-    positionSlot0Configs.kP = positionkPPreference.get();
-    positionSlot0Configs.kI = positionkIPreference.get();
-    positionSlot0Configs.kD = positionkDPreference.get();
-
-    m_shooterPositionMotor.getConfigurator().apply(positionSlot0Configs, 0.050);
 
 
-    m_positionSoftLimitConfig.ForwardSoftLimitEnable = true;
-    m_positionSoftLimitConfig.ForwardSoftLimitThreshold = ShooterConstants.POSITION_ForwardsLimit;
-    m_positionSoftLimitConfig.ReverseSoftLimitEnable = true;
-    m_positionSoftLimitConfig.ReverseSoftLimitThreshold = ShooterConstants.POSITION_ReverseLimit;
-
-    m_shooterPositionMotor.getConfigurator().apply(m_positionSoftLimitConfig, 0.050);
-
-    m_positionMotionMagicConfigs.MotionMagicCruiseVelocity = ShooterConstants.MOTION_MAGIC_CRUISE_VELOCITY;
-    m_positionMotionMagicConfigs.MotionMagicAcceleration = ShooterConstants.MOTION_MAGIC_ACCELERATION;
-    m_positionMotionMagicConfigs.MotionMagicJerk = ShooterConstants.MOTION_MAGIC_JERK;
-
-    m_shooterPositionMotor.getConfigurator().apply(m_positionMotionMagicConfigs);
-
-    //configure indexer motor
-    m_shooterIndexMotor.setInverted(false);
-    m_shooterIndexMotor.setIdleMode(CANSparkFlex.IdleMode.kBrake);
-    //TODO: Make actual constants
-    m_shooterIndexMotor.setSmartCurrentLimit(40);
-    m_shooterIndexMotor.setClosedLoopRampRate(1);
-    m_shooterIndexMotor.burnFlash();
-
+    this.configureShooterMotor(m_shooterMotor, m_shooterEncoder, m_RollerPidController);
+    this.configureIndexMotor(m_shooterIndexMotor);
+    this.configurePositionMotor(m_shooterPositionMotor, m_positionMotorConfig, positionSlot0Configs, m_positionSoftLimitConfig, m_positionMotionMagicConfigs);
       
+  }
+
+  private void configureShooterMotor(CANSparkMax motor, RelativeEncoder encoder, SparkPIDController pidController){
+    encoder.setVelocityConversionFactor(1);
+    motor.setInverted(false);
+    motor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
+    //TODO: Make actual constants
+    motor.setSmartCurrentLimit(40);
+    motor.setClosedLoopRampRate(1);
+    motor.burnFlash();
+    pidController.setP(shooterkPPreference.get());
+    pidController.setD(shooterkDPreference.get());
+    pidController.setI(shooterkIPreference.get());
+    pidController.setFeedbackDevice(m_shooterEncoder);
+    pidController.setOutputRange(Constants.ShooterConstants.ROLLER_MIN_OUTPUT, Constants.ShooterConstants.ROLLER_MAX_OUTPUT);
+    pidController.setFF(shooterkFPreference.get());
+
+  }
+
+  private void configureIndexMotor(CANSparkMax motor){
+     //configure indexer motor
+     motor.setInverted(false);
+     motor.setIdleMode(CANSparkFlex.IdleMode.kBrake);
+     //TODO: Make actual constants
+     motor.setSmartCurrentLimit(40);
+     motor.setClosedLoopRampRate(1);
+     motor.burnFlash();
+
+  }
+
+  private void configurePositionMotor(TalonFX motor, 
+      MotorOutputConfigs motorOutputConfigs,
+      Slot0Configs slot0PID, 
+      SoftwareLimitSwitchConfigs limitSwitchConfigs,
+      MotionMagicConfigs mmConfig){
+    
+    motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
+
+    motor.getConfigurator().apply(motorOutputConfigs, 0.050);
+
+    slot0PID.kV = Constants.ShooterConstants.POSITION_kV;
+    slot0PID.kP = positionkPPreference.get();
+    slot0PID.kI = positionkIPreference.get();
+    slot0PID.kD = positionkDPreference.get();
+
+    m_shooterPositionMotor.getConfigurator().apply(slot0PID, 0.050);
+
+
+    limitSwitchConfigs.ForwardSoftLimitEnable = true;
+    limitSwitchConfigs.ForwardSoftLimitThreshold = ShooterConstants.POSITION_ForwardsLimit;
+    limitSwitchConfigs.ReverseSoftLimitEnable = true;
+    limitSwitchConfigs.ReverseSoftLimitThreshold = ShooterConstants.POSITION_ReverseLimit;
+
+    m_shooterPositionMotor.getConfigurator().apply(limitSwitchConfigs, 0.050);
+
+    mmConfig.MotionMagicCruiseVelocity = ShooterConstants.MOTION_MAGIC_CRUISE_VELOCITY;
+    mmConfig.MotionMagicAcceleration = ShooterConstants.MOTION_MAGIC_ACCELERATION;
+    mmConfig.MotionMagicJerk = ShooterConstants.MOTION_MAGIC_JERK;
+
+    m_shooterPositionMotor.getConfigurator().apply(mmConfig);
+
   }
 
   public void spinPower(double power) {
@@ -230,17 +264,6 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     return new Pose3d(robotPose2d).plus(new Transform3d(ShooterConstants.TRANSLATION_OFFSET, 0, ShooterConstants.ELEVATION,
     new Rotation3d(0, -getAngleRadians(), Math.PI)));
   }
-
-
-  /* 
-  @Log.File
-  @Log.NT
-  public Pose3d getEndPose3d(){
-    return new Pose3d(new Translation3d(robotPose3d.getX()+Math.cos(getAngle())*ShooterConstants.LENGTH, robotPose3d.getY(), 
-              Math.sin(getAngle())*ShooterConstants.LENGTH + ShooterConstants.ELEVATION), new Rotation3d(0, getAngle(),0));
-  }
-
-  */
   
   @Log.File
   @Log.NT
@@ -258,7 +281,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     setPositionRevolutions(angle/ShooterConstants.POSITION_DEGREE_PER_MOTOR_REV);
   }
 
-  public boolean atSetpoint() {
+  public boolean armAtSetpoint() {
     if(Robot.isSimulation()) return true;
     return getPositionRevolutions() >= targetPosition - Constants.ShooterConstants.POSITION_TOLERANCE && getPositionRevolutions() <= targetPosition + Constants.ShooterConstants.POSITION_TOLERANCE; 
   }
@@ -301,12 +324,16 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     velocityIndex = m_shooterIndexEncoder.getVelocity();
     currentIndex = m_shooterIndexMotor.getOutputCurrent();
 
-   armPower = m_shooterPositionMotor.get();
-   armPosition = m_shooterPositionMotor.getPosition().getValueAsDouble();
-   armVelocity = m_shooterPositionMotor.getVelocity().getValueAsDouble();
-   armVoltage = m_shooterPositionMotor.getMotorVoltage().getValueAsDouble();
-   armTemp = m_shooterPositionMotor.getDeviceTemp().getValueAsDouble();
- 
+    armPower = m_shooterPositionMotor.get();
+    armPosition = m_shooterPositionMotor.getPosition().getValueAsDouble();
+    armVelocity = m_shooterPositionMotor.getVelocity().getValueAsDouble();
+    armVoltage = m_shooterPositionMotor.getMotorVoltage().getValueAsDouble();
+    armTemp = m_shooterPositionMotor.getDeviceTemp().getValueAsDouble();
+    armCurrent = m_shooterPositionMotor.getTorqueCurrent().getValueAsDouble();
+    m_shooterPositionMotor.getConfigurator().refresh(fxCfg);
+    armNeutralMode = fxCfg.MotorOutput.NeutralMode.toString();
+    armCurrentFault = m_shooterPositionMotor.getFault_StatorCurrLimit().getValue();
+    armRevLimiFault = m_shooterPositionMotor.getFault_ReverseSoftLimit().getValue();
     
 
     //TODO remove once tuned.
@@ -315,24 +342,18 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     m_RollerPidController.setD(shooterkDPreference.get());
     m_RollerPidController.setFF(shooterkFPreference.get());
     
-    // // apply gains, 50 ms total timeout
-    // //TODO remove once tuned.
-    // positionSlot0Configs.kP = positionkPPreference.get();
-    // positionSlot0Configs.kI = positionkIPreference.get();
-    // positionSlot0Configs.kD = positionkDPreference.get();
+    // apply gains, 50 ms total timeout
+    //TODO remove once tuned.
+    positionSlot0Configs.kP = positionkPPreference.get();
+    positionSlot0Configs.kI = positionkIPreference.get();
+    positionSlot0Configs.kD = positionkDPreference.get();
     
-    // m_shooterPositionMotor.getConfigurator().apply(positionSlot0Configs, 0.050);
+    m_shooterPositionMotor.getConfigurator().apply(positionSlot0Configs, 0.050);
 
     robotPose2d = m_robotState.getRobotPose();
   
-}
-public void simulationPeriodic(){
-  m_shooterPositionMotor.setPosition(targetPosition);
-}
-
-
-
-
-
-
+  }
+  public void simulationPeriodic(){
+    m_shooterPositionMotor.setPosition(targetPosition);
+  }
 }
