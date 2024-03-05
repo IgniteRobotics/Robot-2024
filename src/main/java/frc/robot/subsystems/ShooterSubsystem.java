@@ -131,7 +131,19 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   @Log.File
   @Log.NT
-  private String neutralMode;
+  public double armCurrent;
+
+  @Log.File
+  @Log.NT
+  private String armNeutralMode;
+
+  @Log.File
+  @Log.NT
+  private boolean armCurrentFault;
+
+  @Log.File
+  @Log.NT
+  private boolean armRevLimiFault;
 
 
   public MotionMagicVoltage shooterPosition = new MotionMagicVoltage(0);
@@ -300,9 +312,11 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
    armVelocity = m_shooterPositionMotor.getVelocity().getValueAsDouble();
    armVoltage = m_shooterPositionMotor.getMotorVoltage().getValueAsDouble();
    armTemp = m_shooterPositionMotor.getDeviceTemp().getValueAsDouble();
+   armCurrent = m_shooterPositionMotor.getTorqueCurrent().getValueAsDouble();
    m_shooterPositionMotor.getConfigurator().refresh(fxCfg);
-   neutralMode = fxCfg.MotorOutput.NeutralMode.toString();
- 
+   armNeutralMode = fxCfg.MotorOutput.NeutralMode.toString();
+   armCurrentFault = m_shooterPositionMotor.getFault_StatorCurrLimit().getValue();
+   armRevLimiFault = m_shooterPositionMotor.getFault_ReverseSoftLimit().getValue();
     
 
     //TODO remove once tuned.

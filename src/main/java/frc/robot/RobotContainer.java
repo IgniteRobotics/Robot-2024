@@ -196,12 +196,12 @@ private static class Operator {
   //  Operator.driver_rightTrigger.whileTrue(spinShooter);
    //Operator.driver_leftTrigger.whileTrue(shootPiece);
    Operator.driver_a.whileTrue(shootHighAngle);
-   Operator.driver_b.whileTrue(shootMidAngle);
-   Operator.driver_y.whileTrue(shootLowAngle);
+   //Operator.driver_b.whileTrue(shootMidAngle);
+   //Operator.driver_y.whileTrue(shootLowAngle);
    Operator.driver_x.whileTrue(shooterTune);
 
-   //Operator.driver_y.whileTrue(raiseShooter);
-   //Operator.driver_b.onTrue(stowShooter);
+   Operator.driver_y.whileTrue(raiseShooter);
+   Operator.driver_b.onTrue(stowShooter);
    Operator.driver_dpad_left.whileTrue(spinIndex);
    Operator.driver_dpad_right.whileTrue(spinRPM);
 

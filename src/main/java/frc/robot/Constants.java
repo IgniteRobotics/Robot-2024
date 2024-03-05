@@ -121,7 +121,7 @@ public final class Constants {
     public static final double POSITION_kS = 0.24;
     public static final double POSITION_kV = 0.12;
     public static final double POSITION_ForwardsLimit = 33;
-    public static final double POSITION_ReverseLimit = -8;
+    public static final double POSITION_ReverseLimit = 0;
 
 
     public static final double ROLLER_kP = 6e-5; 
@@ -132,7 +132,7 @@ public final class Constants {
     public static final double ROLLER_MIN_OUTPUT = -1;
     public static final double ROLLER_MAX_RPM = 5700;
 
-    public static final double TARGET_POSITION_DEGREES = 50;
+    public static final double TARGET_POSITION_DEGREES = 56;
     public static final double SHOOTER_HOME_DEGREES = 2;
 
     
