@@ -67,6 +67,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   private SoftwareLimitSwitchConfigs m_positionSoftLimitConfig = new SoftwareLimitSwitchConfigs();
   private MotionMagicConfigs m_positionMotionMagicConfigs = new MotionMagicConfigs();
   private MotorOutputConfigs m_positionMotorConfig = new MotorOutputConfigs();
+  private TalonFXConfiguration fxCfg = new TalonFXConfiguration();
   
   @Log.File
   @Log.NT
@@ -115,6 +116,11 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   @Log.File
   @Log.NT
   public double armPower;
+
+
+  @Log.File
+  @Log.NT
+  private String neutralMode;
 
   public MotionMagicVoltage shooterPosition = new MotionMagicVoltage(0);
 
@@ -278,7 +284,9 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
    armPower = m_shooterPositionMotor.get();
    armPosition = m_shooterPositionMotor.getPosition().getValueAsDouble();
    armVelocity = m_shooterPositionMotor.getVelocity().getValueAsDouble();
-    
+   
+  m_shooterPositionMotor.getConfigurator().refresh(fxCfg);
+  neutralMode = fxCfg.MotorOutput.NeutralMode.toString();
  
     
 
