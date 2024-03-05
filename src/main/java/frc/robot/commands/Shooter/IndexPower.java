@@ -16,12 +16,14 @@ import edu.wpi.first.math.MathUtil;
 
 public class IndexPower extends Command {
   private final ShooterSubsystem m_shooter;
-  private final Supplier<Double> m_power;
+  private final Supplier<Double> m_indexPower;
+  private final Supplier<Double> m_rollerPower;
 
   /** Creates a new RunShooterRPM. */
-  public IndexPower(ShooterSubsystem shooter, Supplier<Double> power) {
+  public IndexPower(ShooterSubsystem shooter, Supplier<Double> power, Supplier<Double> rollerpower) {
     m_shooter = shooter;
-    m_power = power;
+    m_indexPower = power;
+    m_rollerPower = rollerpower;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_shooter);
   }
@@ -34,7 +36,7 @@ public class IndexPower extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.runIndex(MathUtil.clamp(m_power.get(), -1, 1));
+    m_shooter.runIndex(MathUtil.clamp(m_rollerPower.get(), -1, 1));
   }
 
   // Called once the command ends or is interrupted.
