@@ -215,17 +215,6 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     return new Pose3d(robotPose2d).plus(new Transform3d(ShooterConstants.TRANSLATION_OFFSET, 0, ShooterConstants.ELEVATION,
     new Rotation3d(0, -getAngleRadians(), Math.PI)));
   }
-
-
-  /* 
-  @Log.File
-  @Log.NT
-  public Pose3d getEndPose3d(){
-    return new Pose3d(new Translation3d(robotPose3d.getX()+Math.cos(getAngle())*ShooterConstants.LENGTH, robotPose3d.getY(), 
-              Math.sin(getAngle())*ShooterConstants.LENGTH + ShooterConstants.ELEVATION), new Rotation3d(0, getAngle(),0));
-  }
-
-  */
   
   @Log.File
   @Log.NT
@@ -308,10 +297,10 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
     robotPose2d = m_robotState.getRobotPose();
   
-}
-public void simulationPeriodic(){
-  m_shooterPositionMotor.setPosition(targetSetPoint);
-}
+  }
+  public void simulationPeriodic(){
+    m_shooterPositionMotor.setPosition(targetSetPoint);
+  }
 
 
 
