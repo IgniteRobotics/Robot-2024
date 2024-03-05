@@ -58,7 +58,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   private DoublePreference shooterkPPreference = new DoublePreference("shooter/RPMkP", Constants.ShooterConstants.ROLLER_kP);
   private DoublePreference shooterkIPreference = new DoublePreference("shooter/RPMkI", Constants.ShooterConstants.ROLLER_kI);
   private DoublePreference shooterkDPreference = new DoublePreference("shooter/RPMkD", Constants.ShooterConstants.ROLLER_kD);
-
+  private DoublePreference shooterkFPreference = new DoublePreference("shooter/RPMkF", Constants.ShooterConstants.ROLLER_kFF);
   // position PID preferences
   private DoublePreference positionkPPreference = new DoublePreference("shooter/PositionkP", Constants.ShooterConstants.POSITION_kD);
   private DoublePreference positionkIPreference = new DoublePreference("shooter/PositionkI", Constants.ShooterConstants.POSITION_kD);
@@ -83,6 +83,10 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   @Log.File
   @Log.NT
+  private double targetVelocity;
+
+  @Log.File
+  @Log.NT
   private double tempIndex;
 
   @Log.File
@@ -95,7 +99,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   @Log.File
   @Log.NT
-  private double targetSetPoint = 0;
+  private double targetPosition = 0;
 
   @Log.File
   @Log.NT
@@ -117,10 +121,18 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   @Log.NT
   public double armPower;
 
+  @Log.File
+  @Log.NT
+  public double armVoltage;
+
+  @Log.File
+  @Log.NT
+  public double armTemp;
 
   @Log.File
   @Log.NT
   private String neutralMode;
+
 
   public MotionMagicVoltage shooterPosition = new MotionMagicVoltage(0);
 
@@ -134,6 +146,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     m_shooterPositionMotor = new TalonFX(Constants.CANConstants.SHOOTER_POSITION_MOTOR);
 
     m_shooterEncoder = m_shooterMotor.getEncoder();
+    m_shooterEncoder.setVelocityConversionFactor(1);
     m_shooterIndexEncoder = m_shooterIndexMotor.getEncoder();
  
     m_shooterMotor.setInverted(false);
@@ -150,7 +163,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     m_RollerPidController.setI(shooterkIPreference.get());
     m_RollerPidController.setFeedbackDevice(m_shooterEncoder);
     m_RollerPidController.setOutputRange(Constants.ShooterConstants.ROLLER_MIN_OUTPUT, Constants.ShooterConstants.ROLLER_MAX_OUTPUT);
-    m_RollerPidController.setFF(Constants.ShooterConstants.ROLLER_kFF);
+    m_RollerPidController.setFF(shooterkFPreference.get());
 
     m_positionMotorConfig.NeutralMode = NeutralModeValue.Brake;
 
@@ -193,6 +206,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   }
 
   public void spinRPM(double rpm) {
+    targetVelocity = rpm;
     m_RollerPidController.setReference(MathUtil.clamp(rpm, -Constants.ShooterConstants.ROLLER_MAX_RPM, Constants.ShooterConstants.ROLLER_MAX_RPM), CANSparkFlex.ControlType.kVelocity);
   }
 
@@ -230,7 +244,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   }
 
   public void setPositionRevolutions(double position) {
-    this.targetSetPoint = position;
+    this.targetPosition = position;
     m_shooterPositionMotor.setControl(shooterPosition.withPosition(position));
   }
 
@@ -240,7 +254,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   public boolean atSetpoint() {
     if(Robot.isSimulation()) return true;
-    return getPositionRevolutions() >= targetSetPoint - Constants.ShooterConstants.POSITION_TOLERANCE && getPositionRevolutions() <= targetSetPoint + Constants.ShooterConstants.POSITION_TOLERANCE; 
+    return getPositionRevolutions() >= targetPosition - Constants.ShooterConstants.POSITION_TOLERANCE && getPositionRevolutions() <= targetPosition + Constants.ShooterConstants.POSITION_TOLERANCE; 
   }
 
   public void stopRoller() {
@@ -276,7 +290,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     temp = m_shooterMotor.getMotorTemperature();
     velocity = m_shooterEncoder.getVelocity();
     current = m_shooterMotor.getOutputCurrent();
-    
+
     tempIndex = m_shooterIndexMotor.getMotorTemperature();
     velocityIndex = m_shooterIndexEncoder.getVelocity();
     currentIndex = m_shooterIndexMotor.getOutputCurrent();
@@ -284,16 +298,18 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
    armPower = m_shooterPositionMotor.get();
    armPosition = m_shooterPositionMotor.getPosition().getValueAsDouble();
    armVelocity = m_shooterPositionMotor.getVelocity().getValueAsDouble();
-   
-  m_shooterPositionMotor.getConfigurator().refresh(fxCfg);
-  neutralMode = fxCfg.MotorOutput.NeutralMode.toString();
+   armVoltage = m_shooterPositionMotor.getMotorVoltage().getValueAsDouble();
+   armTemp = m_shooterPositionMotor.getDeviceTemp().getValueAsDouble();
+   m_shooterPositionMotor.getConfigurator().refresh(fxCfg);
+   neutralMode = fxCfg.MotorOutput.NeutralMode.toString();
  
     
 
     //TODO remove once tuned.
-    // m_RollerPidController.setP(shooterkPPreference.get());
-    // m_RollerPidController.setI(shooterkIPreference.get());
-    // m_RollerPidController.setD(shooterkDPreference.get());
+    m_RollerPidController.setP(shooterkPPreference.get());
+    m_RollerPidController.setI(shooterkIPreference.get());
+    m_RollerPidController.setD(shooterkDPreference.get());
+    m_RollerPidController.setFF(shooterkFPreference.get());
     
     // // apply gains, 50 ms total timeout
     // //TODO remove once tuned.
@@ -307,12 +323,6 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   
   }
   public void simulationPeriodic(){
-    m_shooterPositionMotor.setPosition(targetSetPoint);
+    m_shooterPositionMotor.setPosition(targetPosition);
   }
-
-
-
-
-
-
 }

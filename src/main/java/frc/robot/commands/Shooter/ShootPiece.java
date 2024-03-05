@@ -36,7 +36,8 @@ public class ShootPiece extends Command {
   public void execute() {
     m_shooter.spinPower(m_power.get());
     m_shooter.setAngleDegrees(m_position.get());
-    if (m_ready.get() && m_shooter.atSetpoint()){
+    //if (m_ready.get() && m_shooter.atSetpoint()){
+    if (m_ready.get()){
       m_shooter.runIndex(m_indexPower.get());
     }
 
@@ -45,7 +46,8 @@ public class ShootPiece extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.stopAll();
+    m_shooter.stopIndexer();
+    m_shooter.stopRoller();
   }
 
   // Returns true when the command should end.
