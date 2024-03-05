@@ -281,7 +281,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     setPositionRevolutions(angle/ShooterConstants.POSITION_DEGREE_PER_MOTOR_REV);
   }
 
-  public boolean atSetpoint() {
+  public boolean armAtSetpoint() {
     if(Robot.isSimulation()) return true;
     return getPositionRevolutions() >= targetPosition - Constants.ShooterConstants.POSITION_TOLERANCE && getPositionRevolutions() <= targetPosition + Constants.ShooterConstants.POSITION_TOLERANCE; 
   }
@@ -324,16 +324,16 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     velocityIndex = m_shooterIndexEncoder.getVelocity();
     currentIndex = m_shooterIndexMotor.getOutputCurrent();
 
-   armPower = m_shooterPositionMotor.get();
-   armPosition = m_shooterPositionMotor.getPosition().getValueAsDouble();
-   armVelocity = m_shooterPositionMotor.getVelocity().getValueAsDouble();
-   armVoltage = m_shooterPositionMotor.getMotorVoltage().getValueAsDouble();
-   armTemp = m_shooterPositionMotor.getDeviceTemp().getValueAsDouble();
-   armCurrent = m_shooterPositionMotor.getTorqueCurrent().getValueAsDouble();
-   m_shooterPositionMotor.getConfigurator().refresh(fxCfg);
-   armNeutralMode = fxCfg.MotorOutput.NeutralMode.toString();
-   armCurrentFault = m_shooterPositionMotor.getFault_StatorCurrLimit().getValue();
-   armRevLimiFault = m_shooterPositionMotor.getFault_ReverseSoftLimit().getValue();
+    armPower = m_shooterPositionMotor.get();
+    armPosition = m_shooterPositionMotor.getPosition().getValueAsDouble();
+    armVelocity = m_shooterPositionMotor.getVelocity().getValueAsDouble();
+    armVoltage = m_shooterPositionMotor.getMotorVoltage().getValueAsDouble();
+    armTemp = m_shooterPositionMotor.getDeviceTemp().getValueAsDouble();
+    armCurrent = m_shooterPositionMotor.getTorqueCurrent().getValueAsDouble();
+    m_shooterPositionMotor.getConfigurator().refresh(fxCfg);
+    armNeutralMode = fxCfg.MotorOutput.NeutralMode.toString();
+    armCurrentFault = m_shooterPositionMotor.getFault_StatorCurrLimit().getValue();
+    armRevLimiFault = m_shooterPositionMotor.getFault_ReverseSoftLimit().getValue();
     
 
     //TODO remove once tuned.
@@ -342,13 +342,13 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     m_RollerPidController.setD(shooterkDPreference.get());
     m_RollerPidController.setFF(shooterkFPreference.get());
     
-    // // apply gains, 50 ms total timeout
-    // //TODO remove once tuned.
-    // positionSlot0Configs.kP = positionkPPreference.get();
-    // positionSlot0Configs.kI = positionkIPreference.get();
-    // positionSlot0Configs.kD = positionkDPreference.get();
+    // apply gains, 50 ms total timeout
+    //TODO remove once tuned.
+    positionSlot0Configs.kP = positionkPPreference.get();
+    positionSlot0Configs.kI = positionkIPreference.get();
+    positionSlot0Configs.kD = positionkDPreference.get();
     
-    // m_shooterPositionMotor.getConfigurator().apply(positionSlot0Configs, 0.050);
+    m_shooterPositionMotor.getConfigurator().apply(positionSlot0Configs, 0.050);
 
     robotPose2d = m_robotState.getRobotPose();
   
