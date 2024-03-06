@@ -8,6 +8,10 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -15,6 +19,8 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import frc.utils.InterCalculator;
+import frc.utils.InterParameter;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -57,6 +63,7 @@ public final class Constants {
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
     // SPARK MAX CAN IDs
+  
     
 
     public static final boolean kGyroReversed = false;
@@ -135,10 +142,28 @@ public final class Constants {
     public static final double TARGET_POSITION_DEGREES = 56;
     public static final double SHOOTER_HOME_DEGREES = 2;
 
+    // DISTANCE, ANGLE, RPM
+    public static final InterCalculator SHOOTER_INTER_CALCULATOR = new InterCalculator(
+      new InterParameter(0, 75, 2500),
+      new InterParameter(3, 50, 2750),
+      new InterParameter(5, 35, 3000)
+    );
+
+    //RED 4 
+    //"x": 16.579342,
+    //"y": 5.547867999999999, 
+    //BLUE 7
+    //"x": -0.038099999999999995,
+    //"y": 5.547867999999999,
+    public static final Pose2d RED_SPEAKER = new Pose2d(16.58, 5.55, Rotation2d.fromDegrees(0));
+    public static final Pose2d BLUE_SPEAKER =  new Pose2d(0, 5.55, Rotation2d.fromDegrees(180));
+
     
 
     //TODO: TUNE
     public static final double POSITION_TOLERANCE = 2.0;
+
+    public static final double VELOCITY_TOLERANCE = 75;
 
     public static final double LENGTH = 1.5;
 

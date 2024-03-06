@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import monologue.Monologue;
@@ -84,6 +85,12 @@ public class Robot extends TimedRobot implements Logged {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red){
+      RobotState.getInstance().setSpeakerPose(Constants.ShooterConstants.RED_SPEAKER);
+    } else {
+      RobotState.getInstance().setSpeakerPose(Constants.ShooterConstants.BLUE_SPEAKER);
+    }
+    
     Monologue.setFileOnly(DriverStation.isFMSAttached());
     Monologue.updateAll();
   }

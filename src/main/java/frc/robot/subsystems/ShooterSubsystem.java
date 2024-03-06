@@ -68,7 +68,15 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   private MotionMagicConfigs m_positionMotionMagicConfigs = new MotionMagicConfigs();
   private MotorOutputConfigs m_positionMotorConfig = new MotorOutputConfigs();
   private TalonFXConfiguration fxCfg = new TalonFXConfiguration();
-  
+
+  public MotionMagicVoltage shooterPosition = new MotionMagicVoltage(0);
+
+  private RobotState m_robotState = RobotState.getInstance();
+
+
+
+  /*********************  Telemetry Variables *********************/
+
   @Log.File
   @Log.NT
   private double temp;
@@ -144,11 +152,6 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   @Log.File
   @Log.NT
   private boolean armRevLimiFault;
-
-
-  public MotionMagicVoltage shooterPosition = new MotionMagicVoltage(0);
-
-  private RobotState m_robotState = RobotState.getInstance();
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -237,6 +240,11 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   public void spinRPM(double rpm) {
     targetVelocity = rpm;
     m_RollerPidController.setReference(MathUtil.clamp(rpm, -Constants.ShooterConstants.ROLLER_MAX_RPM, Constants.ShooterConstants.ROLLER_MAX_RPM), CANSparkFlex.ControlType.kVelocity);
+  }
+
+  public boolean atRPM(){
+    if(Robot.isSimulation()) return true;
+    return velocity >= targetVelocity - Constants.ShooterConstants.VELOCITY_TOLERANCE && velocity <= targetVelocity + Constants.ShooterConstants.VELOCITY_TOLERANCE;
   }
 
   public void runIndex(double power){
