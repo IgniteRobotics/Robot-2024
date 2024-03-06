@@ -155,7 +155,9 @@ public final class Constants {
     //BLUE 7
     //"x": -0.038099999999999995,
     //"y": 5.547867999999999,
+    public static final int RED_SPEAKER_ID = 4;
     public static final Pose2d RED_SPEAKER = new Pose2d(16.58, 5.55, Rotation2d.fromDegrees(0));
+    public static final int BLUE_SPEAKER_ID = 7;
     public static final Pose2d BLUE_SPEAKER =  new Pose2d(0, 5.55, Rotation2d.fromDegrees(180));
 
     
