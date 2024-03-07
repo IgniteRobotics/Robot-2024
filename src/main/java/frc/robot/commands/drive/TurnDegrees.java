@@ -46,9 +46,10 @@ public class TurnDegrees extends Command {
   @Override
   public void execute() {
     double rotation = m_targetHeading - m_drive.getAngle();
+    rotation = -rotationController.calculate(rotation,0);
     m_drive.drive(0,
                   0,
-                  rotation, 
+                  rotation,
                   true, 
                   true);
     
