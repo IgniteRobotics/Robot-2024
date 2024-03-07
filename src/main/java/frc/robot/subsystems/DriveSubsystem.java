@@ -151,11 +151,11 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   DoublePreference autoRotationPValue = new DoublePreference("auto/rotationP", 1);
   DoublePreference autoRotationDValue = new DoublePreference("auto/rotationD", 0);
   /** Creates a new DriveSubsystem. */
-  public DriveSubsystem() {
+  public DriveSubsystem(PhotonCameraWrapper photonCameraWrapper) {
     
 
 
-    m_photonCameraWrapper = new PhotonCameraWrapper();
+    m_photonCameraWrapper = photonCameraWrapper;
     poseEstimator = new SwerveDrivePoseEstimator(
                           DriveConstants.kDriveKinematics, 
                           this.getYaw(),
@@ -340,6 +340,17 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   @Log.File
   public Pose2d getPose() {
     return poseEstimator.getEstimatedPosition();
+  }
+
+  public void setPose(Pose2d pose){
+    poseEstimator.resetPosition(
+        pose.getRotation(), 
+        new SwerveModulePosition[] {
+          m_frontLeft.getPosition(),
+          m_frontRight.getPosition(),
+          m_rearLeft.getPosition(),
+          m_rearRight.getPosition()}, 
+        pose);
   }
 
   @Log.NT

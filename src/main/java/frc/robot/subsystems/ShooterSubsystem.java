@@ -60,15 +60,23 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   private DoublePreference shooterkDPreference = new DoublePreference("shooter/RPMkD", Constants.ShooterConstants.ROLLER_kD);
   private DoublePreference shooterkFPreference = new DoublePreference("shooter/RPMkF", Constants.ShooterConstants.ROLLER_kFF);
   // position PID preferences
-  private DoublePreference positionkPPreference = new DoublePreference("shooter/PositionkP", Constants.ShooterConstants.POSITION_kD);
-  private DoublePreference positionkIPreference = new DoublePreference("shooter/PositionkI", Constants.ShooterConstants.POSITION_kD);
+  private DoublePreference positionkPPreference = new DoublePreference("shooter/PositionkP", Constants.ShooterConstants.POSITION_kP);
+  private DoublePreference positionkIPreference = new DoublePreference("shooter/PositionkI", Constants.ShooterConstants.POSITION_kI);
   private DoublePreference positionkDPreference = new DoublePreference("shooter/PositionkD", Constants.ShooterConstants.POSITION_kD);
   
   private SoftwareLimitSwitchConfigs m_positionSoftLimitConfig = new SoftwareLimitSwitchConfigs();
   private MotionMagicConfigs m_positionMotionMagicConfigs = new MotionMagicConfigs();
   private MotorOutputConfigs m_positionMotorConfig = new MotorOutputConfigs();
   private TalonFXConfiguration fxCfg = new TalonFXConfiguration();
-  
+
+  public MotionMagicVoltage shooterPosition = new MotionMagicVoltage(0);
+
+  private RobotState m_robotState = RobotState.getInstance();
+
+
+
+  /*********************  Telemetry Variables *********************/
+
   @Log.File
   @Log.NT
   private double temp;
@@ -144,11 +152,6 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   @Log.File
   @Log.NT
   private boolean armRevLimiFault;
-
-
-  public MotionMagicVoltage shooterPosition = new MotionMagicVoltage(0);
-
-  private RobotState m_robotState = RobotState.getInstance();
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -237,6 +240,11 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   public void spinRPM(double rpm) {
     targetVelocity = rpm;
     m_RollerPidController.setReference(MathUtil.clamp(rpm, -Constants.ShooterConstants.ROLLER_MAX_RPM, Constants.ShooterConstants.ROLLER_MAX_RPM), CANSparkFlex.ControlType.kVelocity);
+  }
+
+  public boolean atRPM(){
+    if(Robot.isSimulation()) return true;
+    return velocity >= targetVelocity - Constants.ShooterConstants.VELOCITY_TOLERANCE && velocity <= targetVelocity + Constants.ShooterConstants.VELOCITY_TOLERANCE;
   }
 
   public void runIndex(double power){

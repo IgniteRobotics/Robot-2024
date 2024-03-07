@@ -21,16 +21,21 @@ import frc.robot.commands.intake.StowIntake;
 import frc.robot.input.AxisButton;
 import frc.robot.commands.Shooter.RunShooterPower;
 import frc.robot.commands.Shooter.RunShooterRPM;
+import frc.robot.commands.Shooter.ShootInterpolated;
 import frc.robot.commands.Shooter.ShootPiece;
+import frc.robot.commands.drive.DriveToTarget;
 import frc.robot.commands.Shooter.IndexPower;
 import frc.robot.commands.Shooter.PositionShooter;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.UmbrellaSubsystem;
+import frc.robot.subsystems.drive.PhotonCameraWrapper;
 import monologue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -57,12 +62,16 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer implements Logged {
   // The robot's subsystems
 
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final PhotonCameraWrapper m_photonCameraWrapper = new PhotonCameraWrapper();
+
+  protected final DriveSubsystem m_robotDrive = new DriveSubsystem(m_photonCameraWrapper);
   
   private final IntakeSubsystem m_robotIntake = new IntakeSubsystem();
   //private final UmbrellaSubsystem m_umbrella  = new UmbrellaSubsystem();
   private final ShooterSubsystem m_shooter = new ShooterSubsystem();
 
+  
+  private final RobotState m_robotState = RobotState.getInstance();
 
   //Robot preferences
   private DoublePreference intakePower = new DoublePreference("intake/intakePower", 0.5);
@@ -104,7 +113,7 @@ public class RobotContainer implements Logged {
     private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
     private final Command stowIntake = new StowIntake(m_robotIntake);
     private final Command parkCommand = new ParkCommand(m_robotDrive);
-    private final Command stowShooter = new PositionShooter(m_shooter, Constants.ShooterConstants.SHOOTER_HOME_DEGREES);
+    private final Command stowShooter = new PositionShooter(m_shooter, intakePosition);
     private final Command raiseShooter = new PositionShooter(m_shooter, intakeShooterPosition);
     private final Command spinShooter = new RunShooterPower(m_shooter, shooterPower);
     private final Command spinIndex = new IndexPower(m_shooter, outdexPower, outtakePower);
@@ -114,6 +123,21 @@ public class RobotContainer implements Logged {
     private final Command spinRPM = new RunShooterRPM(m_shooter, shooterRPM);
 
     private final Command shooterTune = new ShootPiece(m_shooter, tuningPosition, tuningPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command shootInterpolated = new ShootInterpolated(m_shooter, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command driveToTarget = new DriveToTarget(m_robotDrive, 
+            m_photonCameraWrapper, 
+            m_robotState::getSpeakerID,
+            Operator.driver_axisLX, 
+            Operator.driver_axisLY);
+
+    private final Command autoShootInterpolated = new ShootInterpolated(m_shooter, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command autoDriveToTarget = new DriveToTarget(m_robotDrive, 
+            m_photonCameraWrapper, 
+            m_robotState::getSpeakerID,
+            Operator.driver_axisLX, 
+            Operator.driver_axisLY);
+    private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(autoShootInterpolated, autoDriveToTarget);
+    
     private final SendableChooser<Command> autonChooser;
 
   private final double pathSpeed = 2;
@@ -126,9 +150,9 @@ private static class Operator {
 
     private static Joystick driver = new Joystick(0);
 
-    private static DoubleSupplier driver_axisLX = () -> MathUtil.applyDeadband(driver.getRawAxis(0), Constants.OIConstants.kDriveDeadband);
-    private static DoubleSupplier driver_axisLY = () -> MathUtil.applyDeadband(-driver.getRawAxis(1), Constants.OIConstants.kDriveDeadband);
-    private static DoubleSupplier driver_axisRY = () -> MathUtil.applyDeadband(-driver.getRawAxis(5), Constants.OIConstants.kDriveDeadband);
+    private static Supplier<Double> driver_axisLX = () -> MathUtil.applyDeadband(-driver.getRawAxis(0), Constants.OIConstants.kDriveDeadband);
+    private static Supplier<Double> driver_axisLY = () -> MathUtil.applyDeadband(-driver.getRawAxis(1), Constants.OIConstants.kDriveDeadband);
+    private static Supplier<Double> driver_axisRY = () -> MathUtil.applyDeadband(-driver.getRawAxis(5), Constants.OIConstants.kDriveDeadband);
 
     private static JoystickButton driver_x = new JoystickButton(driver, XboxController.Button.kX.value);
     private static JoystickButton driver_a = new JoystickButton(driver, XboxController.Button.kA.value);
@@ -184,7 +208,6 @@ private static class Operator {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-
     
    Operator.driver_start.whileTrue(resetGyro);
    Operator.driver_rightBumper.whileTrue(intakePiece);
@@ -195,15 +218,18 @@ private static class Operator {
   //  Operator.driver_leftTrigger.whileTrue(spinIndex);
   //  Operator.driver_rightTrigger.whileTrue(spinShooter);
    //Operator.driver_leftTrigger.whileTrue(shootPiece);
-   Operator.driver_a.whileTrue(shootHighAngle);
+   //Operator.driver_a.whileTrue(shootHighAngle);
    //Operator.driver_b.whileTrue(shootMidAngle);
    //Operator.driver_y.whileTrue(shootLowAngle);
-   Operator.driver_x.whileTrue(shooterTune);
+   //Operator.driver_x.whileTrue(shooterTune);
 
-   Operator.driver_y.whileTrue(raiseShooter);
-   Operator.driver_b.onTrue(stowShooter);
+   //Operator.driver_y.whileTrue(raiseShooter);
+   //Operator.driver_b.onTrue(stowShooter);
    Operator.driver_dpad_left.whileTrue(spinIndex);
    Operator.driver_dpad_right.whileTrue(spinRPM);
+   Operator.driver_a.whileTrue(shootInterpolated);
+   Operator.driver_b.whileTrue(driveToTarget);
+   Operator.driver_x.whileTrue(speakerShotGroup);
 
     // new JoystickButton(m_driverController, XboxController.Button.kY.value)
     //     .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
@@ -228,7 +254,7 @@ private static class Operator {
           m_robotDrive));
 
     m_robotIntake.setDefaultCommand(stowIntake);
-    //m_shooter.setDefaultCommand(stowShooter);
+    m_shooter.setDefaultCommand(stowShooter);
 
   }
   /**

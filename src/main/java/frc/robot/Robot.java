@@ -9,12 +9,16 @@ import org.littletonrobotics.urcl.URCL;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.ShooterConstants;
 import monologue.Monologue;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -84,6 +88,14 @@ public class Robot extends TimedRobot implements Logged {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red){
+      RobotState.getInstance().setSpeakerPose(Constants.ShooterConstants.RED_SPEAKER,
+                                              Constants.ShooterConstants.RED_SPEAKER_ID);
+    } else {
+      RobotState.getInstance().setSpeakerPose(Constants.ShooterConstants.BLUE_SPEAKER,
+                                              Constants.ShooterConstants.BLUE_SPEAKER_ID);
+    }
+    
     Monologue.setFileOnly(DriverStation.isFMSAttached());
     Monologue.updateAll();
   }
@@ -145,7 +157,9 @@ public class Robot extends TimedRobot implements Logged {
   
   /** This function is called once when the robot is first started up. */
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+    m_robotContainer.m_robotDrive.setPose(new Pose2d(4,5, Rotation2d.fromDegrees(0)));
+  }
 
   /** This function is called periodically whilst in simulation. */
   @Override

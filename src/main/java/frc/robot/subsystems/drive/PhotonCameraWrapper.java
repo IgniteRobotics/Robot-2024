@@ -24,6 +24,9 @@ public class PhotonCameraWrapper {
     public PhotonPoseEstimator photonPoseEstimatorRearLeft;
     public PhotonCamera photonCameraRearRight;
     public PhotonPoseEstimator photonPoseEstimatorRearRight;
+
+    private PhotonCamera[] allCameras = new PhotonCamera[4];
+
     
 
     public AprilTagFieldLayout layout;
@@ -37,6 +40,11 @@ public class PhotonCameraWrapper {
         photonCameraFrontRight = new PhotonCamera(CameraConstants.photonCameraNameFrontRight);
         photonCameraRearLeft = new PhotonCamera(CameraConstants.photonCameraNameRearLeft);
         photonCameraRearRight = new PhotonCamera(CameraConstants.photonCameraNameRearRight);
+
+        allCameras[0] = photonCameraFrontLeft;
+        allCameras[1] = photonCameraFrontRight;
+        allCameras[2] = photonCameraRearLeft;
+        allCameras[3] = photonCameraRearRight;
         
         try {
             layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
@@ -72,4 +80,19 @@ public class PhotonCameraWrapper {
     public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
         return getEstimatedGlobalPose(prevEstimatedRobotPose, Side.FRONT_LEFT);
     }
+
+    public Optional<Double> getYawToTarget(int id){
+        
+        for (PhotonCamera cam : allCameras){
+            var result = cam.getLatestResult();
+            for (var target : result.getTargets()){
+                if (id == target.getFiducialId()){
+                    return Optional.of(Double.valueOf(target.getYaw()));
+                }
+            }
+        }
+        return Optional.empty();
+
+    }
+
 }
