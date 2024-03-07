@@ -230,5 +230,93 @@
     "properties": {
       "persistent": true
     }
+  },
+  {
+    "name": "/Preferences/shooter/IndexPower",
+    "type": "double",
+    "value": 0.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/RPMkF",
+    "type": "double",
+    "value": 1.5e-05,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/OuttakePower",
+    "type": "double",
+    "value": -0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/shootingPosition",
+    "type": "double",
+    "value": 65.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/OutdexPower",
+    "type": "double",
+    "value": -0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/tuning_rpm",
+    "type": "double",
+    "value": 2500.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/tuning_Position",
+    "type": "double",
+    "value": 65.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/lowAngle",
+    "type": "double",
+    "value": 35.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/midAngle",
+    "type": "double",
+    "value": 50.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/highAngle",
+    "type": "double",
+    "value": 75.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/highPower",
+    "type": "double",
+    "value": 78.0,
+    "properties": {
+      "persistent": true
+    }
   }
 ]
