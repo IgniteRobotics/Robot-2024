@@ -44,7 +44,7 @@ public class DriveToTarget extends Command {
     Optional<Double> yaw = m_cameras.getYawToTarget(m_targetId.get());
     double rotation = 0.0;
     if (yaw.isPresent()){
-      rotation = MathUtil.clamp(yaw.get(), -1.0, 1.0);
+      rotation = -rotationController.calculate(rotation,0);
     }
     m_drive.drive(m_driveX.get(), 
                   m_driveY.get(),
