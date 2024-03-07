@@ -215,9 +215,6 @@ private static class Operator {
    Operator.driver_back.onTrue(parkCommand);
    Operator.driver_dpad_up.whileTrue(new InstantCommand(()-> m_shooter.moveArm(.1), m_shooter));
    Operator.driver_dpad_down.whileTrue(new InstantCommand(() -> m_shooter.moveArm(-.1), m_shooter));
-  //  Operator.driver_leftTrigger.whileTrue(spinIndex);
-  //  Operator.driver_rightTrigger.whileTrue(spinShooter);
-   //Operator.driver_leftTrigger.whileTrue(shootPiece);
    //Operator.driver_a.whileTrue(shootHighAngle);
    //Operator.driver_b.whileTrue(shootMidAngle);
    //Operator.driver_y.whileTrue(shootLowAngle);
@@ -225,8 +222,8 @@ private static class Operator {
 
    //Operator.driver_y.whileTrue(raiseShooter);
    //Operator.driver_b.onTrue(stowShooter);
-   Operator.driver_dpad_left.whileTrue(spinIndex);
-   Operator.driver_dpad_right.whileTrue(spinRPM);
+  //  Operator.driver_dpad_left.whileTrue(spinIndex);
+  //  Operator.driver_dpad_right.whileTrue(spinRPM);
    Operator.driver_a.whileTrue(shootInterpolated);
    Operator.driver_b.whileTrue(driveToTarget);
    Operator.driver_x.whileTrue(speakerShotGroup);
