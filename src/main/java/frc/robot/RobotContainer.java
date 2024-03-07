@@ -113,7 +113,7 @@ public class RobotContainer implements Logged {
     private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
     private final Command stowIntake = new StowIntake(m_robotIntake);
     private final Command parkCommand = new ParkCommand(m_robotDrive);
-    private final Command stowShooter = new PositionShooter(m_shooter, Constants.ShooterConstants.SHOOTER_HOME_DEGREES);
+    private final Command stowShooter = new PositionShooter(m_shooter, intakePosition);
     private final Command raiseShooter = new PositionShooter(m_shooter, intakeShooterPosition);
     private final Command spinShooter = new RunShooterPower(m_shooter, shooterPower);
     private final Command spinIndex = new IndexPower(m_shooter, outdexPower, outtakePower);
