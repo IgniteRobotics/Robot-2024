@@ -24,6 +24,7 @@ import frc.robot.commands.Shooter.RunShooterRPM;
 import frc.robot.commands.Shooter.ShootInterpolated;
 import frc.robot.commands.Shooter.ShootPiece;
 import frc.robot.commands.drive.DriveToTarget;
+import frc.robot.commands.drive.TurnDegrees;
 import frc.robot.commands.Shooter.IndexPower;
 import frc.robot.commands.Shooter.PositionShooter;
 import frc.robot.subsystems.DriveSubsystem;
@@ -121,6 +122,8 @@ public class RobotContainer implements Logged {
     private final Command shootMidAngle = new ShootPiece(m_shooter, shooterMidAngle, shooterPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command shootLowAngle = new ShootPiece(m_shooter, shooterLowAngle, shooterHighPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command spinRPM = new RunShooterRPM(m_shooter, shooterRPM);
+
+    private final Command testTurnPID = new TurnDegrees(m_robotDrive, 15);
 
     private final Command shooterTune = new ShootPiece(m_shooter, tuningPosition, tuningPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command shootInterpolated = new ShootInterpolated(m_shooter, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
@@ -227,6 +230,7 @@ private static class Operator {
    Operator.driver_a.whileTrue(shootInterpolated);
    Operator.driver_b.whileTrue(driveToTarget);
    Operator.driver_x.whileTrue(speakerShotGroup);
+   Operator.driver_y.whileTrue(testTurnPID);
 
     // new JoystickButton(m_driverController, XboxController.Button.kY.value)
     //     .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
