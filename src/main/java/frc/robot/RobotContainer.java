@@ -130,7 +130,13 @@ public class RobotContainer implements Logged {
             Operator.driver_axisLX, 
             Operator.driver_axisLY);
 
-    //private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
+    private final Command autoShootInterpolated = new ShootInterpolated(m_shooter, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command autoDriveToTarget = new DriveToTarget(m_robotDrive, 
+            m_photonCameraWrapper, 
+            m_robotState::getSpeakerID,
+            Operator.driver_axisLX, 
+            Operator.driver_axisLY);
+    private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(autoShootInterpolated, autoDriveToTarget);
     
     private final SendableChooser<Command> autonChooser;
 
@@ -223,7 +229,7 @@ private static class Operator {
    Operator.driver_dpad_right.whileTrue(spinRPM);
    Operator.driver_a.whileTrue(shootInterpolated);
    Operator.driver_b.whileTrue(driveToTarget);
-   //Operator.driver_x.whileTrue(speakerShotGroup);
+   Operator.driver_x.whileTrue(speakerShotGroup);
 
     // new JoystickButton(m_driverController, XboxController.Button.kY.value)
     //     .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
