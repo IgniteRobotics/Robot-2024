@@ -9,7 +9,9 @@ import org.littletonrobotics.urcl.URCL;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -152,7 +154,9 @@ public class Robot extends TimedRobot implements Logged {
   
   /** This function is called once when the robot is first started up. */
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+    m_robotContainer.m_robotDrive.setPose(new Pose2d(4,5, Rotation2d.fromDegrees(0)));
+  }
 
   /** This function is called periodically whilst in simulation. */
   @Override

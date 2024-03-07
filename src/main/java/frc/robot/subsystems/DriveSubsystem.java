@@ -342,6 +342,17 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     return poseEstimator.getEstimatedPosition();
   }
 
+  public void setPose(Pose2d pose){
+    poseEstimator.resetPosition(
+        pose.getRotation(), 
+        new SwerveModulePosition[] {
+          m_frontLeft.getPosition(),
+          m_frontRight.getPosition(),
+          m_rearLeft.getPosition(),
+          m_rearRight.getPosition()}, 
+        pose);
+  }
+
   @Log.NT
   @Log.File
   public Pose2d getAutonPose() {

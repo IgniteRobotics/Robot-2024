@@ -60,8 +60,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   private DoublePreference shooterkDPreference = new DoublePreference("shooter/RPMkD", Constants.ShooterConstants.ROLLER_kD);
   private DoublePreference shooterkFPreference = new DoublePreference("shooter/RPMkF", Constants.ShooterConstants.ROLLER_kFF);
   // position PID preferences
-  private DoublePreference positionkPPreference = new DoublePreference("shooter/PositionkP", Constants.ShooterConstants.POSITION_kD);
-  private DoublePreference positionkIPreference = new DoublePreference("shooter/PositionkI", Constants.ShooterConstants.POSITION_kD);
+  private DoublePreference positionkPPreference = new DoublePreference("shooter/PositionkP", Constants.ShooterConstants.POSITION_kP);
+  private DoublePreference positionkIPreference = new DoublePreference("shooter/PositionkI", Constants.ShooterConstants.POSITION_kI);
   private DoublePreference positionkDPreference = new DoublePreference("shooter/PositionkD", Constants.ShooterConstants.POSITION_kD);
   
   private SoftwareLimitSwitchConfigs m_positionSoftLimitConfig = new SoftwareLimitSwitchConfigs();

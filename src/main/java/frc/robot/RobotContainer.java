@@ -21,6 +21,7 @@ import frc.robot.commands.intake.StowIntake;
 import frc.robot.input.AxisButton;
 import frc.robot.commands.Shooter.RunShooterPower;
 import frc.robot.commands.Shooter.RunShooterRPM;
+import frc.robot.commands.Shooter.ShootInterpolated;
 import frc.robot.commands.Shooter.ShootPiece;
 import frc.robot.commands.Shooter.IndexPower;
 import frc.robot.commands.Shooter.PositionShooter;
@@ -57,7 +58,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer implements Logged {
   // The robot's subsystems
 
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  protected final DriveSubsystem m_robotDrive = new DriveSubsystem();
   
   private final IntakeSubsystem m_robotIntake = new IntakeSubsystem();
   //private final UmbrellaSubsystem m_umbrella  = new UmbrellaSubsystem();
@@ -114,6 +115,7 @@ public class RobotContainer implements Logged {
     private final Command spinRPM = new RunShooterRPM(m_shooter, shooterRPM);
 
     private final Command shooterTune = new ShootPiece(m_shooter, tuningPosition, tuningPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command shootInterpolated = new ShootInterpolated(m_shooter, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final SendableChooser<Command> autonChooser;
 
   private final double pathSpeed = 2;
@@ -195,7 +197,7 @@ private static class Operator {
   //  Operator.driver_leftTrigger.whileTrue(spinIndex);
   //  Operator.driver_rightTrigger.whileTrue(spinShooter);
    //Operator.driver_leftTrigger.whileTrue(shootPiece);
-   Operator.driver_a.whileTrue(shootHighAngle);
+   //Operator.driver_a.whileTrue(shootHighAngle);
    //Operator.driver_b.whileTrue(shootMidAngle);
    //Operator.driver_y.whileTrue(shootLowAngle);
    Operator.driver_x.whileTrue(shooterTune);
@@ -204,6 +206,7 @@ private static class Operator {
    Operator.driver_b.onTrue(stowShooter);
    Operator.driver_dpad_left.whileTrue(spinIndex);
    Operator.driver_dpad_right.whileTrue(spinRPM);
+   Operator.driver_a.whileTrue(shootInterpolated);
 
     // new JoystickButton(m_driverController, XboxController.Button.kY.value)
     //     .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
@@ -228,7 +231,7 @@ private static class Operator {
           m_robotDrive));
 
     m_robotIntake.setDefaultCommand(stowIntake);
-    //m_shooter.setDefaultCommand(stowShooter);
+    m_shooter.setDefaultCommand(stowShooter);
 
   }
   /**

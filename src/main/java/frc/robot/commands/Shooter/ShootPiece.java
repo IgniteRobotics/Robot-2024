@@ -25,6 +25,7 @@ public class ShootPiece extends Command {
     m_indexPower = indexpower;
     m_ready = ready;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(m_shooter);
   }
 
   // Called when the command is initially scheduled.
