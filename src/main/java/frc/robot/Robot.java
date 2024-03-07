@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.ShooterConstants;
 import monologue.Monologue;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -88,9 +89,11 @@ public class Robot extends TimedRobot implements Logged {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red){
-      RobotState.getInstance().setSpeakerPose(Constants.ShooterConstants.RED_SPEAKER);
+      RobotState.getInstance().setSpeakerPose(Constants.ShooterConstants.RED_SPEAKER,
+                                              Constants.ShooterConstants.RED_SPEAKER_ID);
     } else {
-      RobotState.getInstance().setSpeakerPose(Constants.ShooterConstants.BLUE_SPEAKER);
+      RobotState.getInstance().setSpeakerPose(Constants.ShooterConstants.BLUE_SPEAKER,
+                                              Constants.ShooterConstants.BLUE_SPEAKER_ID);
     }
     
     Monologue.setFileOnly(DriverStation.isFMSAttached());

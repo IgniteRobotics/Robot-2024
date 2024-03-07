@@ -160,7 +160,6 @@ public final class Constants {
     public static final int BLUE_SPEAKER_ID = 7;
     public static final Pose2d BLUE_SPEAKER =  new Pose2d(0, 5.55, Rotation2d.fromDegrees(180));
 
-    
 
     //TODO: TUNE
     public static final double POSITION_TOLERANCE = 2.0;
@@ -182,6 +181,9 @@ public final class Constants {
     public static final double MOTION_MAGIC_CRUISE_VELOCITY = .5 * 360 / POSITION_DEGREE_PER_MOTOR_REV;
     public static final double MOTION_MAGIC_ACCELERATION = 1 * 360 / POSITION_DEGREE_PER_MOTOR_REV;
     public static final double MOTION_MAGIC_JERK = 10 * MOTION_MAGIC_ACCELERATION;
+
+    public static final double AUTO_TARGET_ROT_kP = 1.0;
+    public static final double AUTO_TARGET_ROT_kD = 0.0;
   }
 
   public static final class IntakeConstants {

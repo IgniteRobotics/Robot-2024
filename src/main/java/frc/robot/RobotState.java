@@ -12,6 +12,7 @@ public class RobotState {
 
     private Pose2d m_robotPose2d;
     private Pose2d m_speakerPose2d;
+    private int m_speakerID = 0;
 
     private static RobotState single_instance = null;
 
@@ -35,12 +36,17 @@ public class RobotState {
         return m_robotPose2d;
     }
 
-    public synchronized void setSpeakerPose(Pose2d pose){
+    public synchronized void setSpeakerPose(Pose2d pose, int id){
         m_speakerPose2d = pose;
+        m_speakerID = id;
     }
 
     public Pose2d getSpeakerPose2d(){
         return m_robotPose2d;
+    }
+
+    public int getSpeakerID(){
+        return m_speakerID;
     }
 
     public double getDistancetoSpeaker(){
