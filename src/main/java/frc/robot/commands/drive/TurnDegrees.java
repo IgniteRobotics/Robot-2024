@@ -62,6 +62,6 @@ public class TurnDegrees extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(m_drive.getAngle() - m_targetHeading) < rotTolerance.get();
+    return Math.abs(m_drive.getAngle() - m_targetHeading) <= rotTolerance.get();
   }
 }
