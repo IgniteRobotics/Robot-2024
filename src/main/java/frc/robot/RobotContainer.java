@@ -230,7 +230,7 @@ private static class Operator {
    Operator.driver_a.whileTrue(shootInterpolated);
    Operator.driver_b.whileTrue(driveToTarget);
    Operator.driver_x.whileTrue(speakerShotGroup);
-   Operator.driver_y.whileTrue(testTurnPID);
+   Operator.driver_y.whileTrue(spinIndex);
 
     // new JoystickButton(m_driverController, XboxController.Button.kY.value)
     //     .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
@@ -255,7 +255,7 @@ private static class Operator {
           m_robotDrive));
 
     m_robotIntake.setDefaultCommand(stowIntake);
-    m_shooter.setDefaultCommand(stowShooter);
+    //m_shooter.setDefaultCommand(stowShooter);
 
   }
   /**
