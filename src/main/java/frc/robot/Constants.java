@@ -130,9 +130,9 @@ public final class Constants {
   public static final class ShooterConstants {
 
     public static final double POSITION_kF = 1;
-    public static final double POSITION_kP = 1;
-    public static final double POSITION_kI = 0;
-    public static final double POSITION_kD = 0;
+    public static final double POSITION_kP = 2;
+    public static final double POSITION_kI = 0.001;
+    public static final double POSITION_kD = .5;
     public static final double POSITION_kS = 0.24;
     public static final double POSITION_kV = 0.12;
     public static final double POSITION_ForwardsLimit = 33;
@@ -186,9 +186,9 @@ public final class Constants {
     public static final double TRANSLATION_OFFSET = Units.inchesToMeters(1.66);
 
     // shooter motion magic constants
-    public static final double MOTION_MAGIC_CRUISE_VELOCITY = .125 * 360 / POSITION_DEGREE_PER_MOTOR_REV;
-    public static final double MOTION_MAGIC_ACCELERATION = MOTION_MAGIC_CRUISE_VELOCITY * 2; //full speed in .5 seconds
-    public static final double MOTION_MAGIC_JERK = 5 * MOTION_MAGIC_ACCELERATION;
+    public static final double MOTION_MAGIC_CRUISE_VELOCITY = 250;
+    public static final double MOTION_MAGIC_ACCELERATION = 200; //full speed in .5 seconds
+    public static final double MOTION_MAGIC_JERK = 250;
 
     public static final double AUTO_TARGET_ROT_kP = 1.0;
     public static final double AUTO_TARGET_ROT_kD = 0.0;
