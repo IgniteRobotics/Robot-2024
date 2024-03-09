@@ -245,6 +245,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     m_RollerPidController.setReference(MathUtil.clamp(rpm, -Constants.ShooterConstants.ROLLER_MAX_RPM, Constants.ShooterConstants.ROLLER_MAX_RPM), CANSparkFlex.ControlType.kVelocity);
   }
 
+  @Log.File
+  @Log.NT
   public boolean atRPM(){
     if(Robot.isSimulation()) return true;
     return velocity >= targetVelocity - Constants.ShooterConstants.VELOCITY_TOLERANCE && velocity <= targetVelocity + Constants.ShooterConstants.VELOCITY_TOLERANCE;
@@ -292,6 +294,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     setPositionRevolutions(angle/ShooterConstants.POSITION_DEGREE_PER_MOTOR_REV);
   }
 
+  @Log.File
+  @Log.NT
   public boolean armAtSetpoint() {
     if(Robot.isSimulation()) return true;
     return getPositionRevolutions() >= targetPosition - Constants.ShooterConstants.POSITION_TOLERANCE && getPositionRevolutions() <= targetPosition + Constants.ShooterConstants.POSITION_TOLERANCE; 
