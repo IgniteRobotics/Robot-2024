@@ -146,10 +146,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   SysIdRoutine m_DriveSysIdRoutine;
   SysIdRoutine m_TurnSysIdRoutine;
 
-  DoublePreference autoDValue = new DoublePreference("auto/D", 0.1);
-  DoublePreference autoPValue = new DoublePreference("auto/P", 0.4);
-  DoublePreference autoRotationPValue = new DoublePreference("auto/rotationP", 1);
-  DoublePreference autoRotationDValue = new DoublePreference("auto/rotationD", 0);
+  DoublePreference autoDValue = new DoublePreference("auto/D", DriveConstants.autokD);
+  DoublePreference autoPValue = new DoublePreference("auto/P", DriveConstants.autokP);
+  DoublePreference autoRotationPValue = new DoublePreference("auto/rotationP", DriveConstants.autoRotkP);
+  DoublePreference autoRotationDValue = new DoublePreference("auto/rotationD", DriveConstants.autoRotkD);
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem(PhotonCameraWrapper photonCameraWrapper) {
     

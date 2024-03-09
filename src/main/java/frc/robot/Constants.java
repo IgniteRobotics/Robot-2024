@@ -67,6 +67,14 @@ public final class Constants {
     
 
     public static final boolean kGyroReversed = false;
+
+
+    //Autonomous PID
+    public static final double autokD = 0.1;
+    public static final double autokP = 0.4;
+    public static final double autoRotkP = 1;
+    public static final double autoRotkD = 0;
+
   }
 
   public static final class ModuleConstants {
@@ -122,19 +130,19 @@ public final class Constants {
   public static final class ShooterConstants {
 
     public static final double POSITION_kF = 1;
-    public static final double POSITION_kP = 4.8;
+    public static final double POSITION_kP = 1;
     public static final double POSITION_kI = 0;
-    public static final double POSITION_kD = 1;
+    public static final double POSITION_kD = 0;
     public static final double POSITION_kS = 0.24;
     public static final double POSITION_kV = 0.12;
     public static final double POSITION_ForwardsLimit = 33;
     public static final double POSITION_ReverseLimit = 0;
 
 
-    public static final double ROLLER_kP = 6e-5; 
+    public static final double ROLLER_kP = 9e-5; 
     public static final double ROLLER_kI = 0;
-    public static final double ROLLER_kD = 0; 
-    public static final double ROLLER_kFF = 0.000015; 
+    public static final double ROLLER_kD = 0.001; 
+    public static final double ROLLER_kF = 0.0001975; 
     public static final double ROLLER_MAX_OUTPUT = 1;
     public static final double ROLLER_MIN_OUTPUT = -1;
     public static final double ROLLER_MAX_RPM = 5700;

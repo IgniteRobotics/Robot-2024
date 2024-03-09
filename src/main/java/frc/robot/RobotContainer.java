@@ -79,8 +79,8 @@ public class RobotContainer implements Logged {
   private DoublePreference intakePosition = new DoublePreference("intake/intakePosition", 100);
   private DoublePreference outtakePower = new DoublePreference("intake/outtakePower", -0.75);
   private DoublePreference umbrellaPower = new DoublePreference( "umbrella/Power", 0.25);
-  private DoublePreference shooterPower = new DoublePreference("shooter/Power", 0.25);
-  private DoublePreference shooterRPM = new DoublePreference("shooter/RPM", 500);
+  private DoublePreference shooterPower = new DoublePreference("shooter/Power", 0.79);
+  private DoublePreference shooterRPM = new DoublePreference("shooter/RPM", 4000);
   private DoublePreference intakeShooterPosition = new DoublePreference("shooter/Position", Constants.ShooterConstants.TARGET_POSITION_DEGREES);
   private DoublePreference indexPower = new DoublePreference("shooter/IndexPower", 0.5);
   private DoublePreference intakeIndexPower = new DoublePreference("shooter/IndexPower", 0.25);
@@ -94,9 +94,9 @@ public class RobotContainer implements Logged {
 
 
   //Low Angle, Mid Angle, High Angle
-  private DoublePreference shooterLowAngle = new DoublePreference("shooter/lowAngle", 35);
-  private DoublePreference shooterMidAngle = new DoublePreference("shooter/midAngle", 50);
-  private DoublePreference shooterHighAngle = new DoublePreference("shooter/highAngle", 75);
+  private DoublePreference shooterLowAngle = new DoublePreference("shooter/lowAngle", 34);
+  private DoublePreference shooterMidAngle = new DoublePreference("shooter/midAngle", 40);
+  private DoublePreference shooterHighAngle = new DoublePreference("shooter/highAngle", 90);
 
   //High power
   private DoublePreference shooterHighPower = new DoublePreference("shooter/highPower", 78);
