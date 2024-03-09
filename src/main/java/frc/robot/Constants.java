@@ -147,6 +147,8 @@ public final class Constants {
     public static final double ROLLER_MIN_OUTPUT = -1;
     public static final double ROLLER_MAX_RPM = 5700;
 
+    public static final double Index_IntakeSpeed = 0.2;
+
     public static final double TARGET_POSITION_DEGREES = 56;
     public static final double SHOOTER_HOME_DEGREES = 2;
 

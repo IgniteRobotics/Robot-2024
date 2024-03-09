@@ -50,12 +50,6 @@ public class IntakePiece extends Command {
     m_intake.setSpeed(m_intakePower.get());
     m_shooter.setAngleDegrees(m_indexPosition.get());
     m_shooter.runIndex(m_indexPower.get());
-    if (m_shooter.getIndexerBeamBreak()){
-      timer.start();
-    } else {
-      timer.stop();
-      timer.reset();
-    }
   }
 
   // Called once the command ends or is interrupted.
@@ -69,6 +63,6 @@ public class IntakePiece extends Command {
   @Override
   public boolean isFinished() {
     //TODO use beam break
-    return timer.hasElapsed(delaySeconds);
+    return m_shooter.getIndexerBeamBreak();
   }
 }
