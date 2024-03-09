@@ -40,7 +40,7 @@ public class ShootInterpolated extends Command {
     var shotParams = m_iCalculator.calculateParameter(m_robotState.getDistancetoSpeaker());
     m_shooter.setAngleDegrees(shotParams.vals[0]);
     m_shooter.spinRPM(shotParams.vals[1]);
-    if (m_ready.get() && m_shooter.atRPM() && m_shooter.armAtSetpoint()){
+    if (m_ready.get()){
       m_shooter.runIndex(m_indexPower.get());
     }
   }
