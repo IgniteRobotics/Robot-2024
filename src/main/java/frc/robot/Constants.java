@@ -154,10 +154,18 @@ public final class Constants {
 
     // DISTANCE, ANGLE, RPM
     public static final InterCalculator SHOOTER_INTER_CALCULATOR = new InterCalculator(
-      new InterParameter(0, 75, 2500),
-      new InterParameter(3, 50, 2750),
-      new InterParameter(5, 35, 3000)
-    );
+      new InterParameter(0.91756992, 93, 3200),
+      new InterParameter(1.22236992, 80, 3200),
+      new InterParameter(1.52716992, 75, 3200),
+      new InterParameter(1.83196992, 67, 3200),
+      new InterParameter(2.13676992, 61, 3200),
+      new InterParameter(2.44156992, 58, 3200),
+      new InterParameter(2.74636992, 53, 3200),
+      new InterParameter(3.05116992, 50, 3200),
+      new InterParameter(3.35596992, 50, 3200),
+      new InterParameter(3.66076992, 49, 3200),
+      new InterParameter(3.96556992, 39, 3200)
+      );
 
     //RED 4 
     //"x": 16.579342,
