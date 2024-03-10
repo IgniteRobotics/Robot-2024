@@ -318,5 +318,29 @@
     "properties": {
       "persistent": true
     }
+  },
+  {
+    "name": "/Preferences/turnTest/kP",
+    "type": "double",
+    "value": 1.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/turnTest/kD",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/turnTest/tolerance",
+    "type": "double",
+    "value": 2.0,
+    "properties": {
+      "persistent": true
+    }
   }
 ]

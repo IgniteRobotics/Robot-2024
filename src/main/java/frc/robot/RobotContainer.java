@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.comm.preferences.DoublePreference;
 import frc.robot.commands.ParkCommand;
@@ -23,10 +24,13 @@ import frc.robot.commands.Shooter.RunShooterPower;
 import frc.robot.commands.Shooter.RunShooterRPM;
 import frc.robot.commands.Shooter.ShootInterpolated;
 import frc.robot.commands.Shooter.ShootPiece;
+import frc.robot.commands.climb.ClimbMM;
+import frc.robot.commands.climb.ClimbPower;
 import frc.robot.commands.drive.DriveToTarget;
 import frc.robot.commands.drive.TurnDegrees;
 import frc.robot.commands.Shooter.IndexPower;
 import frc.robot.commands.Shooter.PositionShooter;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -71,6 +75,8 @@ public class RobotContainer implements Logged {
   //private final UmbrellaSubsystem m_umbrella  = new UmbrellaSubsystem();
   private final ShooterSubsystem m_shooter = new ShooterSubsystem();
 
+  private final Climber m_Climber = new Climber();
+
   
   private final RobotState m_robotState = RobotState.getInstance();
 
@@ -87,6 +93,12 @@ public class RobotContainer implements Logged {
   private DoublePreference shooterOuttakePower = new DoublePreference("shooter/OuttakePower", -0.1);  
   private DoublePreference shooterPosition = new DoublePreference("shooter/shootingPosition", 65); 
   private DoublePreference outdexPower = new DoublePreference("shooter/OutdexPower", -0.1);
+
+  private DoublePreference climberUpPower = new DoublePreference("climber/UpPower", ClimberConstants.POWER);
+  private DoublePreference climberDownPower = new DoublePreference("climber/DownPower", -ClimberConstants.POWER);
+  private DoublePreference climberUpPosition = new DoublePreference("climber/UpPosition", ClimberConstants.TOP_POSITION);
+  private DoublePreference climberDownPosition = new DoublePreference("climber/DownPosition", ClimberConstants.BOTTOM_POSITION);
+
 
   //For tuning
   private DoublePreference tuningPower = new DoublePreference("shooter/tuning_rpm", 2500);
@@ -122,6 +134,11 @@ public class RobotContainer implements Logged {
     private final Command shootMidAngle = new ShootPiece(m_shooter, shooterMidAngle, shooterPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command shootLowAngle = new ShootPiece(m_shooter, shooterLowAngle, shooterHighPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command spinRPM = new RunShooterRPM(m_shooter, shooterRPM);
+
+    private final Command climberPowerUp = new ClimbPower(m_Climber, climberUpPower);
+    private final Command climberPowerDown = new ClimbPower(m_Climber, climberDownPower);
+    private final Command climbMMUp = new ClimbMM(m_Climber, climberUpPosition);
+    private final Command climbMMDown = new ClimbMM(m_Climber, climberDownPosition);
 
     private final Command testTurnPID = new TurnDegrees(m_robotDrive, 15);
 
@@ -216,8 +233,12 @@ private static class Operator {
    Operator.driver_rightBumper.whileTrue(intakePiece);
    Operator.driver_leftBumper.whileTrue(extakeCommand);
    Operator.driver_back.onTrue(parkCommand);
-   Operator.driver_dpad_up.whileTrue(new InstantCommand(()-> m_shooter.moveArm(.1), m_shooter));
-   Operator.driver_dpad_down.whileTrue(new InstantCommand(() -> m_shooter.moveArm(-.1), m_shooter));
+
+   Operator.driver_dpad_up.whileTrue(climberPowerUp);
+   Operator.driver_dpad_down.whileTrue(climberPowerDown);
+
+  //  Operator.driver_dpad_up.whileTrue(new InstantCommand(()-> m_shooter.moveArm(.1), m_shooter));
+  //  Operator.driver_dpad_down.whileTrue(new InstantCommand(() -> m_shooter.moveArm(-.1), m_shooter));
    //Operator.driver_a.whileTrue(shootHighAngle);
    //Operator.driver_b.whileTrue(shootMidAngle);
    //Operator.driver_y.whileTrue(shootLowAngle);

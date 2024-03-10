@@ -196,6 +196,24 @@ public final class Constants {
     public static final double AUTO_TARGET_ROT_kD = 0.0;
   }
 
+  public static final class ClimberConstants{
+    
+    public static final double POSITION_kP = 1.0;
+    public static final double POSITION_kI = 0.0;
+    public static final double POSITION_kD = 0.0;
+    public static final double POSITION_kS = 0.12;
+    public static final double POSITION_kV = 0.24;
+
+    public static final double CLIMBER_TOLERANCE = 2.0;
+
+    public static final double UPPER_LIMIT = 5;
+    public static final double LOWER_LIMIT = 0;
+    public static final double TOP_POSITION = 5;
+    public static final double BOTTOM_POSITION = 1;
+
+    public static final double POWER= 0.1;
+  }
+
   public static final class IntakeConstants {
     public static double POSITION_kP = .5;
     public static double POSITION_kI = 0;
@@ -247,6 +265,8 @@ public final class Constants {
     public static final int INTAKE_POSITION_MOTOR = 2;
     public static final int INTAKE_ROLLER_MOTOR = 1;
     public static final int UMBRELLA_MOTOR_1 = 3;
+
+    public static final int CLIMBER_MOTOR = 4;
     
     public static final int SHOOTER_POSITION_MOTOR = 7;
     public static final int SHOOTER_MOTOR_LEADERCanId = 8;
