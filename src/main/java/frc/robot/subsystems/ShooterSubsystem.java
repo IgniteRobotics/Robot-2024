@@ -198,7 +198,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
      motor.setIdleMode(CANSparkFlex.IdleMode.kBrake);
      //TODO: Make actual constants
      motor.setSmartCurrentLimit(40);
-     motor.setClosedLoopRampRate(1);
+     motor.setClosedLoopRampRate(0);
      motor.burnFlash();
   }
 
