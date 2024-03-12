@@ -90,8 +90,8 @@ public class RobotContainer implements Logged {
   private DoublePreference shooterPower = new DoublePreference("shooter/Power", 0.79);
   private DoublePreference shooterRPM = new DoublePreference("shooter/RPM", 4000);
   private DoublePreference intakeShooterPosition = new DoublePreference("shooter/Position", Constants.ShooterConstants.TARGET_POSITION_DEGREES);
-  private DoublePreference indexPower = new DoublePreference("shooter/IndexPower", 0.5);
-  private DoublePreference intakeIndexPower = new DoublePreference("shooter/IndexPower", 0.25);
+  private DoublePreference indexPower = new DoublePreference("shooter/IndexPower", 0.1);
+  private DoublePreference shooterIndexPower = new DoublePreference("shooter/ShootingIndexPower", 0.5);
   private DoublePreference shooterOuttakePower = new DoublePreference("shooter/OuttakePower", -0.1);  
   private DoublePreference shooterPosition = new DoublePreference("shooter/shootingPosition", 65); 
   private DoublePreference outdexPower = new DoublePreference("shooter/OutdexPower", -0.1);
@@ -132,9 +132,9 @@ public class RobotContainer implements Logged {
     private final Command raiseShooter = new PositionShooter(m_shooter, intakeShooterPosition);
     private final Command spinShooter = new RunShooterPower(m_shooter, shooterPower);
     private final Command spinIndex = new IndexPower(m_shooter, outdexPower, outtakePower);
-    private final Command shootHighAngle = new ShootPiece(m_shooter, shooterHighAngle, shooterPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
-    private final Command shootMidAngle = new ShootPiece(m_shooter, shooterMidAngle, shooterPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
-    private final Command shootLowAngle = new ShootPiece(m_shooter, shooterLowAngle, shooterHighPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command shootHighAngle = new ShootPiece(m_shooter, shooterHighAngle, shooterPower, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command shootMidAngle = new ShootPiece(m_shooter, shooterMidAngle, shooterPower, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command shootLowAngle = new ShootPiece(m_shooter, shooterLowAngle, shooterHighPower, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command spinRPM = new RunShooterRPM(m_shooter, shooterRPM);
 
     private final Command climberPowerUp = new ClimbPower(m_Climber, climberUpPower);
@@ -144,15 +144,15 @@ public class RobotContainer implements Logged {
 
     private final Command testTurnPID = new TurnDegrees(m_robotDrive, 15);
 
-    private final Command shooterTune = new ShootPiece(m_shooter, tuningPosition, tuningPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
-    private final Command shootInterpolated = new ShootInterpolated(m_shooter, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command shooterTune = new ShootPiece(m_shooter, tuningPosition, tuningPower, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command shootInterpolated = new ShootInterpolated(m_shooter, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command driveToTarget = new DriveToTarget(m_robotDrive, 
             m_photonCameraWrapper, 
             m_robotState::getSpeakerID,
             Operator.driver_axisLX, 
             Operator.driver_axisLY);
 
-    private final Command autoShootInterpolated = new ShootInterpolated(m_shooter, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command autoShootInterpolated = new ShootInterpolated(m_shooter, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command autoDriveToTarget = new DriveToTarget(m_robotDrive, 
             m_photonCameraWrapper, 
             m_robotState::getSpeakerID,
