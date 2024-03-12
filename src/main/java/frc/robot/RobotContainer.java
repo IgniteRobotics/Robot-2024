@@ -51,6 +51,8 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import frc.robot.commands.ResetGyro;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -199,6 +201,10 @@ private static class Operator {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer(){
+
+    //TODO: reconcile these with paths.
+    NamedCommands.registerCommand("AutonShot1", shootHighAngle);
+    NamedCommands.registerCommand("Intake", intakeCommand);
 
     // Configure the button bindings
     configureButtonBindings();

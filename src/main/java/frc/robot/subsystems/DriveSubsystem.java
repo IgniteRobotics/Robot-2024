@@ -5,6 +5,7 @@
 
 package frc.robot.subsystems;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -39,6 +40,7 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.RobotState;
+import frc.robot.Constants.CameraConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.comm.preferences.DoublePreference;
 import frc.utils.SwerveUtils;
@@ -277,6 +279,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       boolean poseOK = true;
       for(PhotonTrackedTarget target: pose.targetsUsed) {
           if(target.getPoseAmbiguity() > 0.2) poseOK = false;
+          if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
       }
       if(poseOK) poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }
@@ -286,6 +289,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       boolean poseOK = true;
       for(PhotonTrackedTarget target: pose.targetsUsed) {
           if(target.getPoseAmbiguity() > 0.2) poseOK = false;
+          if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
       }
       if(poseOK) poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }
@@ -295,6 +299,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       boolean poseOK = true;
       for(PhotonTrackedTarget target: pose.targetsUsed) {
           if(target.getPoseAmbiguity() > 0.2) poseOK = false;
+          if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
       }
       if(poseOK) poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }
@@ -304,6 +309,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       boolean poseOK = true;
       for(PhotonTrackedTarget target: pose.targetsUsed) {
           if(target.getPoseAmbiguity() > 0.2) poseOK = false;
+          if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
       }
       if(poseOK) poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }
