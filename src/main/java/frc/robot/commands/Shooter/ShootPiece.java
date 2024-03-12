@@ -41,7 +41,6 @@ public class ShootPiece extends Command {
     if (m_ready.get()){
       m_shooter.runIndex(m_indexPower.get());
     }
-
   }
 
   // Called once the command ends or is interrupted.
