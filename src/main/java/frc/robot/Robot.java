@@ -41,8 +41,6 @@ public class Robot extends TimedRobot implements Logged {
   
   private CommandScheduler m_Scheduler;
 
-  private final Field2d field = new Field2d();
-
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -106,7 +104,7 @@ public class Robot extends TimedRobot implements Logged {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    /* 
+    
     if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red){
       RobotState.getInstance().setSpeakerPose(Constants.ShooterConstants.RED_SPEAKER,
                                               Constants.ShooterConstants.RED_SPEAKER_ID);
@@ -114,7 +112,7 @@ public class Robot extends TimedRobot implements Logged {
       RobotState.getInstance().setSpeakerPose(Constants.ShooterConstants.BLUE_SPEAKER,
                                               Constants.ShooterConstants.BLUE_SPEAKER_ID);
     }
-    */
+    
     
     Monologue.setFileOnly(DriverStation.isFMSAttached());
     Monologue.updateAll();
