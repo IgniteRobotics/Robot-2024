@@ -200,7 +200,7 @@ public final class Constants {
     public static final double MOTION_MAGIC_ACCELERATION = 200; //full speed in .5 seconds
     public static final double MOTION_MAGIC_JERK = 250;
 
-    public static final double AUTO_TARGET_ROT_kP = 1.0;
+    public static final double AUTO_TARGET_ROT_kP = 0.014;
     public static final double AUTO_TARGET_ROT_kD = 0.0;
   }
 
