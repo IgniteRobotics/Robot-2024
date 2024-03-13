@@ -108,9 +108,14 @@ public class RobotContainer implements Logged {
 
 
   //Low Angle, Mid Angle, High Angle
-  private DoublePreference shooterLowAngle = new DoublePreference("shooter/lowAngle", 34);
-  private DoublePreference shooterMidAngle = new DoublePreference("shooter/midAngle", 40);
-  private DoublePreference shooterHighAngle = new DoublePreference("shooter/highAngle", 90);
+  private DoublePreference wingShotAngle = new DoublePreference("shooter/wingShotAngle", 34);
+  private DoublePreference podiumShotAngle = new DoublePreference("shooter/podiumShotAngle", 52.5);
+  private DoublePreference subShotAngle = new DoublePreference("shooter/subShotAngle", 93);
+
+  //Canned shot RPM
+  private DoublePreference wingShotRPM = new DoublePreference("shooter/wingRPM", 4000);
+  private DoublePreference podiumShotRPM = new DoublePreference("shooter/podiumRPM", 3200);
+  private DoublePreference subShotRPM = new DoublePreference("shooter/subRPM", 3200);
 
   //High power
   private DoublePreference shooterHighPower = new DoublePreference("shooter/highPower", 78);
@@ -132,9 +137,9 @@ public class RobotContainer implements Logged {
     private final Command raiseShooter = new PositionShooter(m_shooter, intakeShooterPosition);
     private final Command spinShooter = new RunShooterPower(m_shooter, shooterPower);
     private final Command spinIndex = new IndexPower(m_shooter, outdexPower, outtakePower);
-    private final Command shootHighAngle = new ShootPiece(m_shooter, shooterHighAngle, shooterPower, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
-    private final Command shootMidAngle = new ShootPiece(m_shooter, shooterMidAngle, shooterPower, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
-    private final Command shootLowAngle = new ShootPiece(m_shooter, shooterLowAngle, shooterHighPower, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command shootSubwoofer = new ShootPiece(m_shooter, subShotAngle, subShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command shootPodium = new ShootPiece(m_shooter, podiumShotAngle, podiumShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command shootWing = new ShootPiece(m_shooter, wingShotAngle, wingShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command spinRPM = new RunShooterRPM(m_shooter, shooterRPM);
 
     private final Command climberPowerUp = new ClimbPower(m_Climber, climberUpPower);
@@ -203,7 +208,7 @@ private static class Operator {
   public RobotContainer(){
 
     //TODO: reconcile these with paths.
-    NamedCommands.registerCommand("AutonShot1", shootHighAngle);
+    NamedCommands.registerCommand("AutonShot1", shootSubwoofer);
     NamedCommands.registerCommand("Intake", intakeCommand);
 
     // Configure the button bindings
@@ -254,10 +259,10 @@ private static class Operator {
    //Operator.driver_b.onTrue(stowShooter);
   //  Operator.driver_dpad_left.whileTrue(spinIndex);
   //  Operator.driver_dpad_right.whileTrue(spinRPM);
-   Operator.driver_a.whileTrue(shootHighAngle);
-   Operator.driver_b.whileTrue(shootMidAngle);
-   Operator.driver_x.whileTrue(shootLowAngle);
-   Operator.driver_y.whileTrue(spinIndex);
+   Operator.driver_a.whileTrue(shootSubwoofer);
+   Operator.driver_b.whileTrue(shootPodium);
+   Operator.driver_y.whileTrue(shootWing);
+   Operator.driver_x.whileTrue(speakerShotGroup);
 
     // new JoystickButton(m_driverController, XboxController.Button.kY.value)
     //     .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
