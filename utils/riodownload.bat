@@ -1,4 +1,4 @@
-@echo OFF
+@echo ON
 :: ---------------------------------------------------------------------
 :: Script      : fetchMyfiles.bat
 :: Description : SCP files from a remote machine.
@@ -26,7 +26,8 @@ echo Timestamp: %timestamp%
 if not exist %logdir% mkdir %logdir%
 if not exist %backupdir% mkdir %backupdir%
 scp.exe %remoteuser%@%remotehost%:%logpath% %logdir% >> %logfile%
-scp.exe %remoteuser%@%remotehost%:%logpath% %backupdir%\%ntfile%.%timestamp%
+scp.exe %remoteuser%@%remotehost%:%logpath% %backupdir%\%ntfile%.%timestamp% >> %logfile%
+she.exe %remoteuser%@%remotehost% 'cd logs && ls *.wpilog' >> %logfile
 if %ERRORLEVEL% equ 0 (
 		echo %DATE% : %TIME% : INFO : Fetched logs >> %logfile%
 		) else (
