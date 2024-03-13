@@ -196,9 +196,9 @@ public final class Constants {
     public static final double TRANSLATION_OFFSET = Units.inchesToMeters(1.66);
 
     // shooter motion magic constants
-    public static final double MOTION_MAGIC_CRUISE_VELOCITY = 250;
-    public static final double MOTION_MAGIC_ACCELERATION = 200; //full speed in .5 seconds
-    public static final double MOTION_MAGIC_JERK = 250;
+    public static final double MOTION_MAGIC_CRUISE_VELOCITY = 400;
+    public static final double MOTION_MAGIC_ACCELERATION = 1000; //full speed in .5 seconds
+    public static final double MOTION_MAGIC_JERK = 2000;
 
     public static final double AUTO_TARGET_ROT_kP = 0.014;
     public static final double AUTO_TARGET_ROT_kD = 0.0;
@@ -214,7 +214,7 @@ public final class Constants {
 
     public static final double CLIMBER_TOLERANCE = 2.0;
 
-    public static final double UPPER_LIMIT = 5;
+    public static final double UPPER_LIMIT = 69;
     public static final double LOWER_LIMIT = 0;
     public static final double TOP_POSITION = 5;
     public static final double BOTTOM_POSITION = 1;
