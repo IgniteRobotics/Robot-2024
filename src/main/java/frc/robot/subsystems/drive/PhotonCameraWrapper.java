@@ -25,7 +25,7 @@ public class PhotonCameraWrapper {
     public PhotonCamera photonCameraRearRight;
     public PhotonPoseEstimator photonPoseEstimatorRearRight;
 
-    private PhotonCamera[] allCameras = new PhotonCamera[4];
+    private PhotonCamera[] allCameras = new PhotonCamera[3];
 
     
 
@@ -44,7 +44,7 @@ public class PhotonCameraWrapper {
         allCameras[0] = photonCameraFrontLeft;
         allCameras[1] = photonCameraFrontRight;
         allCameras[2] = photonCameraRearLeft;
-        allCameras[3] = photonCameraRearRight;
+        //allCameras[3] = photonCameraRearRight;
         
         try {
             layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
