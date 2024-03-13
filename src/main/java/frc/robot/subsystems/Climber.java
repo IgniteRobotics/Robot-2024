@@ -11,6 +11,7 @@ import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
@@ -74,6 +75,7 @@ public class Climber extends SubsystemBase implements Logged {
     m_climberMotor = new TalonFX(Constants.CANConstants.CLIMBER_MOTOR);
 
     m_motorConfig.NeutralMode = NeutralModeValue.Brake;
+    m_motorConfig.withInverted(InvertedValue.Clockwise_Positive);
 
     m_climberMotor.getConfigurator().apply(m_motorConfig, 0.050);
 
