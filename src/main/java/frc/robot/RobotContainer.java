@@ -30,6 +30,7 @@ import frc.robot.commands.drive.DriveToTarget;
 import frc.robot.commands.drive.TurnDegrees;
 import frc.robot.commands.Shooter.IndexPower;
 import frc.robot.commands.Shooter.PositionShooter;
+import frc.robot.commands.Shooter.PrepareShooter;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -95,6 +96,7 @@ public class RobotContainer implements Logged {
   private DoublePreference shooterOuttakePower = new DoublePreference("shooter/OuttakePower", -0.1);  
   private DoublePreference shooterPosition = new DoublePreference("shooter/shootingPosition", 65); 
   private DoublePreference outdexPower = new DoublePreference("shooter/OutdexPower", -0.1);
+  private DoublePreference preSpinDistanceM = new DoublePreference("shooter/preSpinDistanceM", 5.842);
 
   private DoublePreference climberUpPower = new DoublePreference("climber/UpPower", ClimberConstants.POWER);
   private DoublePreference climberDownPower = new DoublePreference("climber/DownPower", -ClimberConstants.POWER);
@@ -141,6 +143,7 @@ public class RobotContainer implements Logged {
     private final Command shootPodium = new ShootPiece(m_shooter, podiumShotAngle, podiumShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command shootWing = new ShootPiece(m_shooter, wingShotAngle, wingShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command spinRPM = new RunShooterRPM(m_shooter, shooterRPM);
+    private final Command preSpinShooter = new PrepareShooter(m_shooter, preSpinDistanceM);
 
     private final Command climberPowerUp = new ClimbPower(m_Climber, climberUpPower);
     private final Command climberPowerDown = new ClimbPower(m_Climber, climberDownPower);
@@ -287,7 +290,7 @@ private static class Operator {
           m_robotDrive));
 
     m_robotIntake.setDefaultCommand(stowIntake);
-    //m_shooter.setDefaultCommand(stowShooter);
+    m_shooter.setDefaultCommand(preSpinShooter);
 
   }
   /**

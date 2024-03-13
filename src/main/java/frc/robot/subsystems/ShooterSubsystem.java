@@ -337,6 +337,13 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    if (getIndexerBeamBreak()){
+      m_robotState.setHasNote(true);
+    } else {
+      m_robotState.setHasNote(false);
+    }
+
     temp = m_shooterMotor.getMotorTemperature();
     velocity = m_shooterEncoder.getVelocity();
     current = m_shooterMotor.getOutputCurrent();

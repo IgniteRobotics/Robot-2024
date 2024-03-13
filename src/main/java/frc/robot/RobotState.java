@@ -13,6 +13,7 @@ public class RobotState {
     private Pose2d m_robotPose2d;
     private Pose2d m_speakerPose2d;
     private int m_speakerID = 0;
+    private boolean m_hasNote = false;
 
     private static RobotState single_instance = null;
 
@@ -30,6 +31,10 @@ public class RobotState {
     public synchronized void setRobotPose(Pose2d pose){
         m_robotPose2d = pose;
 
+    }
+
+    public synchronized void setHasNote(boolean flag){
+        m_hasNote = flag;
     }
 
     public Pose2d getRobotPose(){
@@ -52,6 +57,10 @@ public class RobotState {
     public double getDistancetoSpeaker(){
         if (null == m_robotPose2d || null == m_speakerPose2d) return 0.0;
         return PhotonUtils.getDistanceToPose(m_robotPose2d, m_speakerPose2d);
+    }
+
+    public boolean hasNote() {
+        return m_hasNote;
     }
 
 }
