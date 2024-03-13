@@ -9,8 +9,10 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.comm.preferences.DoublePreference;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
 
@@ -21,6 +23,11 @@ public class DriveToTarget extends Command {
   private final Supplier<Double> m_driveX;
   private final Supplier<Double> m_driveY;
   PIDController rotationController;
+
+  private DoublePreference rotKP = new DoublePreference("turnTest/kP", ShooterConstants.AUTO_TARGET_ROT_kP);
+  private DoublePreference rotKD = new DoublePreference("turnTest/kD", ShooterConstants.AUTO_TARGET_ROT_kD);
+  private DoublePreference rotTolerance = new DoublePreference("turnTest/tolerance", 2);
+
   /** Creates a new DriveToTarget. */
   public DriveToTarget(DriveSubsystem drive, PhotonCameraWrapper cameras, Supplier<Integer> targetId, Supplier<Double> driveX, Supplier<Double> driveY) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -35,16 +42,19 @@ public class DriveToTarget extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    rotationController =  new PIDController(ShooterConstants.AUTO_TARGET_ROT_kP, 0, ShooterConstants.AUTO_TARGET_ROT_kD);
+    rotationController =  new PIDController(rotKP.get(), 0, rotKD.get());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     Optional<Double> yaw = m_cameras.getYawToTarget(m_targetId.get());
+    SmartDashboard.putNumber("targetid",m_targetId.get());
     double rotation = 0.0;
     if (yaw.isPresent()){
-      rotation = -rotationController.calculate(rotation,0);
+      SmartDashboard.putNumber("yawtotarget",yaw.get());
+      rotation = rotationController.calculate(yaw.get(),0);
+      SmartDashboard.putNumber("autoRotnput", rotation);
     }
     m_drive.drive(m_driveX.get(), 
                   m_driveY.get(),
