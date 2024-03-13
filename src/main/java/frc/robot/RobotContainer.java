@@ -153,20 +153,14 @@ public class RobotContainer implements Logged {
     private final Command testTurnPID = new TurnDegrees(m_robotDrive, 15);
 
     private final Command shooterTune = new ShootPiece(m_shooter, tuningPosition, tuningPower, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
-    private final Command shootInterpolated = new ShootInterpolated(m_shooter, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command shootInterpolated = new ShootInterpolated(m_shooter, m_photonCameraWrapper, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command driveToTarget = new DriveToTarget(m_robotDrive, 
             m_photonCameraWrapper, 
             m_robotState::getSpeakerID,
             Operator.driver_axisLY, 
             Operator.driver_axisLX);
 
-    private final Command autoShootInterpolated = new ShootInterpolated(m_shooter, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
-    private final Command autoDriveToTarget = new DriveToTarget(m_robotDrive, 
-            m_photonCameraWrapper, 
-            m_robotState::getSpeakerID,
-            Operator.driver_axisLY, 
-            Operator.driver_axisLX);
-    private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(autoShootInterpolated, autoDriveToTarget);
+    private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
     
     private final SendableChooser<Command> autonChooser;
 

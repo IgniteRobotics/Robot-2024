@@ -122,4 +122,9 @@ public class PhotonCameraWrapper {
 
     }
 
+    public void unlockTargeting(){
+        m_targetCam = null;
+        m_targetTimer.stop();
+    }
+
 }
