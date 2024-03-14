@@ -156,7 +156,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   public DriveSubsystem(PhotonCameraWrapper photonCameraWrapper) {
     
 
-
     m_photonCameraWrapper = photonCameraWrapper;
     poseEstimator = new SwerveDrivePoseEstimator(
                           DriveConstants.kDriveKinematics, 
@@ -189,7 +188,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     // Configure AutoBuilder last
     AutoBuilder.configureHolonomic(
       this::getAutonPose, // Robot pose supplier
-      this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+      this::setAutonPose, // Method to reset odometry (will be called if your auto has a starting pose)
       this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
       this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
       new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
@@ -253,7 +252,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     m_rearLeft.periodic();
     m_rearRight.periodic();
 
-    gyro_rotation = getYaw().getRadians();
+    gyro_rotation = getAngle();
     
     m_odometry.update(
         Rotation2d.fromDegrees(getAngle()),
@@ -314,7 +313,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       if(poseOK) poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }
 
-    poseEstimator.update(new Rotation2d(m_gyro.getYaw()), new SwerveModulePosition[] {
+    poseEstimator.update(getYaw(), new SwerveModulePosition[] {
       m_frontLeft.getPosition(),
       m_frontRight.getPosition(),
       m_rearLeft.getPosition(),
@@ -322,7 +321,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     });
 
     if(DriverStation.isAutonomous()) {
-      autonPoseEstimator.update(new Rotation2d(m_gyro.getYaw()), new SwerveModulePosition[] {
+      autonPoseEstimator.update(getYaw(), new SwerveModulePosition[] {
         m_frontLeft.getPosition(),
         m_frontRight.getPosition(),
         m_rearLeft.getPosition(),
@@ -350,6 +349,17 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
 
   public void setPose(Pose2d pose){
     poseEstimator.resetPosition(
+        pose.getRotation(), 
+        new SwerveModulePosition[] {
+          m_frontLeft.getPosition(),
+          m_frontRight.getPosition(),
+          m_rearLeft.getPosition(),
+          m_rearRight.getPosition()}, 
+        pose);
+  }
+
+  public void setAutonPose(Pose2d pose){
+    autonPoseEstimator.resetPosition(
         pose.getRotation(), 
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
@@ -560,8 +570,11 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     return -m_gyro.getAngle();
   }
 
+  @Log.NT
+  @Log.File
   public Rotation2d getYaw() {
-    return m_gyro.getRotation2d().times(-1); // this inversion is a property of the AHRSGyro itself
+    //return m_gyro.getRotation2d().times(-1); // this inversion is a property of the AHRSGyro itself
+    return Rotation2d.fromDegrees(getAngle());
 }
 
   /**
