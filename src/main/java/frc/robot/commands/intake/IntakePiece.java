@@ -4,6 +4,7 @@
 
 package frc.robot.commands.intake;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -18,6 +19,10 @@ public class IntakePiece extends Command {
   private final Supplier<Double> m_intakePosition;
   private final Supplier<Double> m_indexPower;
   private final Supplier<Double> m_indexPosition;
+
+  private final Timer timer = new Timer();
+  private final double delaySeconds = 0.02;
+
 
 
   /** Creates a new IntakePiece. */
@@ -58,6 +63,6 @@ public class IntakePiece extends Command {
   @Override
   public boolean isFinished() {
     //TODO use beam break
-    return false;
+    return m_shooter.getIndexerBeamBreak();
   }
 }

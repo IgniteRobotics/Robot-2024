@@ -29,6 +29,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import monologue.Logged;
 import monologue.Annotations.Log;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.geometry.Pose2d;
 import java.lang.Math;
@@ -73,6 +74,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   private RobotState m_robotState = RobotState.getInstance();
 
+
+  private DigitalInput m_indexerBeamBreak = new DigitalInput(0);
 
 
   /*********************  Telemetry Variables *********************/
@@ -195,9 +198,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
      motor.setIdleMode(CANSparkFlex.IdleMode.kBrake);
      //TODO: Make actual constants
      motor.setSmartCurrentLimit(40);
-     motor.setClosedLoopRampRate(1);
+     motor.setClosedLoopRampRate(0);
      motor.burnFlash();
-
   }
 
   private void configurePositionMotor(TalonFX motor, 
@@ -211,6 +213,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     motor.getConfigurator().apply(motorOutputConfigs, 0.050);
 
     slot0PID.kV = Constants.ShooterConstants.POSITION_kV;
+    slot0PID.kS = Constants.ShooterConstants.POSITION_kS;
     slot0PID.kP = positionkPPreference.get();
     slot0PID.kI = positionkIPreference.get();
     slot0PID.kD = positionkDPreference.get();
@@ -242,6 +245,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     m_RollerPidController.setReference(MathUtil.clamp(rpm, -Constants.ShooterConstants.ROLLER_MAX_RPM, Constants.ShooterConstants.ROLLER_MAX_RPM), CANSparkFlex.ControlType.kVelocity);
   }
 
+  @Log.File
+  @Log.NT
   public boolean atRPM(){
     if(Robot.isSimulation()) return true;
     return velocity >= targetVelocity - Constants.ShooterConstants.VELOCITY_TOLERANCE && velocity <= targetVelocity + Constants.ShooterConstants.VELOCITY_TOLERANCE;
@@ -289,6 +294,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     setPositionRevolutions(angle/ShooterConstants.POSITION_DEGREE_PER_MOTOR_REV);
   }
 
+  @Log.File
+  @Log.NT
   public boolean armAtSetpoint() {
     if(Robot.isSimulation()) return true;
     return getPositionRevolutions() >= targetPosition - Constants.ShooterConstants.POSITION_TOLERANCE && getPositionRevolutions() <= targetPosition + Constants.ShooterConstants.POSITION_TOLERANCE; 
@@ -321,9 +328,22 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     this.resetPosition();
   }
 
+  @Log.File
+  @Log.NT
+  public boolean getIndexerBeamBreak(){
+    return !m_indexerBeamBreak.get();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    if (getIndexerBeamBreak()){
+      m_robotState.setHasNote(true);
+    } else {
+      m_robotState.setHasNote(false);
+    }
+
     temp = m_shooterMotor.getMotorTemperature();
     velocity = m_shooterEncoder.getVelocity();
     current = m_shooterMotor.getOutputCurrent();
@@ -356,7 +376,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     positionSlot0Configs.kI = positionkIPreference.get();
     positionSlot0Configs.kD = positionkDPreference.get();
     
-    m_shooterPositionMotor.getConfigurator().apply(positionSlot0Configs, 0.050);
+    //m_shooterPositionMotor.getConfigurator().apply(positionSlot0Configs, 0.050);
 
     robotPose2d = m_robotState.getRobotPose();
   

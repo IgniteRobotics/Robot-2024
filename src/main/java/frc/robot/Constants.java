@@ -147,15 +147,25 @@ public final class Constants {
     public static final double ROLLER_MIN_OUTPUT = -1;
     public static final double ROLLER_MAX_RPM = 5700;
 
+    public static final double Index_IntakeSpeed = 0.2;
+
     public static final double TARGET_POSITION_DEGREES = 56;
     public static final double SHOOTER_HOME_DEGREES = 2;
 
     // DISTANCE, ANGLE, RPM
     public static final InterCalculator SHOOTER_INTER_CALCULATOR = new InterCalculator(
-      new InterParameter(0, 75, 2500),
-      new InterParameter(3, 50, 2750),
-      new InterParameter(5, 35, 3000)
-    );
+      new InterParameter(0.91756992, 93, 3200),
+      new InterParameter(1.22236992, 80, 3200),
+      new InterParameter(1.52716992, 75, 3200),
+      new InterParameter(1.83196992, 67, 3200),
+      new InterParameter(2.13676992, 61, 3200),
+      new InterParameter(2.44156992, 58, 3200),
+      new InterParameter(2.74636992, 53, 3200),
+      new InterParameter(3.05116992, 50, 3200),
+      new InterParameter(3.35596992, 50, 3200),
+      new InterParameter(3.66076992, 49, 3200),
+      new InterParameter(3.96556992, 39, 3200)
+      );
 
     //RED 4 
     //"x": 16.579342,
@@ -186,12 +196,30 @@ public final class Constants {
     public static final double TRANSLATION_OFFSET = Units.inchesToMeters(1.66);
 
     // shooter motion magic constants
-    public static final double MOTION_MAGIC_CRUISE_VELOCITY = .5 * 360 / POSITION_DEGREE_PER_MOTOR_REV;
-    public static final double MOTION_MAGIC_ACCELERATION = 1 * 360 / POSITION_DEGREE_PER_MOTOR_REV;
-    public static final double MOTION_MAGIC_JERK = 10 * MOTION_MAGIC_ACCELERATION;
+    public static final double MOTION_MAGIC_CRUISE_VELOCITY = 400;
+    public static final double MOTION_MAGIC_ACCELERATION = 1000; //full speed in .5 seconds
+    public static final double MOTION_MAGIC_JERK = 2000;
 
-    public static final double AUTO_TARGET_ROT_kP = 1.0;
+    public static final double AUTO_TARGET_ROT_kP = 0.014;
     public static final double AUTO_TARGET_ROT_kD = 0.0;
+  }
+
+  public static final class ClimberConstants{
+    
+    public static final double POSITION_kP = 1.0;
+    public static final double POSITION_kI = 0.0;
+    public static final double POSITION_kD = 0.0;
+    public static final double POSITION_kS = 0.12;
+    public static final double POSITION_kV = 0.24;
+
+    public static final double CLIMBER_TOLERANCE = 2.0;
+
+    public static final double UPPER_LIMIT = 69;
+    public static final double LOWER_LIMIT = 0;
+    public static final double TOP_POSITION = 5;
+    public static final double BOTTOM_POSITION = 1;
+
+    public static final double POWER= 0.1;
   }
 
   public static final class IntakeConstants {
@@ -238,6 +266,8 @@ public final class Constants {
     public static final String photonCameraNameRearLeft = "REAR_LEFT";
     public static final Transform3d photonCameraTransformRearLeft = new Transform3d(new Translation3d(-.324, 0.298, 0.235), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 195.0/180 * Math.PI));
 
+    public static final Integer[] IGNORED_POSE_TARGETS = {3,4,7,8};
+
   }
 
 
@@ -245,6 +275,8 @@ public final class Constants {
     public static final int INTAKE_POSITION_MOTOR = 2;
     public static final int INTAKE_ROLLER_MOTOR = 1;
     public static final int UMBRELLA_MOTOR_1 = 3;
+
+    public static final int CLIMBER_MOTOR = 4;
     
     public static final int SHOOTER_POSITION_MOTOR = 7;
     public static final int SHOOTER_MOTOR_LEADERCanId = 8;

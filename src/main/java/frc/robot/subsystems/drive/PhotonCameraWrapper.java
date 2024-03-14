@@ -13,6 +13,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.CameraConstants;
 
 public class PhotonCameraWrapper {
@@ -30,6 +31,9 @@ public class PhotonCameraWrapper {
     
 
     public AprilTagFieldLayout layout;
+    private PhotonCamera  m_targetCam = null;
+    private Timer m_targetTimer = new Timer();
+    private double m_lockTimeSec = 0.2;
 
     public static enum Side {
         FRONT_LEFT, FRONT_RIGHT, REAR_LEFT, REAR_RIGHT
@@ -83,16 +87,44 @@ public class PhotonCameraWrapper {
 
     public Optional<Double> getYawToTarget(int id){
         
-        for (PhotonCamera cam : allCameras){
-            var result = cam.getLatestResult();
+        //we're using a camera that was already locked on
+        if (null != m_targetCam){  
+            var result = m_targetCam.getLatestResult();
             for (var target : result.getTargets()){
                 if (id == target.getFiducialId()){
+                    m_targetTimer.restart();
                     return Optional.of(Double.valueOf(target.getYaw()));
                 }
             }
+            //we didn't find it with the locked camera.
+            //if the timer has expired, go back to all cams.
+            if(m_targetTimer.hasElapsed(m_lockTimeSec)){
+                m_targetCam = null;
+                m_targetTimer.stop();
+            }
+        } else { //no pre locked camera.  loop through them all.
+            for (PhotonCamera cam : allCameras){
+                var newResult = cam.getLatestResult();
+                for (var target : newResult.getTargets()){
+                    if (id == target.getFiducialId()){
+                        m_targetCam = cam;
+                        m_targetTimer.restart();
+                        return Optional.of(Double.valueOf(target.getYaw()));
+                    }
+                }
+            }
         }
+        
+        //no targets found anywhere.
+        m_targetCam = null;
+        m_targetTimer.stop();
         return Optional.empty();
 
+    }
+
+    public void unlockTargeting(){
+        m_targetCam = null;
+        m_targetTimer.stop();
     }
 
 }

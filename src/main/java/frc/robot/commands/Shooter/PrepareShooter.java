@@ -4,31 +4,30 @@
 
 package frc.robot.commands.Shooter;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.utils.InterCalculator;
+import frc.robot.RobotState;
+
 import java.util.function.Supplier;
-import monologue.Logged;
-import monologue.Annotations.Log;
-import edu.wpi.first.math.MathUtil;
 
 
-public class IndexPower extends Command {
+public class PrepareShooter extends Command {
   private final ShooterSubsystem m_shooter;
-  private final Supplier<Double> m_indexPower;
-  private final Supplier<Double> m_rollerPower;
-
-  /** Creates a new RunShooterRPM. */
-  public IndexPower(ShooterSubsystem shooter, Supplier<Double> power, Supplier<Double> rollerpower) {
+  private final RobotState m_robotState;
+  private final Supplier<Double> m_maxDistance;
+  private final InterCalculator m_iCalculator = Constants.ShooterConstants.SHOOTER_INTER_CALCULATOR;
+  /** Creates a new ShootPiece. */
+  public PrepareShooter(ShooterSubsystem shooter, Supplier<Double> maxDistance) {
     m_shooter = shooter;
-    m_indexPower = power;
-    m_rollerPower = rollerpower;
+    m_robotState = RobotState.getInstance();
+    m_maxDistance = maxDistance;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_shooter);
   }
 
- 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
@@ -36,18 +35,24 @@ public class IndexPower extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.runIndex(MathUtil.clamp(m_rollerPower.get(), -1, 1));
+    if (m_robotState.hasNote() && m_robotState.getDistancetoSpeaker() < m_maxDistance.get()){
+      var shotParams = m_iCalculator.calculateParameter(m_robotState.getDistancetoSpeaker());
+      m_shooter.setAngleDegrees(shotParams.vals[0]);
+      m_shooter.spinRPM(shotParams.vals[1]);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.stopIndexer();
+    if (!m_robotState.hasNote()){
+      m_shooter.stopAll();
+    }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_shooter.getIndexerBeamBreak();
+    return false;
   }
 }

@@ -3,8 +3,9 @@
 // the WPILib BSD license file in the root directory of this project.
 //...
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.drive;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -39,6 +40,7 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.RobotState;
+import frc.robot.Constants.CameraConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.comm.preferences.DoublePreference;
 import frc.utils.SwerveUtils;
@@ -53,7 +55,7 @@ import static edu.wpi.first.units.Units.Volts;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.commands.FollowPathHolonomic;
-import frc.robot.subsystems.drive.PhotonCameraWrapper;
+
 import frc.robot.subsystems.drive.PhotonCameraWrapper.Side;
 
 
@@ -154,7 +156,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   public DriveSubsystem(PhotonCameraWrapper photonCameraWrapper) {
     
 
-
     m_photonCameraWrapper = photonCameraWrapper;
     poseEstimator = new SwerveDrivePoseEstimator(
                           DriveConstants.kDriveKinematics, 
@@ -187,7 +188,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     // Configure AutoBuilder last
     AutoBuilder.configureHolonomic(
       this::getAutonPose, // Robot pose supplier
-      this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+      this::setAutonPose, // Method to reset odometry (will be called if your auto has a starting pose)
       this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
       this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
       new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
@@ -251,7 +252,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     m_rearLeft.periodic();
     m_rearRight.periodic();
 
-    gyro_rotation = getYaw().getRadians();
+    gyro_rotation = getAngle();
     
     m_odometry.update(
         Rotation2d.fromDegrees(getAngle()),
@@ -277,6 +278,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       boolean poseOK = true;
       for(PhotonTrackedTarget target: pose.targetsUsed) {
           if(target.getPoseAmbiguity() > 0.2) poseOK = false;
+          if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
       }
       if(poseOK) poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }
@@ -286,6 +288,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       boolean poseOK = true;
       for(PhotonTrackedTarget target: pose.targetsUsed) {
           if(target.getPoseAmbiguity() > 0.2) poseOK = false;
+          if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
       }
       if(poseOK) poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }
@@ -295,6 +298,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       boolean poseOK = true;
       for(PhotonTrackedTarget target: pose.targetsUsed) {
           if(target.getPoseAmbiguity() > 0.2) poseOK = false;
+          if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
       }
       if(poseOK) poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }
@@ -304,11 +308,12 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       boolean poseOK = true;
       for(PhotonTrackedTarget target: pose.targetsUsed) {
           if(target.getPoseAmbiguity() > 0.2) poseOK = false;
+          if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
       }
       if(poseOK) poseEstimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
     }
 
-    poseEstimator.update(new Rotation2d(m_gyro.getYaw()), new SwerveModulePosition[] {
+    poseEstimator.update(getYaw(), new SwerveModulePosition[] {
       m_frontLeft.getPosition(),
       m_frontRight.getPosition(),
       m_rearLeft.getPosition(),
@@ -316,7 +321,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     });
 
     if(DriverStation.isAutonomous()) {
-      autonPoseEstimator.update(new Rotation2d(m_gyro.getYaw()), new SwerveModulePosition[] {
+      autonPoseEstimator.update(getYaw(), new SwerveModulePosition[] {
         m_frontLeft.getPosition(),
         m_frontRight.getPosition(),
         m_rearLeft.getPosition(),
@@ -344,6 +349,17 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
 
   public void setPose(Pose2d pose){
     poseEstimator.resetPosition(
+        pose.getRotation(), 
+        new SwerveModulePosition[] {
+          m_frontLeft.getPosition(),
+          m_frontRight.getPosition(),
+          m_rearLeft.getPosition(),
+          m_rearRight.getPosition()}, 
+        pose);
+  }
+
+  public void setAutonPose(Pose2d pose){
+    autonPoseEstimator.resetPosition(
         pose.getRotation(), 
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
@@ -554,8 +570,11 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     return -m_gyro.getAngle();
   }
 
+  @Log.NT
+  @Log.File
   public Rotation2d getYaw() {
-    return m_gyro.getRotation2d().times(-1); // this inversion is a property of the AHRSGyro itself
+    //return m_gyro.getRotation2d().times(-1); // this inversion is a property of the AHRSGyro itself
+    return Rotation2d.fromDegrees(getAngle());
 }
 
   /**
