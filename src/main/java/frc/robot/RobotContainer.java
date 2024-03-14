@@ -28,6 +28,7 @@ import frc.robot.commands.climb.ClimbMM;
 import frc.robot.commands.climb.ClimbPower;
 import frc.robot.commands.drive.DriveToTarget;
 import frc.robot.commands.drive.TurnDegrees;
+import frc.robot.commands.Shooter.AutonShoot;
 import frc.robot.commands.Shooter.IndexPower;
 import frc.robot.commands.Shooter.PositionShooter;
 import frc.robot.commands.Shooter.PrepareShooter;
@@ -160,6 +161,8 @@ public class RobotContainer implements Logged {
             Operator.driver_axisLY, 
             Operator.driver_axisLX);
 
+            private final Command autoShootSubwoofer = new AutonShoot(m_shooter, subShotAngle, subShotRPM, shooterIndexPower);
+
     private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
     
     private final SendableChooser<Command> autonChooser;
@@ -205,8 +208,9 @@ private static class Operator {
   public RobotContainer(){
 
     //TODO: reconcile these with paths.
-    NamedCommands.registerCommand("AutonShot1", shootSubwoofer);
-    NamedCommands.registerCommand("Intake", intakeCommand);
+    NamedCommands.registerCommand("FirstShot", autoShootSubwoofer);
+    NamedCommands.registerCommand("RunIntake", intakePiece);
+    NamedCommands.registerCommand("SecondShot", autoShootSubwoofer);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -216,11 +220,9 @@ private static class Operator {
 
     autonChooser = AutoBuilder.buildAutoChooser();
     autonChooser.addOption("Forward 2 Meters", AutoBuilder.buildAuto("Forward 2 meters"));
-    autonChooser.addOption("Forward 2, Back 2", AutoBuilder.buildAuto("Forward 2, Back 2"));
-    autonChooser.addOption("Forward 2, Back 2 with Rotation", AutoBuilder.buildAuto("Forward 2, Back 2 with Rotation"));
-    autonChooser.addOption("Circle Around Stage", AutoBuilder.buildAuto("Circle Around Stage"));
     autonChooser.addOption("None", null);
     autonChooser.addOption("de test", AutoBuilder.buildAuto("de test"));
+    autonChooser.addOption("CenterTwoRing", AutoBuilder.buildAuto("CenterTwoRing"));
     SmartDashboard.putData("Autonomous", autonChooser);
 
 
