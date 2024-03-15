@@ -8,13 +8,16 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LightControl;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.utils.BlinkinState;
 
 import java.util.function.Supplier;
 
 public class IntakePiece extends Command {
   private final IntakeSubsystem m_intake;
   private final ShooterSubsystem m_shooter;
+  private final LightControl m_lights;
   private final Supplier<Double> m_intakePower;
   private final Supplier<Double> m_intakePosition;
   private final Supplier<Double> m_indexPower;
@@ -26,17 +29,18 @@ public class IntakePiece extends Command {
 
 
   /** Creates a new IntakePiece. */
-  public IntakePiece(IntakeSubsystem intake, ShooterSubsystem shooter, Supplier<Double> intakePower, Supplier<Double> intakePosition, Supplier<Double> indexPower, Supplier<Double> indexPosition ) {
+  public IntakePiece(IntakeSubsystem intake, ShooterSubsystem shooter, LightControl lights, Supplier<Double> intakePower, Supplier<Double> intakePosition, Supplier<Double> indexPower, Supplier<Double> indexPosition ) {
     
     m_intake = intake; 
     m_shooter = shooter;
+    m_lights = lights;
     m_intakePower = intakePower;
     m_intakePosition = intakePosition;
     m_indexPower = indexPower;
     m_indexPosition = indexPosition;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_intake, m_shooter);
+    addRequirements(m_intake, m_shooter, m_lights);
   }
 
   // Called when the command is initially scheduled.
@@ -50,6 +54,7 @@ public class IntakePiece extends Command {
     m_intake.setSpeed(m_intakePower.get());
     m_shooter.setAngleDegrees(m_indexPosition.get());
     m_shooter.runIndex(m_indexPower.get());
+    m_lights.setPattern(BlinkinState.Color_1_Pattern_Strobe);
   }
 
   // Called once the command ends or is interrupted.

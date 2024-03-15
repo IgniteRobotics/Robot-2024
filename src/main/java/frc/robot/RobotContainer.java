@@ -34,10 +34,12 @@ import frc.robot.commands.Shooter.PositionShooter;
 import frc.robot.commands.Shooter.PrepareShooter;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LightControl;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.UmbrellaSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
+import frc.utils.BlinkinState;
 import monologue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -80,6 +82,9 @@ public class RobotContainer implements Logged {
   private final ShooterSubsystem m_shooter = new ShooterSubsystem();
 
   private final Climber m_Climber = new Climber();
+
+  private final LightControl m_lights = new LightControl(0);
+
 
   
   private final RobotState m_robotState = RobotState.getInstance();
@@ -133,7 +138,7 @@ public class RobotContainer implements Logged {
     private final Command resetGyro = new ResetGyro(m_robotDrive);
     private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
     private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
-    private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
+    private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, m_lights, intakePower, intakePosition, indexPower, intakeShooterPosition);
     private final Command stowIntake = new StowIntake(m_robotIntake);
     private final Command parkCommand = new ParkCommand(m_robotDrive);
     private final Command stowShooter = new PositionShooter(m_shooter, intakePosition);
@@ -287,6 +292,7 @@ private static class Operator {
 
     m_robotIntake.setDefaultCommand(stowIntake);
     m_shooter.setDefaultCommand(preSpinShooter);
+    m_lights.setDefaultCommand(m_lights.getDefaultLedCommand(BlinkinState.Color_1_Pattern_Breath_Slow, BlinkinState.Solid_Colors_Lawn_Green).repeatedly());
 
   }
   /**
