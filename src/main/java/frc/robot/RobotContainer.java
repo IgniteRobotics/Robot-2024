@@ -223,6 +223,8 @@ private static class Operator {
     autonChooser.addOption("None", null);
     autonChooser.addOption("de test", AutoBuilder.buildAuto("de test"));
     autonChooser.addOption("CenterTwoRing", AutoBuilder.buildAuto("CenterTwoRing"));
+    autonChooser.addOption("SourceTwoRing", AutoBuilder.buildAuto("SourceTwoRing"));
+
     SmartDashboard.putData("Autonomous", autonChooser);
 
 
