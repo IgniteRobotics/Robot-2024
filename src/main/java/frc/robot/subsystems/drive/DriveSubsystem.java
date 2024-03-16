@@ -367,6 +367,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()}, 
         pose);
+        setAngle(-pose.getRotation().getDegrees());
   }
 
   @Log.NT
@@ -568,6 +569,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
 
   public double getAngle() {
     return -m_gyro.getAngle();
+  }
+
+  public void setAngle(double angle){
+    m_gyro.setAngleAdjustment(angle);
   }
 
   @Log.NT
