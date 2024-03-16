@@ -299,7 +299,7 @@ private static class Operator {
           m_robotDrive));
 
     m_robotIntake.setDefaultCommand(stowIntake);
-    m_shooter.setDefaultCommand(preSpinShooter);
+    //m_shooter.setDefaultCommand(preSpinShooter);
 
   }
   /**
