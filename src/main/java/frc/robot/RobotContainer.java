@@ -99,6 +99,7 @@ public class RobotContainer implements Logged {
   private DoublePreference shooterPosition = new DoublePreference("shooter/shootingPosition", 65); 
   private DoublePreference outdexPower = new DoublePreference("shooter/OutdexPower", -0.1);
   private DoublePreference preSpinDistanceM = new DoublePreference("shooter/preSpinDistanceM", 5.842);
+  private DoublePreference shooterHome = new DoublePreference("shooter/homeposition", 0);
 
   private DoublePreference climberUpPower = new DoublePreference("climber/UpPower", ClimberConstants.POWER);
   private DoublePreference climberDownPower = new DoublePreference("climber/DownPower", -ClimberConstants.POWER);
@@ -151,7 +152,7 @@ public class RobotContainer implements Logged {
     private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
     private final Command stowIntake = new StowIntake(m_robotIntake);
     private final Command parkCommand = new ParkCommand(m_robotDrive);
-    private final Command stowShooter = new PositionShooter(m_shooter, intakePosition);
+    private final Command stowShooter = new PositionShooter(m_shooter, shooterHome);
     private final Command raiseShooter = new PositionShooter(m_shooter, intakeShooterPosition);
     private final Command spinShooter = new RunShooterPower(m_shooter, shooterPower);
     private final Command spinIndex = new IndexPower(m_shooter, outdexPower, outtakePower);
@@ -324,7 +325,7 @@ private static class Operator {
           m_robotDrive));
 
     m_robotIntake.setDefaultCommand(stowIntake);
-    //m_shooter.setDefaultCommand(preSpinShooter);
+    m_shooter.setDefaultCommand(stowShooter);
 
   }
   /**
