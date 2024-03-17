@@ -125,7 +125,9 @@ public class RobotContainer implements Logged {
   private DoublePreference autoAmpRingShotAngle = new DoublePreference("shooter/autoAmpRingAngle", 70);
   private DoublePreference autoAmpRingShotRPM = new DoublePreference("shooter/autoAmpRingRPM", 3200);
 
-
+  private DoublePreference ampRingShotOnlyAngle = new DoublePreference("shooter/ampRingShotOnlyAngle", 60);
+  private DoublePreference ampRingShotOnlyRPM = new DoublePreference("shooter/ampRingShotOnlyRPM", 3200);
+  
 
 
   //Canned shot RPM
@@ -178,7 +180,7 @@ public class RobotContainer implements Logged {
   private final Command autoCenterRingShot = new AutonShoot(m_shooter, centerRingShotAngle, centerRingShotRPM, shooterIndexPower);
   private final Command autoPodiumRingShot = new AutonShoot(m_shooter, autoPodiumRingShotAngle, autoPodiumRingShotRPM, shooterIndexPower);
   private final Command autoAmpRingShot = new AutonShoot(m_shooter, autoAmpRingShotAngle, autoAmpRingShotRPM, shooterIndexPower);
-
+  private final Command ampShotStart = new AutonShoot(m_shooter, ampRingShotOnlyAngle, ampRingShotOnlyRPM, shooterIndexPower);
   private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
     
   private final SendableChooser<Command> autonChooser;
@@ -235,7 +237,8 @@ private static class Operator {
     NamedCommands.registerCommand("SecondShot", autoShootSubwoofer);
     NamedCommands.registerCommand("CenterRingShot", autoCenterRingShot);
     NamedCommands.registerCommand("PodiumRingShot", autoPodiumRingShot);
-    NamedCommands.registerCommand("AmpRingShot", autoAmpRingShot);
+    NamedCommands.registerCommand("AutoAmpRingShot", autoAmpRingShot);
+    NamedCommands.registerCommand("AmpRingShotOnly", ampShotStart);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -251,7 +254,8 @@ private static class Operator {
     autonChooser.addOption("SourceTwoRing", AutoBuilder.buildAuto("SourceTwoRing"));
     autonChooser.addOption("4Ring", AutoBuilder.buildAuto("4Ring"));
     autonChooser.addOption("GETOUTDAWAY", AutoBuilder.buildAuto("GETOUTDAWAY"));
-    
+    autonChooser.addOption("SubShootOnly", AutoBuilder.buildAuto("SubShootOnly"));
+    autonChooser.addOption("AmpShootOnly", AutoBuilder.buildAuto("AmpShootOnly"));
     SmartDashboard.putData("Autonomous", autonChooser);
 
 

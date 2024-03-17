@@ -398,5 +398,53 @@
     "properties": {
       "persistent": true
     }
+  },
+  {
+    "name": "/Preferences/shooter/autoCenterRingAngle",
+    "type": "double",
+    "value": 60.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/autoCenterRingRPM",
+    "type": "double",
+    "value": 3200.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/autoPodiumRingAngle",
+    "type": "double",
+    "value": 85.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/autoPodiumRingRPM",
+    "type": "double",
+    "value": 3200.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/autoAmpRingAngle",
+    "type": "double",
+    "value": 70.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/autoAmpRingRPM",
+    "type": "double",
+    "value": 3200.0,
+    "properties": {
+      "persistent": true
+    }
   }
 ]
