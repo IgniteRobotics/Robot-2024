@@ -233,7 +233,7 @@ public final class Constants {
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
     public static final int kManipControllerPort = 1;
-    public static final double kDriveDeadband = 0.15;
+    public static final double kDriveDeadband = 0.1;
   }
 
   public static final class AutoConstants {
@@ -258,15 +258,15 @@ public final class Constants {
   public static class CameraConstants {
     public static final String photonCameraNameFrontLeft = "FRONT_LEFT";
     // public static final Transform3d photonCameraTransformLeft = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
-    public static final Transform3d photonCameraTransformFrontLeft = new Transform3d(new Translation3d(.324, 0.298, .235), new Rotation3d(0.0, -10 / 180.0 * Math.PI, -15.0/180 * Math.PI));
+    public static final Transform3d photonCameraTransformFrontLeft = new Transform3d(new Translation3d(.343, 0.271, .239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, -15.0/180 * Math.PI));
     public static final String photonCameraNameFrontRight = "FRONT_RIGHT";
-    public static final Transform3d photonCameraTransformFrontRight = new Transform3d(new Translation3d(.324, -0.298, .235), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 15.0/180 * Math.PI));
+    public static final Transform3d photonCameraTransformFrontRight = new Transform3d(new Translation3d(.343, -0.271, .239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 15.0/180 * Math.PI));
     public static final String photonCameraNameRearRight = "REAR_RIGHT";
-    public static final Transform3d photonCameraTransformRearRight = new Transform3d(new Translation3d(-.324, -0.298, 0.235), new Rotation3d(0.0, -10 / 180.0 * Math.PI, -195.0/180 * Math.PI));
+    public static final Transform3d photonCameraTransformRearRight = new Transform3d(new Translation3d(-.343, -0.271, 0.239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, -195.0/180 * Math.PI));
     public static final String photonCameraNameRearLeft = "REAR_LEFT";
-    public static final Transform3d photonCameraTransformRearLeft = new Transform3d(new Translation3d(-.324, 0.298, 0.235), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 195.0/180 * Math.PI));
+    public static final Transform3d photonCameraTransformRearLeft = new Transform3d(new Translation3d(-.343, 0.271, 0.239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 195.0/180 * Math.PI));
 
-    public static final Integer[] IGNORED_POSE_TARGETS = {3,4,7,8};
+    public static final Integer[] IGNORED_POSE_TARGETS = {50,51};
 
   }
 

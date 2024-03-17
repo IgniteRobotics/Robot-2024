@@ -176,6 +176,8 @@ public class RobotContainer implements Logged {
 private static class Operator {
 
     private static Joystick driver = new Joystick(0);
+    private static Joystick manipulator = new Joystick(1);
+    
 
     private static Supplier<Double> driver_axisLX = () -> MathUtil.applyDeadband(-driver.getRawAxis(0), Constants.OIConstants.kDriveDeadband);
     private static Supplier<Double> driver_axisLY = () -> MathUtil.applyDeadband(-driver.getRawAxis(1), Constants.OIConstants.kDriveDeadband);
@@ -195,6 +197,10 @@ private static class Operator {
     private static POVButton driver_dpad_right = new POVButton(driver, 90);
     private static POVButton driver_dpad_down= new POVButton(driver, 180);
     private static POVButton driver_dpad_left = new POVButton(driver, 270);
+
+    private static JoystickButton manip_a = new JoystickButton(manipulator, XboxController.Button.kA.value);
+    private static JoystickButton manip_b = new JoystickButton(manipulator, XboxController.Button.kB.value);
+    private static JoystickButton manip_y = new JoystickButton(manipulator, XboxController.Button.kY.value);
     
 
     // subsystems
@@ -223,6 +229,8 @@ private static class Operator {
     autonChooser.addOption("None", null);
     autonChooser.addOption("de test", AutoBuilder.buildAuto("de test"));
     autonChooser.addOption("CenterTwoRing", AutoBuilder.buildAuto("CenterTwoRing"));
+    autonChooser.addOption("SourceTwoRing", AutoBuilder.buildAuto("SourceTwoRing"));
+
     SmartDashboard.putData("Autonomous", autonChooser);
 
 
@@ -258,9 +266,14 @@ private static class Operator {
    //Operator.driver_b.onTrue(stowShooter);
   //  Operator.driver_dpad_left.whileTrue(spinIndex);
   //  Operator.driver_dpad_right.whileTrue(spinRPM);
-   Operator.driver_a.whileTrue(shootSubwoofer);
-   Operator.driver_b.whileTrue(shootPodium);
-   Operator.driver_y.whileTrue(shootWing);
+  //  Operator.driver_a.whileTrue(shootSubwoofer);
+  //  Operator.driver_b.whileTrue(shootPodium);
+  //  Operator.driver_y.whileTrue(shootWing);\
+  
+   Operator.manip_a.whileTrue(shootSubwoofer);
+   Operator.manip_b.whileTrue(shootPodium);
+   Operator.manip_y.whileTrue(shootWing);
+  
    Operator.driver_x.whileTrue(speakerShotGroup);
 
     // new JoystickButton(m_driverController, XboxController.Button.kY.value)
@@ -286,7 +299,7 @@ private static class Operator {
           m_robotDrive));
 
     m_robotIntake.setDefaultCommand(stowIntake);
-    m_shooter.setDefaultCommand(preSpinShooter);
+    //m_shooter.setDefaultCommand(preSpinShooter);
 
   }
   /**
