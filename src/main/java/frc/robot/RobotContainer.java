@@ -52,6 +52,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import com.fasterxml.jackson.core.sym.Name;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -115,6 +116,18 @@ public class RobotContainer implements Logged {
   private DoublePreference podiumShotAngle = new DoublePreference("shooter/podiumShotAngle", 52.5);
   private DoublePreference subShotAngle = new DoublePreference("shooter/subShotAngle", 93);
 
+  private DoublePreference centerRingShotAngle = new DoublePreference("shooter/autoCenterRingAngle", 60);
+  private DoublePreference centerRingShotRPM = new DoublePreference("shooter/autoCenterRingRPM", 3200);
+
+  private DoublePreference autoPodiumRingShotAngle = new DoublePreference("shooter/autoPodiumRingAngle", 85);
+  private DoublePreference autoPodiumRingShotRPM = new DoublePreference("shooter/autoPodiumRingRPM", 3200);
+
+  private DoublePreference autoAmpRingShotAngle = new DoublePreference("shooter/autoAmpRingAngle", 70);
+  private DoublePreference autoAmpRingShotRPM = new DoublePreference("shooter/autoAmpRingRPM", 3200);
+
+
+
+
   //Canned shot RPM
   private DoublePreference wingShotRPM = new DoublePreference("shooter/wingRPM", 4000);
   private DoublePreference podiumShotRPM = new DoublePreference("shooter/podiumRPM", 3200);
@@ -161,11 +174,14 @@ public class RobotContainer implements Logged {
             Operator.driver_axisLY, 
             Operator.driver_axisLX);
 
-            private final Command autoShootSubwoofer = new AutonShoot(m_shooter, subShotAngle, subShotRPM, shooterIndexPower);
+  private final Command autoShootSubwoofer = new AutonShoot(m_shooter, subShotAngle, subShotRPM, shooterIndexPower);
+  private final Command autoCenterRingShot = new AutonShoot(m_shooter, centerRingShotAngle, centerRingShotRPM, shooterIndexPower);
+  private final Command autoPodiumRingShot = new AutonShoot(m_shooter, autoPodiumRingShotAngle, autoPodiumRingShotRPM, shooterIndexPower);
+  private final Command autoAmpRingShot = new AutonShoot(m_shooter, autoAmpRingShotAngle, autoAmpRingShotRPM, shooterIndexPower);
 
-    private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
+  private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
     
-    private final SendableChooser<Command> autonChooser;
+  private final SendableChooser<Command> autonChooser;
 
   private final double pathSpeed = 2;
 
@@ -217,6 +233,9 @@ private static class Operator {
     NamedCommands.registerCommand("FirstShot", autoShootSubwoofer);
     NamedCommands.registerCommand("RunIntake", intakePiece);
     NamedCommands.registerCommand("SecondShot", autoShootSubwoofer);
+    NamedCommands.registerCommand("CenterRingShot", autoCenterRingShot);
+    NamedCommands.registerCommand("PodiumRingShot", autoPodiumRingShot);
+    NamedCommands.registerCommand("AmpRingShot", autoAmpRingShot);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -230,7 +249,7 @@ private static class Operator {
     autonChooser.addOption("de test", AutoBuilder.buildAuto("de test"));
     autonChooser.addOption("CenterTwoRing", AutoBuilder.buildAuto("CenterTwoRing"));
     autonChooser.addOption("SourceTwoRing", AutoBuilder.buildAuto("SourceTwoRing"));
-
+    autonChooser.addOption("4Ring", AutoBuilder.buildAuto("4Ring"));
     SmartDashboard.putData("Autonomous", autonChooser);
 
 

@@ -1,77 +1,5 @@
 [
   {
-    "name": "/Preferences/intake/intakePower",
-    "type": "double",
-    "value": 0.5,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/intake/outtakePower",
-    "type": "double",
-    "value": 0.5,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/umbrella/Power",
-    "type": "double",
-    "value": 0.25,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/Power",
-    "type": "double",
-    "value": 0.25,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/RPM",
-    "type": "double",
-    "value": 500.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/arm/arm/kP",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/arm/arm/kI",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/arm/arm/kD",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/intake/intakePosition",
-    "type": "double",
-    "value": 100.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
     "name": "/Preferences/auto/D",
     "type": "double",
     "value": 0.1,
@@ -104,54 +32,6 @@
     }
   },
   {
-    "name": "/Preferences/Direction Slew Rate",
-    "type": "double",
-    "value": 1.2,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Magnitude Slew Rate",
-    "type": "double",
-    "value": 1.8,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Rotational Slew Rate",
-    "type": "double",
-    "value": 2.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/kP",
-    "type": "double",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/kI",
-    "type": "double",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/kD",
-    "type": "double",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
     "name": "/Preferences/intake/positionkP",
     "type": "double",
     "value": 0.5,
@@ -178,7 +58,7 @@
   {
     "name": "/Preferences/shooter/RPMkP",
     "type": "double",
-    "value": 6e-05,
+    "value": 9e-05,
     "properties": {
       "persistent": true
     }
@@ -194,7 +74,15 @@
   {
     "name": "/Preferences/shooter/RPMkD",
     "type": "double",
-    "value": 0.0,
+    "value": 0.001,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/RPMkF",
+    "type": "double",
+    "value": 0.0001975,
     "properties": {
       "persistent": true
     }
@@ -210,7 +98,7 @@
   {
     "name": "/Preferences/shooter/PositionkI",
     "type": "double",
-    "value": 1.0,
+    "value": 0.0,
     "properties": {
       "persistent": true
     }
@@ -218,127 +106,7 @@
   {
     "name": "/Preferences/shooter/PositionkD",
     "type": "double",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/Position",
-    "type": "double",
-    "value": 40.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/IndexPower",
-    "type": "double",
-    "value": 0.5,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/RPMkF",
-    "type": "double",
-    "value": 1.5e-05,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/OuttakePower",
-    "type": "double",
-    "value": -0.1,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/shootingPosition",
-    "type": "double",
-    "value": 65.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/OutdexPower",
-    "type": "double",
-    "value": -0.1,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/tuning_rpm",
-    "type": "double",
-    "value": 2500.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/tuning_Position",
-    "type": "double",
-    "value": 65.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/lowAngle",
-    "type": "double",
-    "value": 35.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/midAngle",
-    "type": "double",
-    "value": 50.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/highAngle",
-    "type": "double",
-    "value": 75.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/highPower",
-    "type": "double",
-    "value": 78.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/turnTest/kP",
-    "type": "double",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/turnTest/kD",
-    "type": "double",
     "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/turnTest/tolerance",
-    "type": "double",
-    "value": 2.0,
     "properties": {
       "persistent": true
     }
@@ -376,6 +144,110 @@
     }
   },
   {
+    "name": "/Preferences/intake/intakePower",
+    "type": "double",
+    "value": 0.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/intake/intakePosition",
+    "type": "double",
+    "value": 100.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/intake/outtakePower",
+    "type": "double",
+    "value": -0.75,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/umbrella/Power",
+    "type": "double",
+    "value": 0.25,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/Power",
+    "type": "double",
+    "value": 0.79,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/RPM",
+    "type": "double",
+    "value": 4000.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/Position",
+    "type": "double",
+    "value": 56.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/IndexPower",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/ShootingIndexPower",
+    "type": "double",
+    "value": 0.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/OuttakePower",
+    "type": "double",
+    "value": -0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/shootingPosition",
+    "type": "double",
+    "value": 65.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/OutdexPower",
+    "type": "double",
+    "value": -0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/preSpinDistanceM",
+    "type": "double",
+    "value": 5.842,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
     "name": "/Preferences/climber/UpPower",
     "type": "double",
     "value": 0.1,
@@ -408,9 +280,121 @@
     }
   },
   {
-    "name": "/Preferences/shooter/ShootingIndexPower",
+    "name": "/Preferences/shooter/tuning_rpm",
     "type": "double",
-    "value": 0.5,
+    "value": 2500.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/tuning_Position",
+    "type": "double",
+    "value": 65.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/wingShotAngle",
+    "type": "double",
+    "value": 34.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/podiumShotAngle",
+    "type": "double",
+    "value": 52.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/subShotAngle",
+    "type": "double",
+    "value": 93.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/wingRPM",
+    "type": "double",
+    "value": 4000.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/podiumRPM",
+    "type": "double",
+    "value": 3200.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/subRPM",
+    "type": "double",
+    "value": 3200.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/highPower",
+    "type": "double",
+    "value": 78.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Direction Slew Rate",
+    "type": "double",
+    "value": 1.2,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Magnitude Slew Rate",
+    "type": "double",
+    "value": 3.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Rotational Slew Rate",
+    "type": "double",
+    "value": 6.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/turnTest/kP",
+    "type": "double",
+    "value": 0.014,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/turnTest/kD",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/turnTest/tolerance",
+    "type": "double",
+    "value": 2.0,
     "properties": {
       "persistent": true
     }
