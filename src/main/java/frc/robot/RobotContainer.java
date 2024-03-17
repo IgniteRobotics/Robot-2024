@@ -250,6 +250,8 @@ private static class Operator {
     autonChooser.addOption("CenterTwoRing", AutoBuilder.buildAuto("CenterTwoRing"));
     autonChooser.addOption("SourceTwoRing", AutoBuilder.buildAuto("SourceTwoRing"));
     autonChooser.addOption("4Ring", AutoBuilder.buildAuto("4Ring"));
+    autonChooser.addOption("GETOUTDAWAY", AutoBuilder.buildAuto("GETOUTDAWAY"));
+    
     SmartDashboard.putData("Autonomous", autonChooser);
 
 
