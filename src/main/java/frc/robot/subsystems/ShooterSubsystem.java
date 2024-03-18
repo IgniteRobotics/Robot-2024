@@ -144,16 +144,10 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   @Log.NT
   public double armCurrent;
 
-  @Log.File
-  @Log.NT
   private String armNeutralMode;
 
-  @Log.File
-  @Log.NT
   private boolean armCurrentFault;
 
-  @Log.File
-  @Log.NT
   private boolean armRevLimiFault;
 
   /** Creates a new ShooterSubsystem. */
@@ -358,23 +352,23 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     armVoltage = m_shooterPositionMotor.getMotorVoltage().getValueAsDouble();
     armTemp = m_shooterPositionMotor.getDeviceTemp().getValueAsDouble();
     armCurrent = m_shooterPositionMotor.getTorqueCurrent().getValueAsDouble();
-    m_shooterPositionMotor.getConfigurator().refresh(fxCfg);
-    armNeutralMode = fxCfg.MotorOutput.NeutralMode.toString();
-    armCurrentFault = m_shooterPositionMotor.getFault_StatorCurrLimit().getValue();
-    armRevLimiFault = m_shooterPositionMotor.getFault_ReverseSoftLimit().getValue();
+    //m_shooterPositionMotor.getConfigurator().refresh(fxCfg);
+    //armNeutralMode = fxCfg.MotorOutput.NeutralMode.toString();
+    // armCurrentFault = m_shooterPositionMotor.getFault_StatorCurrLimit().getValue();
+    // armRevLimiFault = m_shooterPositionMotor.getFault_ReverseSoftLimit().getValue();
     
 
     //TODO remove once tuned.
-    m_RollerPidController.setP(shooterkPPreference.get());
-    m_RollerPidController.setI(shooterkIPreference.get());
-    m_RollerPidController.setD(shooterkDPreference.get());
-    m_RollerPidController.setFF(shooterkFPreference.get());
+    // m_RollerPidController.setP(shooterkPPreference.get());
+    // m_RollerPidController.setI(shooterkIPreference.get());
+    // m_RollerPidController.setD(shooterkDPreference.get());
+    // m_RollerPidController.setFF(shooterkFPreference.get());
     
     // apply gains, 50 ms total timeout
     //TODO remove once tuned.
-    positionSlot0Configs.kP = positionkPPreference.get();
-    positionSlot0Configs.kI = positionkIPreference.get();
-    positionSlot0Configs.kD = positionkDPreference.get();
+    // positionSlot0Configs.kP = positionkPPreference.get();
+    // positionSlot0Configs.kI = positionkIPreference.get();
+    // positionSlot0Configs.kD = positionkDPreference.get();
     
     //m_shooterPositionMotor.getConfigurator().apply(positionSlot0Configs, 0.050);
 

@@ -349,7 +349,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
 
   public void setPose(Pose2d pose){
     poseEstimator.resetPosition(
-        pose.getRotation(), 
+        this.getYaw(), 
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -360,7 +360,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
 
   public void setAutonPose(Pose2d pose){
     autonPoseEstimator.resetPosition(
-        pose.getRotation(), 
+        this.getYaw(), 
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -568,6 +568,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
 
   public double getAngle() {
     return -m_gyro.getAngle();
+  }
+
+  public void setAngle(double angle){
+    m_gyro.setAngleAdjustment(angle);
   }
 
   @Log.NT
