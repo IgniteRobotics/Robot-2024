@@ -15,6 +15,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.comm.preferences.DoublePreference;
 import frc.robot.commands.ParkCommand;
 import frc.robot.commands.ResetGyro;
+import frc.robot.commands.RingToss;
 import frc.robot.commands.RunUmbrella;
 import frc.robot.commands.intake.IntakePiece;
 import frc.robot.commands.intake.RunIntake;
@@ -182,6 +183,8 @@ public class RobotContainer implements Logged {
   private final Command autoPodiumRingShot = new AutonShoot(m_shooter, autoPodiumRingShotAngle, autoPodiumRingShotRPM, shooterIndexPower);
   private final Command autoAmpRingShot = new AutonShoot(m_shooter, autoAmpRingShotAngle, autoAmpRingShotRPM, shooterIndexPower);
   private final Command ampShotStart = new AutonShoot(m_shooter, ampRingShotOnlyAngle, ampRingShotOnlyRPM, shooterIndexPower);
+  private final Command ringToss = new RingToss(m_robotIntake, m_shooter, intakePower, intakePosition, shooterIndexPower, intakeShooterPosition, () -> 1000.0);
+  
   private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
     
   private final SendableChooser<Command> autonChooser;
@@ -240,6 +243,7 @@ private static class Operator {
     NamedCommands.registerCommand("PodiumRingShot", autoPodiumRingShot);
     NamedCommands.registerCommand("AutoAmpRingShot", autoAmpRingShot);
     NamedCommands.registerCommand("AmpRingShotOnly", ampShotStart);
+    NamedCommands.registerCommand("RingToss", ringToss);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -257,6 +261,7 @@ private static class Operator {
     autonChooser.addOption("GETOUTDAWAY", AutoBuilder.buildAuto("GETOUTDAWAY"));
     autonChooser.addOption("SubShootOnly", AutoBuilder.buildAuto("SubShootOnly"));
     autonChooser.addOption("AmpShootOnly", AutoBuilder.buildAuto("AmpShootOnly"));
+    autonChooser.addOption("Gollum", AutoBuilder.buildAuto("Gollum"));
     SmartDashboard.putData("Autonomous", autonChooser);
 
 

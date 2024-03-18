@@ -446,5 +446,21 @@
     "properties": {
       "persistent": true
     }
+  },
+  {
+    "name": "/Preferences/shooter/ampRingShotOnlyAngle",
+    "type": "double",
+    "value": 60.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/ampRingShotOnlyRPM",
+    "type": "double",
+    "value": 3200.0,
+    "properties": {
+      "persistent": true
+    }
   }
 ]
