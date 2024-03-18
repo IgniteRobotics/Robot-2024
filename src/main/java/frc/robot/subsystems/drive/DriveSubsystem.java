@@ -367,7 +367,6 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()}, 
         pose);
-        setAngle(-pose.getRotation().getDegrees());
   }
 
   @Log.NT
