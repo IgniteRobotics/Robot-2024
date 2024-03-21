@@ -72,24 +72,26 @@ public class RobotState {
 
     public synchronized void setRobotPose(Pose2d pose){
         m_robotPose2d = pose;
-
     }
 
     public Pose2d getRobotPose(){
         return m_robotPose2d;
     }
 
-    public synchronized void setSpeakerPose(Pose2d pose, int id){
-        m_speakerPose2d = pose;
-        m_speakerID = id;
-    }
-
     public Pose2d getSpeakerPose2d(){
-        return m_robotPose2d;
+        if (m_Alliance == Alliance.Red){
+            return Constants.ShooterConstants.RED_SPEAKER;
+        } else {
+            return Constants.ShooterConstants.BLUE_SPEAKER;
+        }
     }
 
     public int getSpeakerID(){
-        return m_speakerID;
+        if (m_Alliance == Alliance.Red){
+            return Constants.ShooterConstants.RED_SPEAKER_ID;
+        } else {
+            return Constants.ShooterConstants.BLUE_SPEAKER_ID;
+        }
     }
 
     public double getDistancetoSpeaker(){
