@@ -98,6 +98,8 @@ public class Robot extends TimedRobot implements Logged {
     if (DriverStation.getAlliance().isPresent()) {
       hasAlliance = true;
       RobotState.getInstance().setAlliance(DriverStation.getAlliance().get());
+      //Do this again here, just in case alliance was changed as it defaults to BLUE.
+      m_robotContainer.configureAutoShots();
     }
   }
 
@@ -155,7 +157,9 @@ public class Robot extends TimedRobot implements Logged {
 
   @Override
   public void teleopInit() {
+    //Do this again, just in case alliance was updated after start.
     setAllianceInfo();
+    m_robotContainer.configureAutoShots();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -172,6 +176,7 @@ public class Robot extends TimedRobot implements Logged {
   @Override
   public void testInit() {
     setAllianceInfo();
+    m_robotContainer.configureAutoShots();
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
   }
@@ -184,8 +189,9 @@ public class Robot extends TimedRobot implements Logged {
   /** This function is called once when the robot is first started up. */
   @Override
   public void simulationInit() {
-    setAllianceInfo();
     m_robotContainer.m_robotDrive.setPose(new Pose2d(4,5, Rotation2d.fromDegrees(0)));
+    setAllianceInfo();
+    m_robotContainer.configureAutoShots();
   }
 
   /** This function is called periodically whilst in simulation. */

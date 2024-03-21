@@ -46,6 +46,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -308,13 +309,13 @@ private static class Operator {
    Operator.manip_b.whileTrue(shootPodium);
    Operator.manip_y.whileTrue(shootWing);
   
-   Operator.driver_x.whileTrue(turnAndShoot);
+
+   this.configureAutoShots();
 
     // new JoystickButton(m_driverController, XboxController.Button.kY.value)
     //     .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
     // new JoystickButton(m_driverController, XboxController.Button.kB.value)
     //     .whileTrue(m_robotDrive.turnSysIdTestBuilder(10, 5));
-    
 
    
   }
@@ -344,8 +345,24 @@ private static class Operator {
   public Command getAutonomousCommand() {
     return autonChooser.getSelected();
   }
+
+  public void configureAutoShots(){
+    Operator.driver_y.whileTrue(buildShotCommand(m_robotState.getAmpSideShotPose(), m_robotState.getSpeakerID()));
+    Operator.driver_b.whileTrue(buildShotCommand(m_robotState.getMidShotPose(), m_robotState.getSpeakerID()));
+    Operator.driver_a.whileTrue(buildShotCommand(m_robotState.getSourceSideShotPose(), m_robotState.getSpeakerID()));
+  }
+
+  public Command buildShotCommand(Pose2d targetPose, int targetId) {
+    return new SequentialCommandGroup(
+      m_robotDrive.pathFindertoPoseBuilder(targetPose, 
+      Constants.DriveConstants.kMaxSpeedMetersPerSecond, 
+      Constants.DriveConstants.kMaxSpeedMetersPerSecond * 2, 
+      Constants.DriveConstants.kMaxAngularSpeed, 
+      Constants.DriveConstants.kMaxAngularSpeed * 2),
+      new TurnAndShoot(m_robotDrive, m_shooter, m_photonCameraWrapper, () -> targetId, shooterIndexPower)
+    );
+  }
  
-    
 }
 
 
