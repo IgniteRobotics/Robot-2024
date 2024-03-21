@@ -4,8 +4,12 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.pathplanner.lib.util.GeometryUtil;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.apriltag.AprilTag;
@@ -178,6 +182,15 @@ public final class Constants {
     public static final int BLUE_SPEAKER_ID = 7;
     public static final Pose2d BLUE_SPEAKER =  new Pose2d(0, 5.55, Rotation2d.fromDegrees(180));
 
+    public static final Pose2d BLUE_SPK_AMP_SHOT = new Pose2d(2.51, 6.71, Rotation2d.fromDegrees(25));
+    public static final Pose2d BLUE_SPK_MID_SHOT = new Pose2d(3.41, 5.55, Rotation2d.fromDegrees(0));
+    public static final Pose2d BLUE_SPK_SRC_SHOT = new Pose2d(2.21, 3.54, Rotation2d.fromDegrees(-35));
+    public static final List<Pose2d> BLUE_SHOT_POSES = List.of(BLUE_SPK_AMP_SHOT,BLUE_SPK_MID_SHOT,BLUE_SPK_SRC_SHOT);
+
+    public static final Pose2d RED_SPK_AMP_SHOT = GeometryUtil.flipFieldPose(BLUE_SPK_AMP_SHOT); 
+    public static final Pose2d RED_SPK_MID_SHOT = GeometryUtil.flipFieldPose(BLUE_SPK_MID_SHOT);
+    public static final Pose2d RED_SPK_SRC_SHOT = GeometryUtil.flipFieldPose(BLUE_SPK_SRC_SHOT);
+    public static final List<Pose2d> RED_SHOT_POSES = List.of(RED_SPK_AMP_SHOT, RED_SPK_MID_SHOT, RED_SPK_SRC_SHOT);
 
     //TODO: TUNE
     public static final double POSITION_TOLERANCE = 2.0;
