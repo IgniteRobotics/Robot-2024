@@ -17,6 +17,7 @@ import frc.robot.commands.ParkCommand;
 import frc.robot.commands.ResetGyro;
 import frc.robot.commands.RingToss;
 import frc.robot.commands.RunUmbrella;
+import frc.robot.commands.TurnAndShoot;
 import frc.robot.commands.intake.IntakePiece;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.StowIntake;
@@ -184,6 +185,8 @@ public class RobotContainer implements Logged {
   private final Command autoAmpRingShot = new AutonShoot(m_shooter, autoAmpRingShotAngle, autoAmpRingShotRPM, shooterIndexPower);
   private final Command ampShotStart = new AutonShoot(m_shooter, ampRingShotOnlyAngle, ampRingShotOnlyRPM, shooterIndexPower);
   private final Command ringToss = new RingToss(m_robotIntake, m_shooter, intakePower, intakePosition, shooterIndexPower, intakeShooterPosition, () -> 1000.0);
+
+  private final Command turnAndShoot = new TurnAndShoot(m_robotDrive, m_shooter, m_photonCameraWrapper, m_robotState::getSpeakerID, shooterIndexPower);
   
   private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
     
@@ -305,7 +308,7 @@ private static class Operator {
    Operator.manip_b.whileTrue(shootPodium);
    Operator.manip_y.whileTrue(shootWing);
   
-   Operator.driver_x.whileTrue(speakerShotGroup);
+   Operator.driver_x.whileTrue(turnAndShoot);
 
     // new JoystickButton(m_driverController, XboxController.Button.kY.value)
     //     .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
