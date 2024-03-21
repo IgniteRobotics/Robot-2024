@@ -6,6 +6,7 @@ package frc.robot;
 
 import org.littletonrobotics.urcl.URCL;
 
+import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
@@ -65,6 +66,9 @@ public class Robot extends TimedRobot implements Logged {
       //Shush telling me that I don't have a controller in the sim.
       DriverStation.silenceJoystickConnectionWarning(true);
     }
+
+    //warm up pathfinding
+    PathfindingCommand.warmupCommand().schedule();
 
     //do this LAST!!
     boolean fileOnly = false;
