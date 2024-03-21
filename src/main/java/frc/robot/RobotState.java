@@ -33,10 +33,6 @@ public class RobotState {
 
     }
 
-    public synchronized void setHasNote(boolean flag){
-        m_hasNote = flag;
-    }
-
     public Pose2d getRobotPose(){
         return m_robotPose2d;
     }
@@ -57,6 +53,10 @@ public class RobotState {
     public double getDistancetoSpeaker(){
         if (null == m_robotPose2d || null == m_speakerPose2d) return 0.0;
         return PhotonUtils.getDistanceToPose(m_robotPose2d, m_speakerPose2d);
+    }
+
+    public synchronized void setHasNote(boolean flag){
+        m_hasNote = flag;
     }
 
     public boolean hasNote() {
