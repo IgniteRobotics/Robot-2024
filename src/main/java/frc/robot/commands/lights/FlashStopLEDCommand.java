@@ -6,21 +6,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.utils.BlinkinState;
 import frc.robot.subsystems.LightControl;
 
-public class FlashLEDCommand extends Command {
+public class FlashStopLEDCommand extends Command {
     
     private LightControl blinkin;
     private final BlinkinState flashPattern;
-    private final BlinkinState holdPattern;
     private int flashTimeMillis;
     private int timesToFlash;
 
     private int loops;
     private long timer;
 
-    public FlashLEDCommand(LightControl blinkin, BlinkinState flashPattern, BlinkinState holdPattern, int flashTimeMillis, int timesToFlash) {
+    public FlashStopLEDCommand(LightControl blinkin, BlinkinState flashPattern, int flashTimeMillis, int timesToFlash) {
         this.blinkin = blinkin;
         this.flashPattern = flashPattern;
-        this.holdPattern = holdPattern;
         this.flashTimeMillis = flashTimeMillis;
         this.timesToFlash = timesToFlash;
 
@@ -29,6 +27,7 @@ public class FlashLEDCommand extends Command {
 
     @Override
     public void initialize() {
+        blinkin.StartFlashPeriod();
         loops = 0;
         timer = 0;
     }
@@ -43,7 +42,7 @@ public class FlashLEDCommand extends Command {
             timer = System.currentTimeMillis();
             blinkin.turnOff();
         }
-        if (loops > timesToFlash) blinkin.setPattern(holdPattern);
+        if (loops > timesToFlash) this.end(true);
     }
 
     @Override
@@ -54,5 +53,6 @@ public class FlashLEDCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         blinkin.turnOff();
+        blinkin.endPeriod();
     }
 }

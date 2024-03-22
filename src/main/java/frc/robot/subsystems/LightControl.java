@@ -13,6 +13,8 @@ import frc.utils.BlinkinController;
 public class LightControl extends SubsystemBase {
     private BlinkinController blinkin;
     private BlinkinState pattern;
+
+    private boolean flashPeriodActivated = false;
     
     public LightControl(int blinkinPort) {
         this.blinkin = new BlinkinController(blinkinPort);
@@ -49,4 +51,18 @@ public class LightControl extends SubsystemBase {
     public Command getSetLedCommand(BlinkinState state) {
         return this.getSetLedCommand(() -> state);
     }
+
+    
+    public void StartFlashPeriod(){
+        flashPeriodActivated = true;
+    }
+
+    public void endPeriod(){
+        flashPeriodActivated = false;
+    }
+
+    public boolean checkflashState(){
+        return flashPeriodActivated;
+    }
+
 }

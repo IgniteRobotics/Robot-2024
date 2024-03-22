@@ -23,7 +23,13 @@ import monologue.Monologue;
 import monologue.Annotations.Log;
 import monologue.Logged;
 import edu.wpi.first.wpilibj.smartdashboard.*;
-
+import frc.utils.BlinkinState;
+import frc.robot.subsystems.LightControl;
+import frc.robot.Constants;
+import frc.robot.commands.lights.FlashLEDCommand;
+import frc.robot.commands.lights.HoldLEDCommand;
+import frc.robot.commands.lights.ContinueFlashLEDCommand;
+import frc.robot.commands.lights.FlashStopLEDCommand;
 /**f
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -35,6 +41,8 @@ public class Robot extends TimedRobot implements Logged {
 
   private RobotContainer m_robotContainer;
 
+  private LightControl m_LightControl = new LightControl(Constants.blinkinPort);
+
   @Log.NT
   @Log.File
   
@@ -42,6 +50,13 @@ public class Robot extends TimedRobot implements Logged {
 
   private final Field2d field = new Field2d();
 
+  Command disabledLEDCommand = new HoldLEDCommand(m_LightControl, BlinkinState.Solid_Colors_Red_Orange);
+  Command defaultLEDCommand = new ContinueFlashLEDCommand(m_LightControl, BlinkinState.Solid_Colors_Red_Orange, BlinkinState.Solid_Colors_Red, 500);
+  Command initLEDCommand = new FlashStopLEDCommand(m_LightControl, BlinkinState.Solid_Colors_Green, 750, 4);
+  Command piecePickedUP = new FlashStopLEDCommand(m_LightControl, BlinkinState.Solid_Colors_Red_Orange, 750, 4);
+  Command readyToShoot = new ContinueFlashLEDCommand(m_LightControl, BlinkinState.Solid_Colors_Green, BlinkinState.Solid_Colors_Black, 500);
+  private boolean defaultStart = false;
+  private boolean shotPieceInverse = true;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -102,10 +117,13 @@ public class Robot extends TimedRobot implements Logged {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    disabledLEDCommand.schedule();
+  }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
@@ -123,11 +141,24 @@ public class Robot extends TimedRobot implements Logged {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    initLEDCommand.schedule();
+    defaultStart = false;
   }
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    if(m_LightControl.checkflashState() && RobotState.getInstance().hasPiece()){
+      piecePickedUP.schedule();
+      RobotState.getInstance().setPieceSent(false);
+      defaultStart = false;
+    }
+    else if(m_LightControl.checkflashState() && !defaultStart){
+      defaultLEDCommand.schedule();
+      defaultStart = true;
+    }
+  }
 
   @Override
   public void teleopInit() {
@@ -138,11 +169,30 @@ public class Robot extends TimedRobot implements Logged {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    initLEDCommand.schedule();
+    defaultStart = false;
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    if(RobotState.getInstance().hasPiece()){
+      piecePickedUP.schedule();
+      RobotState.getInstance().setPieceSent(false);
+      defaultStart = false;
+    }
+    else if(RobotState.getInstance().checkReadytoShoot() && shotPieceInverse){
+      readyToShoot.schedule();
+      shotPieceInverse = false;
+    }
+    else if(m_LightControl.checkflashState() && !defaultStart){
+      defaultLEDCommand.schedule();
+      defaultStart = true;
+    }
+    else if(!RobotState.getInstance().checkReadytoShoot()){
+      shotPieceInverse = true;
+    }
+  }
 
   @Override
   public void testInit() {

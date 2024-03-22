@@ -6,30 +6,26 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.utils.BlinkinState;
 import frc.robot.subsystems.LightControl;
 
-public class FlashLEDCommand extends Command {
+public class ContinueFlashLEDCommand extends Command {
     
     private LightControl blinkin;
-    private final BlinkinState flashPattern;
-    private final BlinkinState holdPattern;
+    private final BlinkinState flashPatternFirst;
+    private final BlinkinState flashPatternSecond;
     private int flashTimeMillis;
-    private int timesToFlash;
 
-    private int loops;
     private long timer;
 
-    public FlashLEDCommand(LightControl blinkin, BlinkinState flashPattern, BlinkinState holdPattern, int flashTimeMillis, int timesToFlash) {
+    public ContinueFlashLEDCommand(LightControl blinkin, BlinkinState flashPatternFirst, BlinkinState flashPatternSecond, int flashTimeMillis) {
         this.blinkin = blinkin;
-        this.flashPattern = flashPattern;
-        this.holdPattern = holdPattern;
+        this.flashPatternFirst = flashPatternFirst;
+        this.flashPatternSecond = flashPatternSecond;
         this.flashTimeMillis = flashTimeMillis;
-        this.timesToFlash = timesToFlash;
 
         addRequirements(blinkin);
     }
 
     @Override
     public void initialize() {
-        loops = 0;
         timer = 0;
     }
 
@@ -37,13 +33,11 @@ public class FlashLEDCommand extends Command {
     public void execute() {
         if (!blinkin.isActive() && System.currentTimeMillis() > timer + flashTimeMillis) {
             timer = System.currentTimeMillis();
-            blinkin.setPattern(flashPattern);
-            loops++;
+            blinkin.setPattern(flashPatternFirst);
         } else if (blinkin.isActive() && System.currentTimeMillis() > timer + flashTimeMillis) {
             timer = System.currentTimeMillis();
-            blinkin.turnOff();
+            blinkin.setPattern(flashPatternSecond);
         }
-        if (loops > timesToFlash) blinkin.setPattern(holdPattern);
     }
 
     @Override

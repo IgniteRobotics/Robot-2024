@@ -254,5 +254,7 @@ public final class Constants {
 
   }
 
+  public static final int blinkinPort = 0;
+
 
 }

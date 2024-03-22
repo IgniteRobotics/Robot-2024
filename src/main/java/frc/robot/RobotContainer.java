@@ -71,7 +71,6 @@ public class RobotContainer implements Logged {
   //private final UmbrellaSubsystem m_umbrella  = new UmbrellaSubsystem();
   private final ShooterSubsystem m_shooter = new ShooterSubsystem();
 
-  
   private final RobotState m_robotState = RobotState.getInstance();
 
   //Robot preferences
