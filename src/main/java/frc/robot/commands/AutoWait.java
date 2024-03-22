@@ -9,6 +9,7 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.comm.preferences.DoublePreference;
+import java.util.function.Supplier;
 
 /**
  * A command that does nothing but takes a specified amount of time to finish.
@@ -19,7 +20,7 @@ public class AutoWait extends Command {
   /** The timer used for waiting. */
   protected Timer m_timer = new Timer();
 
-  private final double m_duration;
+  private final Supplier<Double> m_duration;
 
   /**
    * Creates a new WaitCommand. This command will do nothing, and end after the specified duration.
@@ -27,8 +28,8 @@ public class AutoWait extends Command {
    * @param seconds the time to wait, in seconds
    */
   @SuppressWarnings("this-escape")
-  public AutoWait(DoublePreference seconds) {
-    m_duration = seconds.get();
+  public AutoWait(Supplier<Double> seconds) {
+    m_duration = seconds;
     SendableRegistry.setName(this, getName() + ": " + seconds + " seconds");
   }
 
@@ -44,7 +45,7 @@ public class AutoWait extends Command {
 
   @Override
   public boolean isFinished() {
-    return m_timer.hasElapsed(m_duration);
+    return m_timer.hasElapsed(m_duration.get());
   }
 
   @Override
@@ -55,6 +56,6 @@ public class AutoWait extends Command {
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-    builder.addDoubleProperty("duration", () -> m_duration, null);
+    builder.addDoubleProperty("duration", () -> m_duration.get(), null);
   }
 }
