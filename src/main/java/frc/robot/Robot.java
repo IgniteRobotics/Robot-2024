@@ -159,7 +159,6 @@ public class Robot extends TimedRobot implements Logged {
   public void teleopInit() {
     //Do this again, just in case alliance was updated after start.
     setAllianceInfo();
-    m_robotContainer.configureAutoShots();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -167,6 +166,8 @@ public class Robot extends TimedRobot implements Logged {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+
   }
 
   /** This function is called periodically during operator control. */
