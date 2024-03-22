@@ -61,6 +61,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import frc.robot.commands.ResetGyro;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.AutoWait;
 
 
 
@@ -189,7 +190,7 @@ public class RobotContainer implements Logged {
   private final Command ringToss = new RingToss(m_robotIntake, m_shooter, intakePower, intakePosition, shooterIndexPower, intakeShooterPosition, () -> 1000.0);
   
   //Autonomous Wait Command
-  private final Command autoWait = new WaitCommand(m_autoWait.get());
+  private final Command autoWait = new AutoWait(m_autoWait);
 
   private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
     
