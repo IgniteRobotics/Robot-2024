@@ -27,7 +27,6 @@ public class FlashStopLEDCommand extends Command {
 
     @Override
     public void initialize() {
-        blinkin.StartFlashPeriod();
         loops = 0;
         timer = 0;
     }
@@ -53,6 +52,5 @@ public class FlashStopLEDCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         blinkin.turnOff();
-        blinkin.endPeriod();
     }
 }

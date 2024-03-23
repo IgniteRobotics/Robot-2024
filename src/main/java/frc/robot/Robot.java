@@ -41,8 +41,6 @@ public class Robot extends TimedRobot implements Logged {
 
   private RobotContainer m_robotContainer;
 
-  private LightControl m_LightControl = new LightControl(Constants.blinkinPort);
-
   @Log.NT
   @Log.File
   
@@ -50,13 +48,6 @@ public class Robot extends TimedRobot implements Logged {
 
   private final Field2d field = new Field2d();
 
-  Command disabledLEDCommand = new HoldLEDCommand(m_LightControl, BlinkinState.Solid_Colors_Red_Orange);
-  Command defaultLEDCommand = new ContinueFlashLEDCommand(m_LightControl, BlinkinState.Solid_Colors_Red_Orange, BlinkinState.Solid_Colors_Red, 500);
-  Command initLEDCommand = new FlashStopLEDCommand(m_LightControl, BlinkinState.Solid_Colors_Green, 750, 4);
-  Command piecePickedUP = new FlashStopLEDCommand(m_LightControl, BlinkinState.Solid_Colors_Red_Orange, 750, 4);
-  Command readyToShoot = new ContinueFlashLEDCommand(m_LightControl, BlinkinState.Solid_Colors_Green, BlinkinState.Solid_Colors_Black, 500);
-  private boolean defaultStart = false;
-  private boolean shotPieceInverse = true;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -118,7 +109,6 @@ public class Robot extends TimedRobot implements Logged {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    disabledLEDCommand.schedule();
   }
 
   @Override
@@ -128,6 +118,7 @@ public class Robot extends TimedRobot implements Logged {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    m_robotContainer.getInitCommand().schedule();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     /*
@@ -141,27 +132,16 @@ public class Robot extends TimedRobot implements Logged {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-
-    initLEDCommand.schedule();
-    defaultStart = false;
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    if(m_LightControl.checkflashState() && RobotState.getInstance().hasPiece()){
-      piecePickedUP.schedule();
-      RobotState.getInstance().setPieceSent(false);
-      defaultStart = false;
-    }
-    else if(m_LightControl.checkflashState() && !defaultStart){
-      defaultLEDCommand.schedule();
-      defaultStart = true;
-    }
   }
 
   @Override
   public void teleopInit() {
+     m_robotContainer.getInitCommand().schedule();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -169,29 +149,12 @@ public class Robot extends TimedRobot implements Logged {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    initLEDCommand.schedule();
-    defaultStart = false;
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if(RobotState.getInstance().hasPiece()){
-      piecePickedUP.schedule();
-      RobotState.getInstance().setPieceSent(false);
-      defaultStart = false;
-    }
-    else if(RobotState.getInstance().checkReadytoShoot() && shotPieceInverse){
-      readyToShoot.schedule();
-      shotPieceInverse = false;
-    }
-    else if(m_LightControl.checkflashState() && !defaultStart){
-      defaultLEDCommand.schedule();
-      defaultStart = true;
-    }
-    else if(!RobotState.getInstance().checkReadytoShoot()){
-      shotPieceInverse = true;
-    }
+    
   }
 
   @Override

@@ -52,17 +52,4 @@ public class LightControl extends SubsystemBase {
         return this.getSetLedCommand(() -> state);
     }
 
-    
-    public void StartFlashPeriod(){
-        flashPeriodActivated = true;
-    }
-
-    public void endPeriod(){
-        flashPeriodActivated = false;
-    }
-
-    public boolean checkflashState(){
-        return flashPeriodActivated;
-    }
-
 }

@@ -55,20 +55,4 @@ public class RobotState {
         if (null == m_robotPose2d || null == m_speakerPose2d) return 0.0;
         return PhotonUtils.getDistanceToPose(m_robotPose2d, m_speakerPose2d);
     }
-
-    public void setPieceSent(boolean bool){
-        hasPiece = bool;
-    }
-    public boolean hasPiece(){
-        return hasPiece;
-    }
-
-    public void setReadyToShoot(boolean bool){
-        readyToShoot = bool;
-    }
-    
-    public boolean checkReadytoShoot(){
-        return readyToShoot;
-    }
-
 }
