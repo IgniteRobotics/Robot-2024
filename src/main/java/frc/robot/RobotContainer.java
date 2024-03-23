@@ -271,7 +271,7 @@ private static class Operator {
     autonChooser.addOption("SubShootOnly", AutoBuilder.buildAuto("SubShootOnly"));
     autonChooser.addOption("AmpShootOnly", AutoBuilder.buildAuto("AmpShootOnly"));
     autonChooser.addOption("Gollum", AutoBuilder.buildAuto("Gollum"));
-    //autonChooser.addOption("Subside 3 piece auton (center pieces)", AutoBuilder.buildAuto("Subside 3 piece auton (center pieces)"));
+    autonChooser.addOption("Subside 3 piece auton (center pieces)", AutoBuilder.buildAuto("Subside 3 piece auton (center pieces)"));
     autonChooser.addOption("4RingClose", AutoBuilder.buildAuto("4RingClose"));
     SmartDashboard.putData("Autonomous", autonChooser);
 
