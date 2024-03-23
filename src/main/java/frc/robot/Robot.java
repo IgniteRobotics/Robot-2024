@@ -23,6 +23,7 @@ import monologue.Monologue;
 import monologue.Annotations.Log;
 import monologue.Logged;
 import edu.wpi.first.wpilibj.smartdashboard.*;
+
 import frc.utils.BlinkinState;
 import frc.robot.subsystems.LightControl;
 import frc.robot.Constants;
@@ -30,6 +31,9 @@ import frc.robot.commands.lights.FlashLEDCommand;
 import frc.robot.commands.lights.HoldLEDCommand;
 import frc.robot.commands.lights.ContinueFlashLEDCommand;
 import frc.robot.commands.lights.FlashStopLEDCommand;
+
+import edu.wpi.first.util.datalog.StringLogEntry;
+
 /**f
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -43,11 +47,9 @@ public class Robot extends TimedRobot implements Logged {
 
   @Log.NT
   @Log.File
-  
   private CommandScheduler m_Scheduler;
 
-  private final Field2d field = new Field2d();
-
+  private boolean hasAlliance = false;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -78,6 +80,36 @@ public class Robot extends TimedRobot implements Logged {
     boolean lazyLogging = false;
     Monologue.setupMonologue(this, "/Robot", fileOnly, lazyLogging);
     DriverStation.startDataLog(DataLogManager.getLog()); // same log used by monologue
+    StringLogEntry MetaData = new StringLogEntry(DataLogManager.getLog(), "MetaData");
+    MetaData.append("Project Name: " + BuildConstants.MAVEN_NAME);
+    MetaData.append("Build Date: " + BuildConstants.BUILD_DATE);
+    MetaData.append("Commit Hash: " + BuildConstants.GIT_SHA);
+    MetaData.append("Git Date: " + BuildConstants.GIT_DATE);
+    MetaData.append("Git Branch: " + BuildConstants.GIT_BRANCH);
+    switch (BuildConstants.DIRTY) {
+      case 0:
+        MetaData.append("GitDirty: " + "All changes commited");
+        break;
+      case 1:
+        MetaData.append("GitDirty: " + "Uncomitted changes");
+        break;
+      default:
+        MetaData.append("GitDirty: " + "Unknown");
+        break;
+    }
+  }
+
+  private void getAllianceInfo(){
+    if (DriverStation.getAlliance().isPresent()) {
+      hasAlliance = true;
+      if (DriverStation.getAlliance().get() == Alliance.Red){
+        RobotState.getInstance().setSpeakerPose(Constants.ShooterConstants.RED_SPEAKER,
+                                                Constants.ShooterConstants.RED_SPEAKER_ID);
+      } else {
+        RobotState.getInstance().setSpeakerPose(Constants.ShooterConstants.BLUE_SPEAKER,
+                                                Constants.ShooterConstants.BLUE_SPEAKER_ID);
+      }
+    }
   }
 
   /**
@@ -94,13 +126,9 @@ public class Robot extends TimedRobot implements Logged {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red){
-      RobotState.getInstance().setSpeakerPose(Constants.ShooterConstants.RED_SPEAKER,
-                                              Constants.ShooterConstants.RED_SPEAKER_ID);
-    } else {
-      RobotState.getInstance().setSpeakerPose(Constants.ShooterConstants.BLUE_SPEAKER,
-                                              Constants.ShooterConstants.BLUE_SPEAKER_ID);
-    }
+    
+    if (!hasAlliance) {getAllianceInfo();}
+    
     
     Monologue.setFileOnly(DriverStation.isFMSAttached());
     Monologue.updateAll();
@@ -118,7 +146,11 @@ public class Robot extends TimedRobot implements Logged {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+
     m_robotContainer.getInitCommand().schedule();
+
+    getAllianceInfo();
+
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     /*
@@ -141,7 +173,11 @@ public class Robot extends TimedRobot implements Logged {
 
   @Override
   public void teleopInit() {
+
      m_robotContainer.getInitCommand().schedule();
+
+    getAllianceInfo();
+
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -159,6 +195,7 @@ public class Robot extends TimedRobot implements Logged {
 
   @Override
   public void testInit() {
+    getAllianceInfo();
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
   }
@@ -171,6 +208,7 @@ public class Robot extends TimedRobot implements Logged {
   /** This function is called once when the robot is first started up. */
   @Override
   public void simulationInit() {
+    getAllianceInfo();
     m_robotContainer.m_robotDrive.setPose(new Pose2d(4,5, Rotation2d.fromDegrees(0)));
   }
 

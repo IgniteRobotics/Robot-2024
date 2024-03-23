@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 public class ShootPiece extends Command {
   private final ShooterSubsystem m_shooter;
   private final Supplier<Double> m_position;
-  private final Supplier<Double> m_power;
+  private final Supplier<Double> m_rpm;
   private final Supplier<Double> m_indexPower;
   private final Supplier<Boolean> m_ready; 
   private final LightControl m_LightControl;
@@ -24,11 +24,13 @@ public class ShootPiece extends Command {
   private int loops;
   private long timer;
   /** Creates a new ShootPiece. */
-  public ShootPiece(ShooterSubsystem shooter, LightControl lightControl, Supplier<Double> position, Supplier<Double> power, Supplier<Double> indexpower, Supplier<Boolean> ready) {
+
+  public ShootPiece(ShooterSubsystem shooter, LightControl lightControl, Supplier<Double> position, Supplier<Double> rpm, Supplier<Double> indexpower, Supplier<Boolean> ready) {
+
     m_shooter = shooter;
     m_LightControl = lightControl;
     m_position = position;
-    m_power = power;
+    m_rpm = rpm;
     m_indexPower = indexpower;
     m_ready = ready;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -45,7 +47,7 @@ public class ShootPiece extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.spinPower(m_power.get());
+    m_shooter.spinRPM(m_rpm.get());
     m_shooter.setAngleDegrees(m_position.get());
     if(m_shooter.armAtSetpoint() && m_shooter.atRPM())
     {
@@ -62,7 +64,6 @@ public class ShootPiece extends Command {
     if (m_ready.get()){
       m_shooter.runIndex(m_indexPower.get());
     }
-
   }
 
   // Called once the command ends or is interrupted.

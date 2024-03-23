@@ -175,6 +175,7 @@ out/
 logs/
 
 # Folder that has CTRE Phoenix Sim device config storage
+src/main/java/frc/robot/BuildConstants.java
 ctre_sim/
 simgui.json
 networktables.json

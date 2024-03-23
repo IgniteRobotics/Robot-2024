@@ -8,8 +8,10 @@ import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.drive.PhotonCameraWrapper;
 import frc.utils.InterCalculator;
 import frc.robot.RobotState;
+import frc.robot.Constants.CameraConstants;
 
 import java.util.function.Supplier;
 
@@ -19,12 +21,14 @@ public class ShootInterpolated extends Command {
   private final Supplier<Double> m_indexPower;
   private final Supplier<Boolean> m_ready; 
   private final RobotState m_robotState;
+  private final PhotonCameraWrapper m_cameras;
   private final InterCalculator m_iCalculator = Constants.ShooterConstants.SHOOTER_INTER_CALCULATOR;
   /** Creates a new ShootPiece. */
-  public ShootInterpolated(ShooterSubsystem shooter, Supplier<Double> indexpower, Supplier<Boolean> ready) {
+  public ShootInterpolated(ShooterSubsystem shooter, PhotonCameraWrapper cameras, Supplier<Double> indexpower, Supplier<Boolean> ready) {
     m_shooter = shooter;
     m_indexPower = indexpower;
     m_ready = ready;
+    m_cameras = cameras;
     m_robotState = RobotState.getInstance();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_shooter);
@@ -32,7 +36,9 @@ public class ShootInterpolated extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_cameras.unlockTargeting();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -40,7 +46,7 @@ public class ShootInterpolated extends Command {
     var shotParams = m_iCalculator.calculateParameter(m_robotState.getDistancetoSpeaker());
     m_shooter.setAngleDegrees(shotParams.vals[0]);
     m_shooter.spinRPM(shotParams.vals[1]);
-    if (m_ready.get() && m_shooter.atRPM() && m_shooter.armAtSetpoint()){
+    if (m_ready.get()){
       m_shooter.runIndex(m_indexPower.get());
     }
   }
@@ -50,6 +56,7 @@ public class ShootInterpolated extends Command {
   public void end(boolean interrupted) {
     m_shooter.stopIndexer();
     m_shooter.stopRoller();
+    m_cameras.unlockTargeting();
   }
 
   // Returns true when the command should end.

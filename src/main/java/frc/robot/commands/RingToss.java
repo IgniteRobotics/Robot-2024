@@ -2,34 +2,28 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.intake;
-
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
+package frc.robot.commands;
 
 import java.util.function.Supplier;
 
-public class IntakePiece extends Command {
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+
+public class RingToss extends Command {
   private final IntakeSubsystem m_intake;
   private final ShooterSubsystem m_shooter;
   private final Supplier<Double> m_intakePower;
   private final Supplier<Double> m_intakePosition;
   private final Supplier<Double> m_indexPower;
   private final Supplier<Double> m_indexPosition;
-
-  private final Timer timer = new Timer();
-  private final double delaySeconds = 0.02;
-
-
-
-  /** Creates a new IntakePiece. */
-  public IntakePiece(IntakeSubsystem intake, ShooterSubsystem shooter, Supplier<Double> intakePower, Supplier<Double> intakePosition, Supplier<Double> indexPower, Supplier<Double> indexPosition ) {
+  private final Supplier<Double> m_shooterRPM;
+  /** Creates a new RingToss. */
+  public RingToss(IntakeSubsystem intake, ShooterSubsystem shooter, Supplier<Double> intakePower, Supplier<Double> intakePosition, Supplier<Double> indexPower, Supplier<Double> indexPosition, Supplier<Double> shooterRPM ) {
     
     m_intake = intake; 
     m_shooter = shooter;
+    m_shooterRPM = shooterRPM;
     m_intakePower = intakePower;
     m_intakePosition = intakePosition;
     m_indexPower = indexPower;
@@ -46,23 +40,27 @@ public class IntakePiece extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.setPosition(m_intakePosition.get());
-    m_intake.setSpeed(m_intakePower.get());
+    if (!m_shooter.getIndexerBeamBreak()){
+      m_intake.setPosition(m_intakePosition.get());
+      m_intake.setSpeed(m_intakePower.get());
+    } else {
+      m_intake.stop();
+      m_intake.setPosition(1);
+    }
+    
     m_shooter.setAngleDegrees(m_indexPosition.get());
     m_shooter.runIndex(m_indexPower.get());
+    m_shooter.spinRPM(m_shooterRPM.get());
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_shooter.stopIndexer();
-    m_intake.stop();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //TODO use beam break
-    return m_shooter.getIndexerBeamBreak();
+    return false;
   }
 }
