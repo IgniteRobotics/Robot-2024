@@ -80,7 +80,23 @@ public class Robot extends TimedRobot implements Logged {
     boolean lazyLogging = false;
     Monologue.setupMonologue(this, "/Robot", fileOnly, lazyLogging);
     DriverStation.startDataLog(DataLogManager.getLog()); // same log used by monologue
-    
+    StringLogEntry MetaData = new StringLogEntry(DataLogManager.getLog(), "MetaData");
+    MetaData.append("Project Name: " + BuildConstants.MAVEN_NAME);
+    MetaData.append("Build Date: " + BuildConstants.BUILD_DATE);
+    MetaData.append("Commit Hash: " + BuildConstants.GIT_SHA);
+    MetaData.append("Git Date: " + BuildConstants.GIT_DATE);
+    MetaData.append("Git Branch: " + BuildConstants.GIT_BRANCH);
+    switch (BuildConstants.DIRTY) {
+      case 0:
+        MetaData.append("GitDirty: " + "All changes commited");
+        break;
+      case 1:
+        MetaData.append("GitDirty: " + "Uncomitted changes");
+        break;
+      default:
+        MetaData.append("GitDirty: " + "Unknown");
+        break;
+    }
   }
 
   private void getAllianceInfo(){
