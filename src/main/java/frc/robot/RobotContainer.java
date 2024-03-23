@@ -174,13 +174,9 @@ public class RobotContainer implements Logged {
     private final Command spinShooter = new RunShooterPower(m_shooter, shooterPower);
     private final Command spinIndex = new IndexPower(m_shooter, outdexPower, outtakePower);
 
-    private final Command shootHighAngle = new ShootPiece(m_shooter, m_LightControl, shooterHighAngle, shooterPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
-    private final Command shootMidAngle = new ShootPiece(m_shooter, m_LightControl, shooterMidAngle, shooterPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
-    private final Command shootLowAngle = new ShootPiece(m_shooter, m_LightControl, shooterLowAngle, shooterHighPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
-
-    private final Command shootSubwoofer = new ShootPiece(m_shooter, subShotAngle, subShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
-    private final Command shootPodium = new ShootPiece(m_shooter, podiumShotAngle, podiumShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
-    private final Command shootWing = new ShootPiece(m_shooter, wingShotAngle, wingShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command shootSubwoofer = new ShootPiece(m_shooter, m_LightControl, subShotAngle, subShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command shootPodium = new ShootPiece(m_shooter, m_LightControl, podiumShotAngle, podiumShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command shootWing = new ShootPiece(m_shooter, m_LightControl, wingShotAngle, wingShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
 
     private final Command spinRPM = new RunShooterRPM(m_shooter, shooterRPM);
     private final Command preSpinShooter = new PrepareShooter(m_shooter, preSpinDistanceM);
@@ -193,9 +189,6 @@ public class RobotContainer implements Logged {
     private final Command testTurnPID = new TurnDegrees(m_robotDrive, 15);
 
     private final Command shooterTune = new ShootPiece(m_shooter, m_LightControl, tuningPosition, tuningPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
-    private final Command shootInterpolated = new ShootInterpolated(m_shooter, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
-
-    private final Command shooterTune = new ShootPiece(m_shooter, tuningPosition, tuningPower, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command shootInterpolated = new ShootInterpolated(m_shooter, m_photonCameraWrapper, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
 
     private final Command driveToTarget = new DriveToTarget(m_robotDrive, 
