@@ -51,6 +51,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -71,6 +72,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import frc.robot.commands.ResetGyro;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.AutoWait;
 
 
 
@@ -162,6 +164,8 @@ public class RobotContainer implements Logged {
    private DoublePreference m_kMagnitudeSlewRate = new DoublePreference("Magnitude Slew Rate", Constants.DriveConstants.kMagnitudeSlewRate);
    private DoublePreference m_kRotationalSlewRate = new DoublePreference("Rotational Slew Rate", Constants.DriveConstants.kRotationalSlewRate);
 
+   //preference for auto wait (in seconds)
+   private DoublePreference m_autoWait = new DoublePreference("Autonomous Wait Command (Secs)", 0);
 
     private final Command resetGyro = new ResetGyro(m_robotDrive);
     private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
@@ -204,6 +208,9 @@ public class RobotContainer implements Logged {
   private final Command ampShotStart = new AutonShoot(m_shooter, ampRingShotOnlyAngle, ampRingShotOnlyRPM, shooterIndexPower);
   private final Command ringToss = new RingToss(m_robotIntake, m_shooter, intakePower, intakePosition, shooterIndexPower, intakeShooterPosition, () -> 1000.0);
   
+  //Autonomous Wait Command
+  private final Command autoWait = new AutoWait(m_autoWait);
+
   private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
     
   private final SendableChooser<Command> autonChooser;
@@ -216,6 +223,7 @@ public class RobotContainer implements Logged {
   
 
   private final double pathSpeed = 2;
+
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -273,6 +281,7 @@ private static class Operator {
     NamedCommands.registerCommand("AutoAmpRingShot", autoAmpRingShot);
     NamedCommands.registerCommand("AmpRingShotOnly", ampShotStart);
     NamedCommands.registerCommand("RingToss", ringToss);
+    NamedCommands.registerCommand("Auto Wait", autoWait);
 
     // Configure the button bindings
     configureButtonBindings();
