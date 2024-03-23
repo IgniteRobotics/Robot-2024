@@ -275,6 +275,7 @@ public final class Constants {
     public static final int INTAKE_POSITION_MOTOR = 2;
     public static final int INTAKE_ROLLER_MOTOR = 1;
     public static final int UMBRELLA_MOTOR_1 = 3;
+    public static final int UMBRELLA_MOTOR_2 = 5;
 
     public static final int CLIMBER_MOTOR = 4;
     

@@ -9,33 +9,33 @@ import java.util.function.Supplier;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.UmbrellaSubsystem;
 
-public class RunUmbrella extends Command {
-  private final UmbrellaSubsystem m_umbrella;
-  private final Supplier<Double> m_powSupplier;
-  /** Creates a new RunUmbrella. */
-  public RunUmbrella(UmbrellaSubsystem subsystem, Supplier<Double> powSupplier) {
-    m_umbrella = subsystem;
-    m_powSupplier = powSupplier;
+public class PositionUmbrella extends Command {
+  /** Creates a new umbrelllacommands. */
 
+  private final UmbrellaSubsystem m_Umbrella;
+  private final Supplier<Double> targetPosition;
+
+
+  public PositionUmbrella(UmbrellaSubsystem Umbrella, Supplier<Double> position) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+  m_Umbrella = Umbrella;
+  targetPosition = position;
+  addRequirements(m_Umbrella);
+  
   }
 
+  
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    m_umbrella.setSpeed(m_powSupplier.get());
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_umbrella.stop();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
