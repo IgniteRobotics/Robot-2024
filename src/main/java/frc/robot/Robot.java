@@ -154,7 +154,7 @@ public class Robot extends TimedRobot implements Logged {
   @Override
   public void autonomousInit() {
 
-    m_robotContainer.getInitCommand().schedule();
+    m_robotContainer.getLEDInitCommand().schedule();
 
     getAllianceInfo();
 
@@ -181,7 +181,7 @@ public class Robot extends TimedRobot implements Logged {
   @Override
   public void teleopInit() {
 
-     m_robotContainer.getInitCommand().schedule();
+     m_robotContainer.getLEDInitCommand().schedule();
 
     getAllianceInfo();
 

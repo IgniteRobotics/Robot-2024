@@ -377,7 +377,7 @@ private static class Operator {
     return autonChooser.getSelected();
   }
 
-  public Command getInitCommand(){
+  public Command getLEDInitCommand(){
     return initLEDCommand;
   }
 
