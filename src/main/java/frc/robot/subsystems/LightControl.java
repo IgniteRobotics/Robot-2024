@@ -4,11 +4,11 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.lights.FlashLEDCommand;
 import frc.utils.BlinkinState;
 import frc.utils.BlinkinController;
+import frc.utils.Timer;
 
 public class LightControl extends SubsystemBase {
     private BlinkinController blinkin;
@@ -52,19 +52,14 @@ public class LightControl extends SubsystemBase {
         return this.getSetLedCommand(() -> state);
     }
 
-    public long ShootReady(long timer){
-        if(timer == -1) {
-            timer = System.currentTimeMillis();
-            this. turnOff();
-        }
-        else if (!this.isActive() && System.currentTimeMillis() > timer + 500) {
-            timer = System.currentTimeMillis();
+    public void ShootReady(Timer timer){
+        if (!this.isActive() && timer.timePassed(500)) {
+            timer.resetTimer();
             this.setPattern(BlinkinState.Solid_Colors_Green);
-        } else if (this.isActive() && System.currentTimeMillis() > timer + 500) {
-            timer = System.currentTimeMillis();
+        } else if (this.isActive() && timer.timePassed(500)) {
+            timer.resetTimer();
             this.turnOff();
         }
-        return timer;
     }
 
     }

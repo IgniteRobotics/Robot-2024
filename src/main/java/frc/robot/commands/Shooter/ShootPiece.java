@@ -11,6 +11,7 @@ import frc.robot.subsystems.LightControl;
 import frc.utils.BlinkinState;
 
 import java.util.function.Supplier;
+import frc.utils.Timer;
 
 
 public class ShootPiece extends Command {
@@ -22,7 +23,7 @@ public class ShootPiece extends Command {
   private final LightControl m_LightControl;
 
   private int loops;
-  private long timer;
+  private Timer timer;
   /** Creates a new ShootPiece. */
 
   public ShootPiece(ShooterSubsystem shooter, LightControl lightControl, Supplier<Double> position, Supplier<Double> rpm, Supplier<Double> indexpower, Supplier<Boolean> ready) {
@@ -40,7 +41,7 @@ public class ShootPiece extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timer = -1;
+    timer.resetTimer();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -52,6 +53,7 @@ public class ShootPiece extends Command {
     {
       m_LightControl.ShootReady(timer);
     }
+    else timer.resetTimer();
     //if (m_ready.get() && m_shooter.atSetpoint()){
     if (m_ready.get()){
       m_shooter.runIndex(m_indexPower.get());

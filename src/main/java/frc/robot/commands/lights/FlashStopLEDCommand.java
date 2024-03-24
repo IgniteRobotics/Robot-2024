@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.utils.BlinkinState;
 import frc.robot.subsystems.LightControl;
+import frc.utils.Timer;
 
 public class FlashStopLEDCommand extends Command {
     
@@ -14,7 +15,7 @@ public class FlashStopLEDCommand extends Command {
     private int timesToFlash;
 
     private int loops;
-    private long timer;
+    private Timer m_Timer;
 
     public FlashStopLEDCommand(LightControl blinkin, BlinkinState flashPattern, int flashTimeMillis, int timesToFlash) {
         this.blinkin = blinkin;
@@ -28,25 +29,24 @@ public class FlashStopLEDCommand extends Command {
     @Override
     public void initialize() {
         loops = 0;
-        timer = 0;
+        m_Timer.resetTimer();;
     }
 
     @Override
     public void execute() {
-        if (!blinkin.isActive() && System.currentTimeMillis() > timer + flashTimeMillis) {
-            timer = System.currentTimeMillis();
+        if (!blinkin.isActive() && m_Timer.timePassed(flashTimeMillis)) {
+            m_Timer.resetTimer();
             blinkin.setPattern(flashPattern);
             loops++;
-        } else if (blinkin.isActive() && System.currentTimeMillis() > timer + flashTimeMillis) {
-            timer = System.currentTimeMillis();
+        } else if (blinkin.isActive() && m_Timer.timePassed(flashTimeMillis)) {
+            m_Timer.resetTimer();
             blinkin.turnOff();
         }
-        if (loops > timesToFlash) this.end(true);
     }
 
     @Override
     public boolean isFinished() {
-        return false;
+        return loops > timesToFlash;
     }
 
     @Override

@@ -30,7 +30,7 @@ public class FlashLEDCommand extends Command {
     @Override
     public void initialize() {
         loops = 0;
-        timer = 0;
+        timer = System.currentTimeMillis();
     }
 
     @Override
