@@ -40,8 +40,7 @@ public class ShootPiece extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timer = 0;
-    loops = 0;
+    timer = -1;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -51,14 +50,7 @@ public class ShootPiece extends Command {
     m_shooter.setAngleDegrees(m_position.get());
     if(m_shooter.armAtSetpoint() && m_shooter.atRPM())
     {
-      if (!m_LightControl.isActive() && System.currentTimeMillis() > timer + 500) {
-        timer = System.currentTimeMillis();
-        m_LightControl.setPattern(BlinkinState.Solid_Colors_Green);
-        loops++;
-    } else if (m_LightControl.isActive() && System.currentTimeMillis() > timer + 500) {
-        timer = System.currentTimeMillis();
-        m_LightControl.turnOff();
-    }
+      m_LightControl.ShootReady(timer);
     }
     //if (m_ready.get() && m_shooter.atSetpoint()){
     if (m_ready.get()){

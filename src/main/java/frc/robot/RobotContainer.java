@@ -23,7 +23,6 @@ import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.StowIntake;
 import frc.robot.commands.lights.ContinueFlashLEDCommand;
 import frc.robot.commands.lights.FlashStopLEDCommand;
-import frc.robot.commands.lights.HoldLEDCommand;
 import frc.robot.input.AxisButton;
 import frc.robot.commands.Shooter.RunShooterPower;
 import frc.robot.commands.Shooter.RunShooterRPM;
@@ -73,6 +72,7 @@ import frc.robot.commands.ResetGyro;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoWait;
+
 
 
 
@@ -170,7 +170,7 @@ public class RobotContainer implements Logged {
     private final Command resetGyro = new ResetGyro(m_robotDrive);
     private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
     private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
-    private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
+    private final Command intakePiece = new IntakePiece(m_robotIntake, m_LightControl, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
     private final Command stowIntake = new StowIntake(m_robotIntake);
     private final Command parkCommand = new ParkCommand(m_robotDrive);
     private final Command stowShooter = new PositionShooter(m_shooter, shooterHome);
@@ -219,7 +219,6 @@ public class RobotContainer implements Logged {
   Command defaultLEDCommand = new ContinueFlashLEDCommand(m_LightControl, BlinkinState.Solid_Colors_Red_Orange, BlinkinState.Solid_Colors_Red, 500);
   Command initLEDCommand = new FlashStopLEDCommand(m_LightControl, BlinkinState.Solid_Colors_Green, 750, 4);
   Command piecePickedUP = new FlashStopLEDCommand(m_LightControl, BlinkinState.Solid_Colors_Red_Orange, 750, 4);
-  Command readyToShoot = new ContinueFlashLEDCommand(m_LightControl, BlinkinState.Solid_Colors_Green, BlinkinState.Solid_Colors_Black, 500);
   
 
   private final double pathSpeed = 2;
@@ -380,6 +379,14 @@ private static class Operator {
 
   public Command getInitCommand(){
     return initLEDCommand;
+  }
+
+  public boolean getIndexerBeamBreak(){
+    return m_shooter.getIndexerBeamBreak();
+  }
+
+  public Command getBeamBreakLEDCommand(){
+    return piecePickedUP;
   }
     
 }

@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.LightControl;
 
 import java.util.function.Supplier;
 
@@ -19,6 +20,7 @@ public class IntakePiece extends Command {
   private final Supplier<Double> m_intakePosition;
   private final Supplier<Double> m_indexPower;
   private final Supplier<Double> m_indexPosition;
+  private final LightControl m_LightControl;
 
   private final Timer timer = new Timer();
   private final double delaySeconds = 0.02;
@@ -26,10 +28,11 @@ public class IntakePiece extends Command {
 
 
   /** Creates a new IntakePiece. */
-  public IntakePiece(IntakeSubsystem intake, ShooterSubsystem shooter, Supplier<Double> intakePower, Supplier<Double> intakePosition, Supplier<Double> indexPower, Supplier<Double> indexPosition ) {
+  public IntakePiece(IntakeSubsystem intake, LightControl lightControl, ShooterSubsystem shooter, Supplier<Double> intakePower, Supplier<Double> intakePosition, Supplier<Double> indexPower, Supplier<Double> indexPosition ) {
     
     m_intake = intake; 
     m_shooter = shooter;
+    m_LightControl = lightControl;
     m_intakePower = intakePower;
     m_intakePosition = intakePosition;
     m_indexPower = indexPower;

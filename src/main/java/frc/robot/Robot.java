@@ -28,9 +28,6 @@ import frc.utils.BlinkinState;
 import frc.robot.subsystems.LightControl;
 import frc.robot.Constants;
 import frc.robot.commands.lights.FlashLEDCommand;
-import frc.robot.commands.lights.HoldLEDCommand;
-import frc.robot.commands.lights.ContinueFlashLEDCommand;
-import frc.robot.commands.lights.FlashStopLEDCommand;
 
 import edu.wpi.first.util.datalog.StringLogEntry;
 
@@ -44,6 +41,8 @@ public class Robot extends TimedRobot implements Logged {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
+  private boolean runLEDBeamBreak = true;
 
   @Log.NT
   @Log.File
@@ -132,6 +131,14 @@ public class Robot extends TimedRobot implements Logged {
     
     Monologue.setFileOnly(DriverStation.isFMSAttached());
     Monologue.updateAll();
+
+    if(runLEDBeamBreak && m_robotContainer.getIndexerBeamBreak()){
+      m_robotContainer.getBeamBreakLEDCommand().schedule();
+      runLEDBeamBreak = false;
+    }
+    else if(!runLEDBeamBreak && !m_robotContainer.getIndexerBeamBreak()){
+      runLEDBeamBreak = true;
+    }
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

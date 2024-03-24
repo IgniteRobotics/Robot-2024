@@ -53,7 +53,11 @@ public class LightControl extends SubsystemBase {
     }
 
     public long ShootReady(long timer){
-        if (!this.isActive() && System.currentTimeMillis() > timer + 500) {
+        if(timer == -1) {
+            timer = System.currentTimeMillis();
+            this. turnOff();
+        }
+        else if (!this.isActive() && System.currentTimeMillis() > timer + 500) {
             timer = System.currentTimeMillis();
             this.setPattern(BlinkinState.Solid_Colors_Green);
         } else if (this.isActive() && System.currentTimeMillis() > timer + 500) {
@@ -63,4 +67,6 @@ public class LightControl extends SubsystemBase {
         return timer;
     }
 
-}
+    }
+
+
