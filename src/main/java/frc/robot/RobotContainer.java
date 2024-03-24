@@ -182,13 +182,15 @@ public class RobotContainer implements Logged {
             Operator.driver_axisLY, 
             Operator.driver_axisLX);
 
-  private final Command autoShootSubwoofer = new AutonShoot(m_shooter, subShotAngle, subShotRPM, shooterIndexPower);
-  private final Command autoCenterRingShot = new AutonShoot(m_shooter, centerRingShotAngle, centerRingShotRPM, shooterIndexPower);
-  private final Command autoPodiumRingShot = new AutonShoot(m_shooter, autoPodiumRingShotAngle, autoPodiumRingShotRPM, shooterIndexPower);
-  private final Command autoAmpRingShot = new AutonShoot(m_shooter, autoAmpRingShotAngle, autoAmpRingShotRPM, shooterIndexPower);
-  private final Command ampShotStart = new AutonShoot(m_shooter, ampRingShotOnlyAngle, ampRingShotOnlyRPM, shooterIndexPower);
+  private final Command autoShootSubwoofer = new AutonShoot(m_shooter, subShotAngle, subShotRPM, shooterIndexPower).withTimeout(2);
+  private final Command autoCenterRingShot = new AutonShoot(m_shooter, centerRingShotAngle, centerRingShotRPM, shooterIndexPower).withTimeout(2);
+  private final Command autoPodiumRingShot = new AutonShoot(m_shooter, autoPodiumRingShotAngle, autoPodiumRingShotRPM, shooterIndexPower).withTimeout(2);
+  private final Command autoAmpRingShot = new AutonShoot(m_shooter, autoAmpRingShotAngle, autoAmpRingShotRPM, shooterIndexPower).withTimeout(2);
+  private final Command ampShotStart = new AutonShoot(m_shooter, ampRingShotOnlyAngle, ampRingShotOnlyRPM, shooterIndexPower).withTimeout(2);
   private final Command ringToss = new RingToss(m_robotIntake, m_shooter, intakePower, intakePosition, shooterIndexPower, intakeShooterPosition, () -> 1000.0);
-  
+  private final Command autoIntake = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition).withTimeout(3.5);
+
+
   //Autonomous Wait Command
   private final Command autoWait = new AutoWait(m_autoWait);
 
@@ -245,7 +247,7 @@ private static class Operator {
 
     //TODO: reconcile these with paths.
     NamedCommands.registerCommand("FirstShot", autoShootSubwoofer);
-    NamedCommands.registerCommand("RunIntake", intakePiece);
+    NamedCommands.registerCommand("RunIntake", autoIntake);
     NamedCommands.registerCommand("SecondShot", autoShootSubwoofer);
     NamedCommands.registerCommand("CenterRingShot", autoCenterRingShot);
     NamedCommands.registerCommand("PodiumRingShot", autoPodiumRingShot);
