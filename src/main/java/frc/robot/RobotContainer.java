@@ -60,9 +60,6 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 
-import javax.naming.InitialContext;
-
-
 import com.fasterxml.jackson.core.sym.Name;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -192,7 +189,7 @@ public class RobotContainer implements Logged {
 
     private final Command testTurnPID = new TurnDegrees(m_robotDrive, 15);
 
-    private final Command shooterTune = new ShootPiece(m_shooter, m_LightControl, tuningPosition, tuningPower, indexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command shooterTune = new ShootPiece(m_shooter, m_LightControl, tuningPosition, tuningPower, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command shootInterpolated = new ShootInterpolated(m_shooter, m_photonCameraWrapper, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
 
     private final Command driveToTarget = new DriveToTarget(m_robotDrive, 
@@ -347,7 +344,7 @@ private static class Operator {
     // new JoystickButton(m_driverController, XboxController.Button.kY.value)
     //     .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
     // new JoystickButton(m_driverController, XboxController.Button.kB.value)
-    //     .whileTrue(m_robotDrive.turnSysIdTestBuilder(10, 5);
+    //     .whileTrue(m_robotDrive.turnSysIdTestBuilder(10, 5));
     
   }
 
