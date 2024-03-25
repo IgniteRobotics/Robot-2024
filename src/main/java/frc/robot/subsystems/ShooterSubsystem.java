@@ -114,35 +114,35 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   @Log.File
   @Log.NT
-  public double robotVelocity;
+  private double robotVelocity;
 
   @Log.File
   @Log.NT
-  public Pose2d robotPose2d;
+  private Pose2d robotPose2d;
 
   @Log.File
   @Log.NT
-  public double armPosition;
+  private double armPosition;
 
   @Log.File
   @Log.NT
-  public double armVelocity;
+  private double armVelocity;
 
   @Log.File
   @Log.NT
-  public double armPower;
+  private double armPower;
 
   @Log.File
   @Log.NT
-  public double armVoltage;
+  private double armVoltage;
 
   @Log.File
   @Log.NT
-  public double armTemp;
+  private double armTemp;
 
   @Log.File
   @Log.NT
-  public double armCurrent;
+  private double armCurrent;
 
   private String armNeutralMode;
 
@@ -326,6 +326,18 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   @Log.NT
   public boolean getIndexerBeamBreak(){
     return !m_indexerBeamBreak.get();
+  }
+
+  public double getArmPosition(){
+    return armPosition;
+  }
+
+  public double getArmCurrent(){
+    return armCurrent;
+  }
+
+  public double getArmPower(){
+    return armPower;
   }
 
   @Override
