@@ -5,15 +5,18 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ForwardLimitValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
@@ -46,6 +49,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   private final CANSparkMax m_shooterMotor;
   private final CANSparkMax m_shooterIndexMotor;
   private final TalonFX m_shooterPositionMotor;
+  private final CANcoder m_shooterPositionCancoder;
 
   private final RelativeEncoder m_shooterEncoder;
   private final RelativeEncoder m_shooterIndexEncoder;
@@ -128,6 +132,14 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   @Log.NT
   public double armVelocity;
 
+ @Log.File
+  @Log.NT
+  public double armCancoderPosition;
+
+  @Log.File
+  @Log.NT
+  public double armCancoderVelocity;
+
   @Log.File
   @Log.NT
   public double armPower;
@@ -156,6 +168,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     m_shooterMotor = new CANSparkMax(Constants.CANConstants.SHOOTER_MOTOR_LEADERCanId, MotorType.kBrushless);
     m_shooterIndexMotor = new CANSparkMax(Constants.CANConstants.SHOOTER_INDEX_MOTOR, MotorType.kBrushless);
     m_shooterPositionMotor = new TalonFX(Constants.CANConstants.SHOOTER_POSITION_MOTOR);
+    m_shooterPositionCancoder = new CANcoder(Constants.CANConstants.SHOOTER_POSITION_CANCODER);
+  
 
     m_shooterEncoder = m_shooterMotor.getEncoder();
     m_shooterIndexEncoder = m_shooterIndexMotor.getEncoder();
@@ -166,6 +180,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     this.configureShooterMotor(m_shooterMotor, m_shooterEncoder, m_RollerPidController);
     this.configureIndexMotor(m_shooterIndexMotor);
     this.configurePositionMotor(m_shooterPositionMotor, m_positionMotorConfig, positionSlot0Configs, m_positionSoftLimitConfig, m_positionMotionMagicConfigs);
+    this.configureCancoder(m_shooterPositionCancoder);
       
   }
 
@@ -230,6 +245,13 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   }
 
+  private void configureCancoder(CANcoder cancoder){
+    CANcoderConfiguration config = new CANcoderConfiguration();
+    config.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    config.MagnetSensor.MagnetOffset = 0;
+    cancoder.getConfigurator().apply(config);
+  }
+  
   public void spinPower(double power) {
     m_shooterMotor.set(MathUtil.clamp(power, Constants.ShooterConstants.ROLLER_MIN_OUTPUT, Constants.ShooterConstants.ROLLER_MAX_OUTPUT));
   }
@@ -262,6 +284,12 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   public double getAngleRadians(){
     return Units.degreesToRadians(getAngleDegrees());
+  }
+
+  @Log.File
+  @Log.NT
+  public double getCancoderAngleDegrees(){
+    return CANcoderToDegrees(m_shooterPositionCancoder.getPosition().getValueAsDouble(), Constants.ShooterConstants.ARM_CANCODER_RATIO);
   }
 
 
@@ -315,6 +343,26 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   public void resetPosition(){
     this.setPositionRevolutions(0);
   }
+  
+    /**
+   * @param positionCounts CANCoder Position Counts
+   * @param gearRatio Gear Ratio between CANCoder and Mechanism
+   * @return Degrees of Rotation of Mechanism
+   */
+
+  public static double CANcoderToDegrees(double positionCounts, double gearRatio) {
+    return positionCounts * (360.0 / (gearRatio * 4096.0));
+  }
+
+  /**
+   * @param degrees Degrees of rotation of Mechanism
+   * @param gearRatio Gear Ratio between CANCoder and Mechanism
+   * @return CANCoder Position Counts
+   */
+  public static double degreesToCANcoder(double degrees, double gearRatio) {
+      return degrees / (360.0 / (gearRatio * 4096.0));
+  }
+
 
   public void stopAll(){
     this.stopRoller();
@@ -352,6 +400,9 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     armVoltage = m_shooterPositionMotor.getMotorVoltage().getValueAsDouble();
     armTemp = m_shooterPositionMotor.getDeviceTemp().getValueAsDouble();
     armCurrent = m_shooterPositionMotor.getTorqueCurrent().getValueAsDouble();
+    armCancoderPosition = m_shooterPositionCancoder.getPosition().getValueAsDouble();
+    armCancoderVelocity = m_shooterPositionCancoder.getVelocity().getValueAsDouble();
+
     //m_shooterPositionMotor.getConfigurator().refresh(fxCfg);
     //armNeutralMode = fxCfg.MotorOutput.NeutralMode.toString();
     // armCurrentFault = m_shooterPositionMotor.getFault_StatorCurrLimit().getValue();

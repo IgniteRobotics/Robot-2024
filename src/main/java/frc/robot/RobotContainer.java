@@ -268,7 +268,6 @@ private static class Operator {
     autonChooser.addOption("de test", AutoBuilder.buildAuto("de test"));
     autonChooser.addOption("CenterTwoRing", AutoBuilder.buildAuto("CenterTwoRing"));
     autonChooser.addOption("SourceTwoRing", AutoBuilder.buildAuto("SourceTwoRing"));
-    autonChooser.addOption("4Ring", AutoBuilder.buildAuto("4Ring"));
     autonChooser.addOption("GETOUTDAWAY", AutoBuilder.buildAuto("GETOUTDAWAY"));
     autonChooser.addOption("SubShootOnly", AutoBuilder.buildAuto("SubShootOnly"));
     autonChooser.addOption("AmpShootOnly", AutoBuilder.buildAuto("AmpShootOnly"));
