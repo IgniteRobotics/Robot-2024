@@ -21,21 +21,19 @@ public class StowShooter extends Command {
   private final ShooterSubsystem m_shooter;
   private final Supplier<Double> m_targetAngle;
 
-  private final int m_windowSize = 5;
-  private double[] m_positionMeasurements = new double[m_windowSize];
-  private double[] m_currentMeasurements = new double[m_windowSize];
-  private double[] m_powerMeasurements = new double[m_windowSize];
-  private int m_index = 0;
-  private int m_counter = 0;
 
-  private final double MAX_POSITION = 0.5;
-  private final double MAX_STDEV = 0.1;
-  private final int INTERVAL = m_windowSize; 
+
+  private final double m_waitTime = 0.10;
+  private final Timer m_Timer = new Timer();
+  private boolean m_inWait = false;
+  private boolean m_hasReset = false;
 
   /** Creates a new RunShooterRPM. */
   public StowShooter(ShooterSubsystem shooter, Supplier<Double> angle) {
     m_shooter = shooter;
     m_targetAngle = angle;
+    m_inWait = false;
+    m_hasReset = false;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_shooter);
   }
@@ -50,31 +48,26 @@ public class StowShooter extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_counter = 0;
-    m_index = 0;
-    m_currentMeasurements = new double[m_windowSize];
-    m_positionMeasurements = new double[m_windowSize];
-    m_powerMeasurements = new double[m_windowSize];
+    m_hasReset = false;
+    m_inWait = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!m_shooter.armAtSetpoint()){
-      m_shooter.setAngleDegrees(MathUtil.clamp(m_targetAngle.get(), 0, 120));
-    }
-    this.addMeasurements(m_shooter.getArmPosition(), m_shooter.getArmCurrent(), m_shooter.getArmPower());
-    m_counter++;
-    if (m_counter % INTERVAL == 0){
-      if (
-        getAvgCurrent() < 0 &&  //pushing down
-        getAvgPosition() < MAX_POSITION &&  //we're close to home.
-        getAvgPower() < 0 && // pushing down
-        getStdDevCurrent() < MAX_STDEV &&  //current isn't changing
-        getStdDevPosition() < MAX_STDEV && //postition isn't changing
-        getStdDevPower() < MAX_STDEV // power isn't changing
-      ) {
-        m_shooter.resetPosition();
+    if (!m_hasReset){    
+      if (!m_shooter.armAtSetpoint()){
+        m_inWait = false;
+        m_shooter.setAngleDegrees(MathUtil.clamp(m_targetAngle.get(), 0, 120));
+      } else { // arm is at setpoint
+        if (!m_inWait) {  //start waiting if you need to
+          m_inWait = true;
+          m_Timer.reset();
+          m_Timer.start();
+        } else if (m_Timer.hasElapsed(m_waitTime)) {
+          m_shooter.reZeroEncoder();
+          m_hasReset = true;
+        }
       }
     }
   }
@@ -88,61 +81,7 @@ public class StowShooter extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //return m_shooter.armAtSetpoint();
     return false;
   }
-
-  private double mean(double[] values){
-    return Arrays.stream(m_positionMeasurements).sum() / m_windowSize;
-  }
-
-  private double stdev(double[] values){
-
-    double mean = this.mean(values);
-
-    // calculate the standard deviation
-    double standardDeviation = 0.0;
-    for (double num : values) {
-        standardDeviation += Math.pow(num - mean, 2);
-    }
-
-    return Math.sqrt(standardDeviation / m_windowSize);
-  }
-
-  private void addMeasurements(double position, double current, double power){
-    m_positionMeasurements[m_index] = position;
-    m_currentMeasurements[m_index] = current;
-    m_powerMeasurements[m_index] = power;
-    m_index++;
-    if (m_index >= m_windowSize) {m_index = 0;}
-  }
-
-  private double getAvgPosition() {
-    return this.mean(m_positionMeasurements);
-  }
-
-  private double getAvgCurrent() {
-    return this.mean(m_currentMeasurements);
-  }
-
-  private double getAvgPower() {
-    return this.mean(m_powerMeasurements);
-  }
-
-  private double getStdDevPosition(){
-    return this.stdev(m_positionMeasurements);
-  }
-
-  private double getStdDevCurrent(){
-    return this.stdev(m_currentMeasurements);
-  }
-
-  private double getStdDevPower(){
-    return this.stdev(m_currentMeasurements);
-  }
-
-
-
-
 
 }

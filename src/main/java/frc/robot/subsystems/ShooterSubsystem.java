@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -149,6 +150,10 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   private boolean armCurrentFault;
 
   private boolean armRevLimiFault;
+
+  @Log.File
+  @Log.NT
+  private double m_accumlatedArmOffset = 0;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -314,6 +319,13 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   public void resetPosition(){
     this.setPositionRevolutions(0);
+  }
+
+  public void reZeroEncoder(){
+    FeedbackConfigs f = new FeedbackConfigs();
+    m_accumlatedArmOffset -= this.armPosition;
+    f.FeedbackRotorOffset = m_accumlatedArmOffset;
+    this.m_shooterPositionMotor.getConfigurator().apply(f);
   }
 
   public void stopAll(){

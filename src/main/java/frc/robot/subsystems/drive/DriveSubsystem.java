@@ -89,6 +89,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   private final SwerveDrivePoseEstimator poseEstimator;
   private final SwerveDrivePoseEstimator autonPoseEstimator;
 
+  @Log.NT
+  @Log.File
   private SwerveModuleState[] m_moduleStates = new SwerveModuleState[4];
 
 

@@ -180,7 +180,7 @@ public final class Constants {
 
 
     //TODO: TUNE
-    public static final double POSITION_TOLERANCE = 2.0;
+    public static final double POSITION_TOLERANCE = 1;
 
     public static final double VELOCITY_TOLERANCE = 75;
 
