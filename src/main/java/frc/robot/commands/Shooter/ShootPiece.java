@@ -35,8 +35,8 @@ public class ShootPiece extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.spinRPM(m_rpm.get());
     m_shooter.setAngleDegrees(m_position.get());
+    m_shooter.spinRPM(m_rpm.get());
     //if (m_ready.get() && m_shooter.atSetpoint()){
     if (m_ready.get()){
       m_shooter.runIndex(m_indexPower.get());

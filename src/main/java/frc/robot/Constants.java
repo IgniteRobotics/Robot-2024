@@ -135,7 +135,7 @@ public final class Constants {
     public static final double POSITION_kD = 0;
     public static final double POSITION_kS = 0.24;
     public static final double POSITION_kV = 0.12;
-    public static final double POSITION_ForwardsLimit = 33;
+    public static final double POSITION_ForwardsLimit = 0.33;
     public static final double POSITION_ReverseLimit = 0;
 
 
@@ -181,7 +181,7 @@ public final class Constants {
 
 
     //TODO: TUNE
-    public static final double POSITION_TOLERANCE = 2.0;
+    public static final double POSITION_TOLERANCE = 1.0;
 
     public static final double VELOCITY_TOLERANCE = 75;
 
