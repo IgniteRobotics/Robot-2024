@@ -151,7 +151,7 @@ public final class Constants {
 
     public static final double TARGET_POSITION_DEGREES = 56;
     public static final double SHOOTER_HOME_DEGREES = 2;
-    public static final double ARM_CANCODER_RATIO = 0.6;
+    public static final double ARM_CANCODER_RATIO = 5.0/3.0;
 
     // DISTANCE, ANGLE, RPM
     public static final InterCalculator SHOOTER_INTER_CALCULATOR = new InterCalculator(

@@ -14,6 +14,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.ForwardLimitValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -248,6 +249,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   private void configureCancoder(CANcoder cancoder){
     CANcoderConfiguration config = new CANcoderConfiguration();
     config.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    config.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
     config.MagnetSensor.MagnetOffset = 0;
     cancoder.getConfigurator().apply(config);
   }
@@ -289,7 +291,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   @Log.File
   @Log.NT
   public double getCancoderAngleDegrees(){
-    return CANcoderToDegrees(m_shooterPositionCancoder.getPosition().getValueAsDouble(), Constants.ShooterConstants.ARM_CANCODER_RATIO);
+    return CANcoderToDegrees(m_shooterPositionCancoder.getAbsolutePosition().getValueAsDouble(), Constants.ShooterConstants.ARM_CANCODER_RATIO);
   }
 
 
@@ -351,7 +353,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
    */
 
   public static double CANcoderToDegrees(double positionCounts, double gearRatio) {
-    return positionCounts * (360.0 / (gearRatio * 4096.0));
+    //return positionCounts * (360.0 / (gearRatio * 4096.0));
+    return positionCounts * 360 /gearRatio;
   }
 
   /**
@@ -360,7 +363,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
    * @return CANCoder Position Counts
    */
   public static double degreesToCANcoder(double degrees, double gearRatio) {
-      return degrees / (360.0 / (gearRatio * 4096.0));
+      return degrees * gearRatio /360.0;
   }
 
 
@@ -400,7 +403,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     armVoltage = m_shooterPositionMotor.getMotorVoltage().getValueAsDouble();
     armTemp = m_shooterPositionMotor.getDeviceTemp().getValueAsDouble();
     armCurrent = m_shooterPositionMotor.getTorqueCurrent().getValueAsDouble();
-    armCancoderPosition = m_shooterPositionCancoder.getPosition().getValueAsDouble();
+    armCancoderPosition = m_shooterPositionCancoder.getAbsolutePosition().getValueAsDouble();
     armCancoderVelocity = m_shooterPositionCancoder.getVelocity().getValueAsDouble();
 
     //m_shooterPositionMotor.getConfigurator().refresh(fxCfg);
