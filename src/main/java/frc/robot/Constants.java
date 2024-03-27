@@ -129,13 +129,13 @@ public final class Constants {
   }
   public static final class ShooterConstants {
 
-    public static final double POSITION_kF = 1;
-    public static final double POSITION_kP = 1;
+    //public static final double POSITION_kF = 1;
+    public static final double POSITION_kP = 60;
     public static final double POSITION_kI = 0;
-    public static final double POSITION_kD = 0;
+    public static final double POSITION_kD = 2;
     public static final double POSITION_kS = 0.24;
     public static final double POSITION_kV = 0.12;
-    public static final double POSITION_ForwardsLimit = 0.33;
+    public static final double POSITION_ForwardsLimit = 0.42;
     public static final double POSITION_ReverseLimit = 0;
 
 
