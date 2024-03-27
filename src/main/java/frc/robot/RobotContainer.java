@@ -25,6 +25,7 @@ import frc.robot.commands.Shooter.RunShooterPower;
 import frc.robot.commands.Shooter.RunShooterRPM;
 import frc.robot.commands.Shooter.ShootInterpolated;
 import frc.robot.commands.Shooter.ShootPiece;
+import frc.robot.commands.Shooter.StowShooter;
 import frc.robot.commands.climb.ClimbMM;
 import frc.robot.commands.climb.ClimbPower;
 import frc.robot.commands.drive.DriveToTarget;
@@ -157,7 +158,7 @@ public class RobotContainer implements Logged {
     private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
     private final Command stowIntake = new StowIntake(m_robotIntake);
     private final Command parkCommand = new ParkCommand(m_robotDrive);
-    private final Command stowShooter = new PositionShooter(m_shooter, shooterHome);
+    private final Command stowShooter = new StowShooter(m_shooter, shooterHome);
     private final Command raiseShooter = new PositionShooter(m_shooter, intakeShooterPosition);
     private final Command spinShooter = new RunShooterPower(m_shooter, shooterPower);
     private final Command spinIndex = new IndexPower(m_shooter, outdexPower, outtakePower);
