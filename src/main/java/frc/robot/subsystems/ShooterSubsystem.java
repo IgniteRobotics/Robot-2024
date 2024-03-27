@@ -11,6 +11,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -75,7 +76,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   private SoftwareLimitSwitchConfigs m_positionSoftLimitConfig = new SoftwareLimitSwitchConfigs();
   private MotionMagicConfigs m_positionMotionMagicConfigs = new MotionMagicConfigs();
   private MotorOutputConfigs m_positionMotorConfig = new MotorOutputConfigs();
-  private TalonFXConfiguration fxCfg = new TalonFXConfiguration();
+  private TalonFXConfiguration m_fxCfg = new TalonFXConfiguration();
 
   public MotionMagicVoltage shooterPosition = new MotionMagicVoltage(0);
   private RobotState m_robotState = RobotState.getInstance();
@@ -182,7 +183,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     this.configureShooterMotor(m_shooterMotor, m_shooterEncoder, m_RollerPidController);
     this.configureIndexMotor(m_shooterIndexMotor);
     this.configureCancoder(m_shooterPositionCancoder);
-    this.configurePositionMotor(m_shooterPositionMotor, m_positionMotorConfig, positionSlot0Configs, m_positionSoftLimitConfig, m_positionMotionMagicConfigs);
+    this.configurePositionMotor(m_shooterPositionMotor,m_fxCfg, m_positionMotorConfig, positionSlot0Configs, m_positionSoftLimitConfig, m_positionMotionMagicConfigs);
       
   }
 
@@ -213,15 +214,30 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
      motor.burnFlash();
   }
 
-  private void configurePositionMotor(TalonFX motor, 
+  private void configurePositionMotor(TalonFX motor,
+      TalonFXConfiguration baseConfiguration,  
       MotorOutputConfigs motorOutputConfigs,
       Slot0Configs slot0PID, 
       SoftwareLimitSwitchConfigs limitSwitchConfigs,
       MotionMagicConfigs mmConfig){
+
+    TalonFXConfigurator configurator = m_shooterPositionMotor.getConfigurator();
+
+    //grab any settings already on the motor, just in case.
+    configurator.refresh(baseConfiguration);
+    configurator.refresh(motorOutputConfigs);
+    configurator.refresh(slot0PID);
+    configurator.refresh(limitSwitchConfigs);
+    configurator.refresh(mmConfig);
     
+    baseConfiguration.Feedback.FeedbackRemoteSensorID = m_shooterPositionCancoder.getDeviceID();
+    baseConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+    
+    configurator.apply(baseConfiguration);
+
     motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
 
-    motor.getConfigurator().apply(motorOutputConfigs, 0.050);
+    configurator.apply(motorOutputConfigs, 0.050);
 
     slot0PID.kV = Constants.ShooterConstants.POSITION_kV;
     slot0PID.kS = Constants.ShooterConstants.POSITION_kS;
@@ -229,7 +245,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     slot0PID.kI = positionkIPreference.get();
     slot0PID.kD = positionkDPreference.get();
 
-    m_shooterPositionMotor.getConfigurator().apply(slot0PID, 0.050);
+    configurator.apply(slot0PID, 0.050);
 
 
     limitSwitchConfigs.ForwardSoftLimitEnable = true;
@@ -237,23 +253,14 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     limitSwitchConfigs.ReverseSoftLimitEnable = true;
     limitSwitchConfigs.ReverseSoftLimitThreshold = ShooterConstants.POSITION_ReverseLimit;
 
-    m_shooterPositionMotor.getConfigurator().apply(limitSwitchConfigs, 0.050);
+    configurator.apply(limitSwitchConfigs, 0.050);
 
     mmConfig.MotionMagicCruiseVelocity = ShooterConstants.MOTION_MAGIC_CRUISE_VELOCITY;
     mmConfig.MotionMagicAcceleration = ShooterConstants.MOTION_MAGIC_ACCELERATION;
     mmConfig.MotionMagicJerk = ShooterConstants.MOTION_MAGIC_JERK;
 
-    m_shooterPositionMotor.getConfigurator().apply(mmConfig);
-
-
+    configurator.apply(mmConfig);
     
-    fxCfg.Feedback.FeedbackRemoteSensorID = m_shooterPositionCancoder.getDeviceID();
-    fxCfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-    //fxCfg.Feedback.SensorToMechanismRatio = Constants.ShooterConstants.ARM_CANCODER_RATIO;
-    //fxCfg.Feedback.RotorToSensorRatio = 80 / Constants.ShooterConstants.ARM_CANCODER_RATIO;
-
-    m_shooterPositionMotor.getConfigurator().apply(fxCfg);
-
   }
 
   private void configureCancoder(CANcoder cancoder){
