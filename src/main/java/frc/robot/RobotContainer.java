@@ -120,6 +120,7 @@ public class RobotContainer implements Logged {
   private DoublePreference wingShotAngle = new DoublePreference("shooter/wingShotAngle", 34);
   private DoublePreference podiumShotAngle = new DoublePreference("shooter/podiumShotAngle", 52.5);
   private DoublePreference subShotAngle = new DoublePreference("shooter/subShotAngle", 93);
+  private DoublePreference closeAutoShotAngle = new DoublePreference("shooter/closeAutoShotAngle", 48);
 
   private DoublePreference centerRingShotAngle = new DoublePreference("shooter/autoCenterRingAngle", 60);
   private DoublePreference centerRingShotRPM = new DoublePreference("shooter/autoCenterRingRPM", 3200);
@@ -139,6 +140,7 @@ public class RobotContainer implements Logged {
   private DoublePreference wingShotRPM = new DoublePreference("shooter/wingRPM", 4000);
   private DoublePreference podiumShotRPM = new DoublePreference("shooter/podiumRPM", 3200);
   private DoublePreference subShotRPM = new DoublePreference("shooter/subRPM", 3200);
+  private DoublePreference closeAutoShotRPM = new DoublePreference("shooter/closeAutoShotRPM", 3200);
 
   //High power
   private DoublePreference shooterHighPower = new DoublePreference("shooter/highPower", 78);
@@ -184,12 +186,13 @@ public class RobotContainer implements Logged {
             Operator.driver_axisLX);
 
   private final Command autoShootSubwoofer = new AutonShoot(m_shooter, subShotAngle, subShotRPM, shooterIndexPower).withTimeout(2);
+  private final Command autoShootAlmostSub = new AutonShoot(m_shooter, closeAutoShotAngle, closeAutoShotRPM, shooterIndexPower).withTimeout(2);
   private final Command autoCenterRingShot = new AutonShoot(m_shooter, centerRingShotAngle, centerRingShotRPM, shooterIndexPower).withTimeout(2);
   private final Command autoPodiumRingShot = new AutonShoot(m_shooter, autoPodiumRingShotAngle, autoPodiumRingShotRPM, shooterIndexPower).withTimeout(2);
   private final Command autoAmpRingShot = new AutonShoot(m_shooter, autoAmpRingShotAngle, autoAmpRingShotRPM, shooterIndexPower).withTimeout(2);
   private final Command ampShotStart = new AutonShoot(m_shooter, ampRingShotOnlyAngle, ampRingShotOnlyRPM, shooterIndexPower).withTimeout(2);
   private final Command ringToss = new RingToss(m_robotIntake, m_shooter, intakePower, intakePosition, shooterIndexPower, intakeShooterPosition, () -> 1000.0);
-  private final Command autoIntake = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition).withTimeout(3.5);
+  private final Command autoIntake = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition).withTimeout(3.75);
 
 
   //Autonomous Wait Command
@@ -248,6 +251,7 @@ private static class Operator {
 
     //TODO: reconcile these with paths.
     NamedCommands.registerCommand("FirstShot", autoShootSubwoofer);
+    NamedCommands.registerCommand("AutoCloseShot", autoShootAlmostSub);
     NamedCommands.registerCommand("RunIntake", autoIntake);
     NamedCommands.registerCommand("SecondShot", autoShootSubwoofer);
     NamedCommands.registerCommand("CenterRingShot", autoCenterRingShot);
