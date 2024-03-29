@@ -18,6 +18,7 @@ import frc.robot.commands.ResetGyro;
 import frc.robot.commands.RingToss;
 import frc.robot.commands.RunUmbrella;
 import frc.robot.commands.intake.IntakePiece;
+import frc.robot.commands.intake.OuttakePiece;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.StowIntake;
 import frc.robot.input.AxisButton;
@@ -31,6 +32,7 @@ import frc.robot.commands.climb.ClimbPower;
 import frc.robot.commands.drive.DriveToTarget;
 import frc.robot.commands.drive.TurnDegrees;
 import frc.robot.commands.Shooter.AutonShoot;
+import frc.robot.commands.Shooter.EjectPiece;
 import frc.robot.commands.Shooter.IndexPower;
 import frc.robot.commands.Shooter.PositionShooter;
 import frc.robot.commands.Shooter.PrepareShooter;
@@ -101,7 +103,8 @@ public class RobotContainer implements Logged {
   private DoublePreference shooterIndexPower = new DoublePreference("shooter/ShootingIndexPower", 0.5);
   private DoublePreference shooterOuttakePower = new DoublePreference("shooter/OuttakePower", -0.1);  
   private DoublePreference shooterPosition = new DoublePreference("shooter/shootingPosition", 65); 
-  private DoublePreference outdexPower = new DoublePreference("shooter/OutdexPower", -0.1);
+  private DoublePreference outdexPower = new DoublePreference("shooter/OutdexPower", -0.2);
+  private DoublePreference outtakeFlywheelPower = new DoublePreference("shooter/outtakeFlywheelPower", -0.3);
   private DoublePreference preSpinDistanceM = new DoublePreference("shooter/preSpinDistanceM", 5.842);
   private DoublePreference shooterHome = new DoublePreference("shooter/homeposition", 0);
 
@@ -158,6 +161,7 @@ public class RobotContainer implements Logged {
     private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
     private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
     private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
+    private final Command outTakePiece = new OuttakePiece(m_robotIntake, m_shooter, outtakePower, intakePosition, outdexPower, intakeShooterPosition, outtakeFlywheelPower);
     private final Command stowIntake = new StowIntake(m_robotIntake);
     private final Command parkCommand = new ParkCommand(m_robotDrive);
     private final Command stowShooter = new StowShooter(m_shooter, shooterHome);
@@ -169,6 +173,7 @@ public class RobotContainer implements Logged {
     private final Command shootWing = new ShootPiece(m_shooter, wingShotAngle, wingShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command spinRPM = new RunShooterRPM(m_shooter, shooterRPM);
     private final Command preSpinShooter = new PrepareShooter(m_shooter, preSpinDistanceM);
+    private final Command ejectPiece = new EjectPiece(m_shooter);
 
     private final Command climberPowerUp = new ClimbPower(m_Climber, climberUpPower);
     private final Command climberPowerDown = new ClimbPower(m_Climber, climberDownPower);
@@ -306,7 +311,7 @@ private static class Operator {
   //  Operator.driver_dpad_up.whileTrue(new InstantCommand(()-> m_shooter.moveArm(.1), m_shooter));
   //  Operator.driver_dpad_down.whileTrue(new InstantCommand(() -> m_shooter.moveArm(-.1), m_shooter));
    //Operator.driver_a.whileTrue(shootHighAngle);
-   //Operator.driver_b.whileTrue(shootMidAngle);
+   Operator.driver_b.whileTrue(ejectPiece);
    //Operator.driver_y.whileTrue(shootLowAngle);
    //Operator.driver_x.whileTrue(shooterTune);
 
