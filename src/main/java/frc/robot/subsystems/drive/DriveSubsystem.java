@@ -409,8 +409,8 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     double ySpeedCommanded;
 
     //square inputs for smoothiness
-    xSpeed = Math.pow(xSpeed, 2);
-    ySpeed = Math.pow(ySpeed, 2);
+    xSpeed = Math.copySign(Math.pow(xSpeed, 2), xSpeed);
+    ySpeed = Math.copySign(Math.pow(ySpeed, 2), ySpeed);
 
     SmartDashboard.putNumber("x stick speed", xSpeed);
     SmartDashboard.putNumber("y stick speed", ySpeed);
