@@ -49,12 +49,12 @@ public class DriveToTarget extends Command {
   @Override
   public void execute() {
     Optional<Double> yaw = m_cameras.getYawToTarget(m_targetId.get());
-    SmartDashboard.putNumber("targetid",m_targetId.get());
+    SmartDashboard.putNumber("aim/targetid",m_targetId.get());
     double rotation = 0.0;
     if (yaw.isPresent()){
-      SmartDashboard.putNumber("yawtotarget",yaw.get());
+      SmartDashboard.putNumber("aim/yawtotarget",yaw.get());
       rotation = rotationController.calculate(yaw.get(),0);
-      SmartDashboard.putNumber("autoRotnput", rotation);
+      SmartDashboard.putNumber("aim/autoRotInput", rotation);
     }
     m_drive.drive(m_driveX.get(), 
                   m_driveY.get(),
