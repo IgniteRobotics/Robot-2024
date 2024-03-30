@@ -9,12 +9,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.RumbleSubsystem;
 
 import java.util.function.Supplier;
 
 public class IntakePiece extends Command {
   private final IntakeSubsystem m_intake;
   private final ShooterSubsystem m_shooter;
+  private final RumbleSubsystem m_rumble;
   private final Supplier<Double> m_intakePower;
   private final Supplier<Double> m_intakePosition;
   private final Supplier<Double> m_indexPower;
@@ -26,10 +28,11 @@ public class IntakePiece extends Command {
 
 
   /** Creates a new IntakePiece. */
-  public IntakePiece(IntakeSubsystem intake, ShooterSubsystem shooter, Supplier<Double> intakePower, Supplier<Double> intakePosition, Supplier<Double> indexPower, Supplier<Double> indexPosition ) {
+  public IntakePiece(IntakeSubsystem intake, ShooterSubsystem shooter, RumbleSubsystem rumble, Supplier<Double> intakePower, Supplier<Double> intakePosition, Supplier<Double> indexPower, Supplier<Double> indexPosition ) {
     
     m_intake = intake; 
     m_shooter = shooter;
+    m_rumble = rumble;
     m_intakePower = intakePower;
     m_intakePosition = intakePosition;
     m_indexPower = indexPower;
@@ -57,6 +60,9 @@ public class IntakePiece extends Command {
   public void end(boolean interrupted) {
     m_shooter.stopIndexer();
     m_intake.stop();
+    if(isFinished()) {
+      m_rumble.noteLoadedRumble(3);
+    }
   }
 
   // Returns true when the command should end.

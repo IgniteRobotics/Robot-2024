@@ -35,6 +35,7 @@ import frc.robot.commands.Shooter.PositionShooter;
 import frc.robot.commands.Shooter.PrepareShooter;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.RumbleSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.UmbrellaSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -76,10 +77,16 @@ public class RobotContainer implements Logged {
   private final PhotonCameraWrapper m_photonCameraWrapper = new PhotonCameraWrapper();
 
   protected final DriveSubsystem m_robotDrive = new DriveSubsystem(m_photonCameraWrapper);
+
+  //controllers
+  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  XboxController m_manipController = new XboxController(OIConstants.kManipControllerPort);
   
   private final IntakeSubsystem m_robotIntake = new IntakeSubsystem();
   //private final UmbrellaSubsystem m_umbrella  = new UmbrellaSubsystem();
   private final ShooterSubsystem m_shooter = new ShooterSubsystem();
+  public final RumbleSubsystem m_rumble = new RumbleSubsystem(m_driverController, m_manipController, 0, 0);
+
 
   private final Climber m_Climber = new Climber();
 
@@ -150,7 +157,7 @@ public class RobotContainer implements Logged {
     private final Command resetGyro = new ResetGyro(m_robotDrive);
     private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
     private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
-    private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
+    private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, m_rumble, intakePower, intakePosition, indexPower, intakeShooterPosition);
     private final Command stowIntake = new StowIntake(m_robotIntake);
     private final Command parkCommand = new ParkCommand(m_robotDrive);
     private final Command stowShooter = new PositionShooter(m_shooter, shooterHome);
@@ -161,7 +168,7 @@ public class RobotContainer implements Logged {
     private final Command shootPodium = new ShootPiece(m_shooter, podiumShotAngle, podiumShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command shootWing = new ShootPiece(m_shooter, wingShotAngle, wingShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command spinRPM = new RunShooterRPM(m_shooter, shooterRPM);
-    private final Command preSpinShooter = new PrepareShooter(m_shooter, preSpinDistanceM);
+    private final Command preSpinShooter = new PrepareShooter(m_shooter, m_rumble, preSpinDistanceM);
 
     private final Command climberPowerUp = new ClimbPower(m_Climber, climberUpPower);
     private final Command climberPowerDown = new ClimbPower(m_Climber, climberDownPower);
@@ -191,9 +198,6 @@ public class RobotContainer implements Logged {
 
   private final double pathSpeed = 2;
 
-  // The driver's controller
-  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
-  XboxController m_manipController = new XboxController(OIConstants.kManipControllerPort);  
     
 private static class Operator {
 
@@ -333,6 +337,7 @@ private static class Operator {
     m_shooter.setDefaultCommand(stowShooter);
 
   }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

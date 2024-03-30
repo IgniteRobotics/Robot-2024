@@ -10,18 +10,21 @@ import frc.robot.Constants;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.utils.InterCalculator;
 import frc.robot.RobotState;
+import frc.robot.subsystems.RumbleSubsystem;
 
 import java.util.function.Supplier;
 
 
 public class PrepareShooter extends Command {
   private final ShooterSubsystem m_shooter;
+  private final RumbleSubsystem m_rumble;
   private final RobotState m_robotState;
   private final Supplier<Double> m_maxDistance;
   private final InterCalculator m_iCalculator = Constants.ShooterConstants.SHOOTER_INTER_CALCULATOR;
   /** Creates a new ShootPiece. */
-  public PrepareShooter(ShooterSubsystem shooter, Supplier<Double> maxDistance) {
+  public PrepareShooter(ShooterSubsystem shooter, RumbleSubsystem rumble, Supplier<Double> maxDistance) {
     m_shooter = shooter;
+    m_rumble = rumble;
     m_robotState = RobotState.getInstance();
     m_maxDistance = maxDistance;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -39,6 +42,10 @@ public class PrepareShooter extends Command {
       var shotParams = m_iCalculator.calculateParameter(m_robotState.getDistancetoSpeaker());
       m_shooter.setAngleDegrees(shotParams.vals[0]);
       m_shooter.spinRPM(shotParams.vals[1]);
+    }
+
+    if (m_shooter.armAtSetpoint() && m_shooter.atRPM()) {
+      m_rumble.shooterAtRPMAndAngle(9999);
     }
   }
 

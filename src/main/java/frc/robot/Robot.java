@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.subsystems.RumbleSubsystem;
 import monologue.Monologue;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -161,10 +162,11 @@ public class Robot extends TimedRobot implements Logged {
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
-    // this line or comment it out.
+    // this line or comment it out. 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    m_robotContainer.m_rumble.teleopRumble(5);
   }
 
   /** This function is called periodically during operator control. */
