@@ -15,6 +15,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import frc.robot.RobotState;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.CameraConstants;
 
@@ -185,8 +186,10 @@ public class PhotonCameraWrapper {
 
     private TargetInfo buildTargetInfo(Transform3d cam2Target, Transform3d robot2Cam){
         Transform3d robot2Target = cam2Target.plus(robot2Cam);
-        return new TargetInfo(getDistanceFromTransform3d(robot2Target), 
+        TargetInfo t =  new TargetInfo(getDistanceFromTransform3d(robot2Target), 
             robot2Target.getRotation().getAngle());
+        RobotState.getInstance().setDistanceToSpeaker(t.distance);
+        return t;
     }
 
     public void unlockTargeting(){
