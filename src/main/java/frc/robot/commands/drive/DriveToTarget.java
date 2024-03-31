@@ -15,6 +15,7 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.comm.preferences.DoublePreference;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
+import frc.robot.subsystems.drive.PhotonCameraWrapper.TargetInfo;
 
 public class DriveToTarget extends Command {
   private final DriveSubsystem m_drive;
@@ -48,13 +49,13 @@ public class DriveToTarget extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Optional<Double> yaw = m_cameras.getYawToTarget(m_targetId.get());
-    SmartDashboard.putNumber("targetid",m_targetId.get());
+    SmartDashboard.putNumber("aim/targetid",m_targetId.get());
+    Optional<TargetInfo> targeting = m_cameras.seekTarget(m_targetId.get());
     double rotation = 0.0;
-    if (yaw.isPresent()){
-      SmartDashboard.putNumber("yawtotarget",yaw.get());
-      rotation = rotationController.calculate(yaw.get(),0);
-      SmartDashboard.putNumber("autoRotnput", rotation);
+    if (targeting.isPresent()){
+      SmartDashboard.putNumber("aim/yawtotarget",targeting.get().getYaw());
+      rotation = rotationController.calculate(targeting.get().getYaw(),0);
+      SmartDashboard.putNumber("aim/autoRotnput", rotation);
     }
     m_drive.drive(m_driveX.get(), 
                   m_driveY.get(),

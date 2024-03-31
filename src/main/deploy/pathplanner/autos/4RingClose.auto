@@ -70,7 +70,7 @@
         {
           "type": "named",
           "data": {
-            "name": "FirstShot"
+            "name": "AutoCloseShot"
           }
         },
         {
@@ -101,7 +101,7 @@
         {
           "type": "named",
           "data": {
-            "name": "FirstShot"
+            "name": "AutoCloseShot"
           }
         }
       ]

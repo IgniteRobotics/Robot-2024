@@ -12,13 +12,14 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 import java.util.function.Supplier;
 
-public class IntakePiece extends Command {
+public class OuttakePiece extends Command {
   private final IntakeSubsystem m_intake;
   private final ShooterSubsystem m_shooter;
   private final Supplier<Double> m_intakePower;
   private final Supplier<Double> m_intakePosition;
   private final Supplier<Double> m_indexPower;
   private final Supplier<Double> m_indexPosition;
+  private final Supplier<Double> m_flywheelPower;
 
   private final Timer timer = new Timer();
   private final double delaySeconds = 0.02;
@@ -26,7 +27,7 @@ public class IntakePiece extends Command {
 
 
   /** Creates a new IntakePiece. */
-  public IntakePiece(IntakeSubsystem intake, ShooterSubsystem shooter, Supplier<Double> intakePower, Supplier<Double> intakePosition, Supplier<Double> indexPower, Supplier<Double> indexPosition ) {
+  public OuttakePiece(IntakeSubsystem intake, ShooterSubsystem shooter, Supplier<Double> intakePower, Supplier<Double> intakePosition, Supplier<Double> indexPower, Supplier<Double> indexPosition, Supplier<Double> flywheelPower ) {
     
     m_intake = intake; 
     m_shooter = shooter;
@@ -34,6 +35,7 @@ public class IntakePiece extends Command {
     m_intakePosition = intakePosition;
     m_indexPower = indexPower;
     m_indexPosition = indexPosition;
+    m_flywheelPower = flywheelPower;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_intake, m_shooter);
@@ -50,19 +52,20 @@ public class IntakePiece extends Command {
     m_intake.setSpeed(m_intakePower.get());
     m_shooter.setAngleDegrees(m_indexPosition.get());
     m_shooter.runIndex(m_indexPower.get());
+    m_shooter.spinPower(m_flywheelPower.get());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.stopAll();
     m_intake.stop();
+    m_shooter.stopAll();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     //TODO use beam break
-    return m_shooter.getIndexerBeamBreak();
+    return false;
   }
 }
