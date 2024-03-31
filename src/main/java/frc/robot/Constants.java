@@ -155,17 +155,17 @@ public final class Constants {
 
     // DISTANCE, ANGLE, RPM
     public static final InterCalculator SHOOTER_INTER_CALCULATOR = new InterCalculator(
-      new InterParameter(0.91756992, 93, 3200),
-      new InterParameter(1.22236992, 80, 3200),
-      new InterParameter(1.52716992, 75, 3200),
-      new InterParameter(1.83196992, 67, 3200),
-      new InterParameter(2.13676992, 61, 3200),
-      new InterParameter(2.44156992, 58, 3200),
-      new InterParameter(2.74636992, 53, 3200),
-      new InterParameter(3.05116992, 50, 3200),
-      new InterParameter(3.35596992, 50, 3200),
-      new InterParameter(3.66076992, 49, 3200),
-      new InterParameter(3.96556992, 39, 3200)
+      new InterParameter(0.91756992, 50, 3200),
+      new InterParameter(1.22236992, 43.016, 3200),
+      new InterParameter(1.52716992, 40.3275, 3200),
+      new InterParameter(1.83196992, 36.0259, 3200),
+      new InterParameter(2.13676992, 32.7997, 3200),
+      new InterParameter(2.44156992, 31.1866, 3200),
+      new InterParameter(2.74636992, 28.4981, 3200),
+      new InterParameter(3.05116992, 26.885, 3200),
+      new InterParameter(3.35596992, 26.885, 3200),
+      new InterParameter(3.66076992, 26.3473, 3200),
+      new InterParameter(3.96556992, 20.9703, 3200)
       );
 
     //RED 4 
@@ -270,7 +270,7 @@ public final class Constants {
     public static final Integer[] IGNORED_POSE_TARGETS = {50,51};
 
   }
-
+    
 
   public class CANConstants {
     public static final int INTAKE_POSITION_MOTOR = 2;
