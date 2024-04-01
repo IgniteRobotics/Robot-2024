@@ -1,4 +1,5 @@
 package frc.robot.subsystems.drive;
+import java.util.ArrayList;
 import java.util.List;
 
 import java.io.UncheckedIOException;
@@ -10,24 +11,39 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import org.photonvision.targeting.TargetCorner;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import frc.robot.Robot;
 import frc.robot.RobotState;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CameraConstants;
+import monologue.Logged;
+import monologue.Annotations.Log;
 
-public class PhotonCameraWrapper {
+
+public class PhotonCameraWrapper implements Logged{
+
+
+    private boolean m_seesTarget;
+    private double m_yawRadians;
 
     public class TargetInfo{
         private double yaw;
+
         private double distance;
 
         public TargetInfo(double distance, double yaw){
             this.distance = distance;
             this.yaw = yaw;
+            SmartDashboard.putNumber("aim/calculatedDistance",this.distance);
+            SmartDashboard.putNumber("aim/calculatedYaw",this.yaw);
         }
 
         public double getYaw() {
@@ -109,7 +125,6 @@ public class PhotonCameraWrapper {
     public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose, Side side) {
         if(side == Side.FRONT_RIGHT) {
             photonPoseEstimatorFrontRight.setReferencePose(prevEstimatedRobotPose);
-            
             return photonPoseEstimatorFrontRight.update();
         } else if (side == Side.FRONT_LEFT){
             photonPoseEstimatorFrontLeft.setReferencePose(prevEstimatedRobotPose);
@@ -142,6 +157,8 @@ public class PhotonCameraWrapper {
             //we didn't find it with the locked camera.
             //if the timer has expired, go back to all cams.
             if(m_targetTimer.hasElapsed(m_lockTimeSec)){
+                m_seesTarget = false;
+                m_yawRadians = 0;
                 m_targetCam = null;
                 m_targetEstimator = null;
                 m_targetTimer.stop();
@@ -151,6 +168,7 @@ public class PhotonCameraWrapper {
                 var newResult = allCameras[i].getLatestResult();
                 Optional<PhotonTrackedTarget> target = lookForTarget(newResult, id);
                 if (target.isPresent()){
+                    m_seesTarget = true;
                     m_targetCam = allCameras[i];
                     m_targetEstimator = allEstimators[i];
                     m_targetTimer.restart();
@@ -164,6 +182,7 @@ public class PhotonCameraWrapper {
         m_targetCam = null;
         m_targetEstimator = null;
         m_targetTimer.stop();
+        m_seesTarget = false;
         return Optional.empty();
 
     }
@@ -174,7 +193,18 @@ public class PhotonCameraWrapper {
                     return Optional.of(target) ;
                 }
             }
-        return Optional.empty();
+        if (Robot.isReal()){
+            return Optional.empty();
+        } else {
+            //return a canned target for testing in simulation
+            return Optional.of(new PhotonTrackedTarget(0.2, 0.0, 1.0, 0.0, targetId, 
+                new Transform3d(1, 1, 1, new Rotation3d(0.0, 0.0, 0.2)),
+                new Transform3d(1, 1, 1, new Rotation3d(0.0, 0.0, 0.2)),
+             0.0, 
+             new ArrayList<TargetCorner>(4), 
+             new ArrayList<TargetCorner>(4)
+             ));
+        }
     }
 
     private double getDistanceFromTransform3d(Transform3d t){
@@ -188,6 +218,7 @@ public class PhotonCameraWrapper {
         Transform3d robot2Target = cam2Target.plus(robot2Cam);
         TargetInfo t =  new TargetInfo(getDistanceFromTransform3d(robot2Target), 
             robot2Target.getRotation().getAngle());
+        m_yawRadians = t.getYaw();
         RobotState.getInstance().setDistanceToSpeaker(t.distance);
         return t;
     }
@@ -195,6 +226,7 @@ public class PhotonCameraWrapper {
     public void unlockTargeting(){
         m_targetCam = null;
         m_targetEstimator = null;
+        m_yawRadians = 0.0;
         m_targetTimer.stop();
     }
 
