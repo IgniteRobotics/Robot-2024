@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.Robot;
 import frc.robot.RobotState;
 import edu.wpi.first.wpilibj.Timer;
@@ -215,7 +216,15 @@ public class PhotonCameraWrapper implements Logged{
     }
 
     private TargetInfo buildTargetInfo(Transform3d cam2Target, Transform3d robot2Cam){
-        Transform3d robot2Target = cam2Target.plus(robot2Cam);
+        // var r2c = robot2Cam.plus(new Transform3d(
+        //         new Translation3d(),
+        //         robot2Cam.getRotation().rotateBy(new Rotation3d(0.0,0.0,Math.PI))
+        //     ));
+        //invert the whole thing.
+        var r2c = robot2Cam.inverse();
+        //uninvert the Z.
+        r2c = new Transform3d(r2c.getX(), r2c.getY(), robot2Cam.getZ(), r2c.getRotation());
+        Transform3d robot2Target = cam2Target.plus(r2c);
         TargetInfo t =  new TargetInfo(getDistanceFromTransform3d(robot2Target), 
             robot2Target.getRotation().getAngle());
         m_yawRadians = t.getYaw();
