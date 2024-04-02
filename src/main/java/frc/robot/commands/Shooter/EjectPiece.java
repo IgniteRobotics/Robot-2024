@@ -27,9 +27,9 @@ public class EjectPiece extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.spinRPM(1500);
+    m_shooter.spinPower(1.0);
     //if (m_ready.get() && m_shooter.atSetpoint()){
-    m_shooter.runIndex(0.3);
+    m_shooter.runIndex(1.0);
   }
 
   // Called once the command ends or is interrupted.
