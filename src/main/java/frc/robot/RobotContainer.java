@@ -53,6 +53,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.commands.Shooter.RunIndexUntil;
+import frc.robot.commands.Shooter.RunIndexFrom;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -65,6 +67,7 @@ import frc.robot.commands.ResetGyro;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoWait;
+import frc.robot.commands.Shooter.AutonReady;
 
 
 
@@ -165,8 +168,9 @@ public class RobotContainer implements Logged {
    private DoublePreference m_FourthShotImprovRPM = new DoublePreference("Fourth Shot Improved RPM", 3200);
 
    private DoublePreference runIntakeSimplePosition  = new DoublePreference("Run Intake Simple Position", 100);
-   private DoublePreference runIntakeSimplePower = new DoublePreference("Run Intake Simple Power", 0.5);
-    private final Command resetGyro = new ResetGyro(m_robotDrive);
+   private DoublePreference runIntakeSimplePower = new DoublePreference("Run Intake Simple Power", 0.5); 
+   
+   private final Command resetGyro = new ResetGyro(m_robotDrive);
     private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
     private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
     private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
@@ -209,9 +213,14 @@ public class RobotContainer implements Logged {
   private final Command autoIntake = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition).withTimeout(3.75);
 
   //improved Commands
+  private final Command prepareShot2 = new AutonReady(m_shooter, closeAutoShotAngle, closeAutoShotRPM);
+  private final Command prepareShot3 = new AutonReady(m_shooter, m_ThirdShotImprovAngle, m_ThirdShotImprovRPM);
+  private final Command prepareShot4 = new AutonReady(m_shooter, m_FourthShotImprovAngle, m_FourthShotImprovRPM);
   private final Command thirdShotImprov = new AutonShoot(m_shooter, m_ThirdShotImprovAngle, m_ThirdShotImprovRPM, shooterIndexPower).withTimeout(2);
   private final Command fourthShotImprov = new AutonShoot(m_shooter, m_FourthShotImprovAngle, m_FourthShotImprovRPM, shooterIndexPower).withTimeout(2); 
   private final Command runIntakeSimpleAuto = new RunIntake(m_robotIntake, runIntakeSimplePower, runIntakeSimplePosition);
+  private final Command runIndexUntilAuto = new RunIndexUntil(m_shooter, indexPower);
+  private final Command runIndexFromAuto = new RunIndexFrom(m_shooter, indexPower).withTimeout(4);
   //Autonomous Wait Command
   private final Command autoWait = new AutoWait(m_autoWait);
 
@@ -280,6 +289,11 @@ private static class Operator {
     NamedCommands.registerCommand("ThirdShot", thirdShotImprov);
     NamedCommands.registerCommand("FourthShot", fourthShotImprov);
     NamedCommands.registerCommand("SimpleIntake", runIntakeSimpleAuto);
+    NamedCommands.registerCommand("Prepare Second Shot", prepareShot2);
+    NamedCommands.registerCommand("Prepare Third Shot", prepareShot3);
+    NamedCommands.registerCommand("Prepare Fourth Shot", prepareShot4);
+    NamedCommands.registerCommand("RunIndexUntil", runIndexUntilAuto);
+    NamedCommands.registerCommand("RunIndexFrom", runIndexFromAuto);
 
     // Configure the button bindings
     configureButtonBindings();

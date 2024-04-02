@@ -32,39 +32,117 @@
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "parallel",
                       "data": {
-                        "pathName": "SubwooferToCenterRing"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Prepare Second Shot"
+                            }
+                          },
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "SubwooferToCenterRing"
+                            }
+                          },
+                          {
+                            "type": "sequential",
+                            "data": {
+                              "commands": [
+                                {
+                                  "type": "named",
+                                  "data": {
+                                    "name": "RunIndexUntil"
+                                  }
+                                },
+                                {
+                                  "type": "named",
+                                  "data": {
+                                    "name": "RunIndexFrom"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "parallel",
                       "data": {
-                        "name": "SecondShot"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Prepare Third Shot"
+                            }
+                          },
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "Center To Podium Improved"
+                            }
+                          },
+                          {
+                            "type": "sequential",
+                            "data": {
+                              "commands": [
+                                {
+                                  "type": "named",
+                                  "data": {
+                                    "name": "Run Index Until"
+                                  }
+                                },
+                                {
+                                  "type": "named",
+                                  "data": {
+                                    "name": "RunIndexFrom"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "parallel",
                       "data": {
-                        "pathName": "Center To Podium Improved"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "ThirdShot"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Podium to Amp Improved"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "FourthShot"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Prepare Fourth Shot"
+                            }
+                          },
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "Podium to Amp Improved"
+                            }
+                          },
+                          {
+                            "type": "sequential",
+                            "data": {
+                              "commands": [
+                                {
+                                  "type": "named",
+                                  "data": {
+                                    "name": "RunIndexUntil"
+                                  }
+                                },
+                                {
+                                  "type": "named",
+                                  "data": {
+                                    "name": "RunIndexFrom"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
                       }
                     }
                   ]
