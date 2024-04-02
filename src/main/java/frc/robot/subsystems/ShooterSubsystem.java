@@ -5,15 +5,22 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.ForwardLimitValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
@@ -46,6 +53,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   private final CANSparkMax m_shooterMotor;
   private final CANSparkMax m_shooterIndexMotor;
   private final TalonFX m_shooterPositionMotor;
+  private final CANcoder m_shooterPositionCancoder;
 
   private final RelativeEncoder m_shooterEncoder;
   private final RelativeEncoder m_shooterIndexEncoder;
@@ -60,18 +68,13 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   private DoublePreference shooterkIPreference = new DoublePreference("shooter/RPMkI", Constants.ShooterConstants.ROLLER_kI);
   private DoublePreference shooterkDPreference = new DoublePreference("shooter/RPMkD", Constants.ShooterConstants.ROLLER_kD);
   private DoublePreference shooterkFPreference = new DoublePreference("shooter/RPMkF", Constants.ShooterConstants.ROLLER_kF);
-  // position PID preferences
-  private DoublePreference positionkPPreference = new DoublePreference("shooter/PositionkP", Constants.ShooterConstants.POSITION_kP);
-  private DoublePreference positionkIPreference = new DoublePreference("shooter/PositionkI", Constants.ShooterConstants.POSITION_kI);
-  private DoublePreference positionkDPreference = new DoublePreference("shooter/PositionkD", Constants.ShooterConstants.POSITION_kD);
   
   private SoftwareLimitSwitchConfigs m_positionSoftLimitConfig = new SoftwareLimitSwitchConfigs();
   private MotionMagicConfigs m_positionMotionMagicConfigs = new MotionMagicConfigs();
   private MotorOutputConfigs m_positionMotorConfig = new MotorOutputConfigs();
-  private TalonFXConfiguration fxCfg = new TalonFXConfiguration();
+  private TalonFXConfiguration m_fxCfg = new TalonFXConfiguration();
 
   public MotionMagicVoltage shooterPosition = new MotionMagicVoltage(0);
-
   private RobotState m_robotState = RobotState.getInstance();
 
 
@@ -128,6 +131,14 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   @Log.NT
   public double armVelocity;
 
+ @Log.File
+  @Log.NT
+  public double armCancoderPosition;
+
+  @Log.File
+  @Log.NT
+  public double armCancoderVelocity;
+
   @Log.File
   @Log.NT
   public double armPower;
@@ -156,6 +167,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     m_shooterMotor = new CANSparkMax(Constants.CANConstants.SHOOTER_MOTOR_LEADERCanId, MotorType.kBrushless);
     m_shooterIndexMotor = new CANSparkMax(Constants.CANConstants.SHOOTER_INDEX_MOTOR, MotorType.kBrushless);
     m_shooterPositionMotor = new TalonFX(Constants.CANConstants.SHOOTER_POSITION_MOTOR);
+    m_shooterPositionCancoder = new CANcoder(Constants.CANConstants.SHOOTER_POSITION_CANCODER);
+  
 
     m_shooterEncoder = m_shooterMotor.getEncoder();
     m_shooterIndexEncoder = m_shooterIndexMotor.getEncoder();
@@ -165,7 +178,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
     this.configureShooterMotor(m_shooterMotor, m_shooterEncoder, m_RollerPidController);
     this.configureIndexMotor(m_shooterIndexMotor);
-    this.configurePositionMotor(m_shooterPositionMotor, m_positionMotorConfig, positionSlot0Configs, m_positionSoftLimitConfig, m_positionMotionMagicConfigs);
+    this.configureCancoder(m_shooterPositionCancoder);
+    this.configurePositionMotor(m_shooterPositionMotor,m_fxCfg, m_positionMotorConfig, positionSlot0Configs, m_positionSoftLimitConfig, m_positionMotionMagicConfigs);
       
   }
 
@@ -196,23 +210,38 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
      motor.burnFlash();
   }
 
-  private void configurePositionMotor(TalonFX motor, 
+  private void configurePositionMotor(TalonFX motor,
+      TalonFXConfiguration baseConfiguration,  
       MotorOutputConfigs motorOutputConfigs,
       Slot0Configs slot0PID, 
       SoftwareLimitSwitchConfigs limitSwitchConfigs,
       MotionMagicConfigs mmConfig){
+
+    TalonFXConfigurator configurator = m_shooterPositionMotor.getConfigurator();
+
+    //grab any settings already on the motor, just in case.
+    configurator.refresh(baseConfiguration);
+    configurator.refresh(motorOutputConfigs);
+    configurator.refresh(slot0PID);
+    configurator.refresh(limitSwitchConfigs);
+    configurator.refresh(mmConfig);
     
+    baseConfiguration.Feedback.FeedbackRemoteSensorID = m_shooterPositionCancoder.getDeviceID();
+    baseConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+    
+    configurator.apply(baseConfiguration);
+
     motorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
 
-    motor.getConfigurator().apply(motorOutputConfigs, 0.050);
+    configurator.apply(motorOutputConfigs, 0.050);
 
     slot0PID.kV = Constants.ShooterConstants.POSITION_kV;
     slot0PID.kS = Constants.ShooterConstants.POSITION_kS;
-    slot0PID.kP = positionkPPreference.get();
-    slot0PID.kI = positionkIPreference.get();
-    slot0PID.kD = positionkDPreference.get();
+    slot0PID.kP = Constants.ShooterConstants.POSITION_kP;
+    slot0PID.kI = Constants.ShooterConstants.POSITION_kI;
+    slot0PID.kD = Constants.ShooterConstants.POSITION_kD;
 
-    m_shooterPositionMotor.getConfigurator().apply(slot0PID, 0.050);
+    configurator.apply(slot0PID, 0.050);
 
 
     limitSwitchConfigs.ForwardSoftLimitEnable = true;
@@ -220,16 +249,28 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     limitSwitchConfigs.ReverseSoftLimitEnable = true;
     limitSwitchConfigs.ReverseSoftLimitThreshold = ShooterConstants.POSITION_ReverseLimit;
 
-    m_shooterPositionMotor.getConfigurator().apply(limitSwitchConfigs, 0.050);
+    configurator.apply(limitSwitchConfigs, 0.050);
 
     mmConfig.MotionMagicCruiseVelocity = ShooterConstants.MOTION_MAGIC_CRUISE_VELOCITY;
     mmConfig.MotionMagicAcceleration = ShooterConstants.MOTION_MAGIC_ACCELERATION;
     mmConfig.MotionMagicJerk = ShooterConstants.MOTION_MAGIC_JERK;
 
-    m_shooterPositionMotor.getConfigurator().apply(mmConfig);
-
+    configurator.apply(mmConfig);
+    
   }
 
+  private void configureCancoder(CANcoder cancoder){
+    CANcoderConfiguration config = new CANcoderConfiguration();
+    config.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    config.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+    config.MagnetSensor.MagnetOffset = 0;
+    cancoder.getConfigurator().apply(config);
+    cancoder.getAbsolutePosition().setUpdateFrequency(100);
+    cancoder.getPosition().setUpdateFrequency(100);
+    cancoder.getVelocity().setUpdateFrequency(100);
+    cancoder.setPosition(degreesToCANcoder(0.5, Constants.ShooterConstants.ARM_CANCODER_RATIO));
+  }
+  
   public void spinPower(double power) {
     m_shooterMotor.set(MathUtil.clamp(power, Constants.ShooterConstants.ROLLER_MIN_OUTPUT, Constants.ShooterConstants.ROLLER_MAX_OUTPUT));
   }
@@ -250,18 +291,24 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     m_shooterIndexMotor.set(MathUtil.clamp(power, -1, 1));
   }
 
-  public double getPositionRevolutions(){
-    return m_shooterPositionMotor.getPosition().getValueAsDouble();
+  // public double getPositionRevolutions(){
+  //   return m_shooterPositionMotor.getPosition().getValueAsDouble();
+  // }
+
+  // @Log.File
+  // @Log.NT
+  // public double getRotorAngleDegrees(){
+  //   return m_shooterPositionMotor.getPosition().getValueAsDouble()*ShooterConstants.POSITION_DEGREE_PER_MOTOR_REV;
+  // }
+
+  public double getAngleRadians(){
+    return Units.degreesToRadians(getAngleDegrees());
   }
 
   @Log.File
   @Log.NT
   public double getAngleDegrees(){
-    return getPositionRevolutions()*ShooterConstants.POSITION_DEGREE_PER_MOTOR_REV;
-  }
-
-  public double getAngleRadians(){
-    return Units.degreesToRadians(getAngleDegrees());
+    return CANcoderToDegrees(m_shooterPositionCancoder.getAbsolutePosition().getValueAsDouble(), Constants.ShooterConstants.ARM_CANCODER_RATIO);
   }
 
 
@@ -279,20 +326,22 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     return velocity+robotVelocity;
   }
 
-  public void setPositionRevolutions(double position) {
-    this.targetPosition = position;
+  private void setPositionRevolutions(double position) {
     m_shooterPositionMotor.setControl(shooterPosition.withPosition(position));
+    //m_shooterPositionMotor.setControl(mmDutyCycleRequest.withPosition(position));
   }
 
   public void setAngleDegrees(double angle){
-    setPositionRevolutions(angle/ShooterConstants.POSITION_DEGREE_PER_MOTOR_REV);
+    this.targetPosition = angle;
+    //setPositionRevolutions(angle.ShooterConstants.POSITION_DEGREE_PER_MOTOR_REV);
+    setPositionRevolutions(degreesToCANcoder(angle, Constants.ShooterConstants.ARM_CANCODER_RATIO));
   }
 
   @Log.File
   @Log.NT
   public boolean armAtSetpoint() {
     if(Robot.isSimulation()) return true;
-    return getPositionRevolutions() >= targetPosition - Constants.ShooterConstants.POSITION_TOLERANCE && getPositionRevolutions() <= targetPosition + Constants.ShooterConstants.POSITION_TOLERANCE; 
+    return getAngleDegrees() >= targetPosition - Constants.ShooterConstants.POSITION_TOLERANCE && getAngleDegrees() <= targetPosition + Constants.ShooterConstants.POSITION_TOLERANCE; 
   }
 
   public void stopRoller() {
@@ -313,8 +362,29 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   }
 
   public void resetPosition(){
-    this.setPositionRevolutions(0);
+    this.setAngleDegrees(0);
   }
+  
+    /**
+   * @param positionCounts CANCoder Position Counts
+   * @param gearRatio Gear Ratio between CANCoder and Mechanism
+   * @return Degrees of Rotation of Mechanism
+   */
+
+  public static double CANcoderToDegrees(double positionCounts, double gearRatio) {
+    //return positionCounts * (360.0 / (gearRatio * 4096.0));
+    return positionCounts * 360 /gearRatio;
+  }
+
+  /**
+   * @param degrees Degrees of rotation of Mechanism
+   * @param gearRatio Gear Ratio between CANCoder and Mechanism
+   * @return CANCoder Position Counts
+   */
+  public static double degreesToCANcoder(double degrees, double gearRatio) {
+      return degrees * gearRatio /360.0;
+  }
+
 
   public void stopAll(){
     this.stopRoller();
@@ -357,6 +427,9 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     armVoltage = m_shooterPositionMotor.getMotorVoltage().getValueAsDouble();
     armTemp = m_shooterPositionMotor.getDeviceTemp().getValueAsDouble();
     armCurrent = m_shooterPositionMotor.getTorqueCurrent().getValueAsDouble();
+    armCancoderPosition = m_shooterPositionCancoder.getAbsolutePosition().getValueAsDouble();
+    armCancoderVelocity = m_shooterPositionCancoder.getVelocity().getValueAsDouble();
+
     //m_shooterPositionMotor.getConfigurator().refresh(fxCfg);
     //armNeutralMode = fxCfg.MotorOutput.NeutralMode.toString();
     // armCurrentFault = m_shooterPositionMotor.getFault_StatorCurrLimit().getValue();

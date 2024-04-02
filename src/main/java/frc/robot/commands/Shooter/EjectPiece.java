@@ -6,27 +6,16 @@ package frc.robot.commands.Shooter;
 
 import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.RumbleSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 import java.util.function.Supplier;
 
 
-public class ShootPiece extends Command {
+public class EjectPiece extends Command {
   private final ShooterSubsystem m_shooter;
-  private final RumbleSubsystem m_rumble;
-  private final Supplier<Double> m_position;
-  private final Supplier<Double> m_rpm;
-  private final Supplier<Double> m_indexPower;
-  private final Supplier<Boolean> m_ready; 
   /** Creates a new ShootPiece. */
-  public ShootPiece(ShooterSubsystem shooter, RumbleSubsystem rumble, Supplier<Double> position, Supplier<Double> rpm, Supplier<Double> indexpower, Supplier<Boolean> ready) {
+  public EjectPiece(ShooterSubsystem shooter) {
     m_shooter = shooter;
-    m_rumble = rumble;
-    m_position = position;
-    m_rpm = rpm;
-    m_indexPower = indexpower;
-    m_ready = ready;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_shooter);
   }
@@ -38,15 +27,9 @@ public class ShootPiece extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.setAngleDegrees(m_position.get());
-    m_shooter.spinRPM(m_rpm.get());
+    m_shooter.spinPower(1.0);
     //if (m_ready.get() && m_shooter.atSetpoint()){
-    if (m_ready.get()){
-      m_shooter.runIndex(m_indexPower.get());
-    }
-    if(m_shooter.armAtSetpoint() && m_shooter.atRPM()) {
-      m_rumble.shooterAtRPMAndAngle(3);
-    }
+    m_shooter.runIndex(1.0);
   }
 
   // Called once the command ends or is interrupted.

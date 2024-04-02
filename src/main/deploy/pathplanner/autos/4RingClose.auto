@@ -2,7 +2,7 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4,
+      "x": 1.45,
       "y": 5.56
     },
     "rotation": 0
@@ -22,15 +22,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "SubwooferToCenterRing"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "RunIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "SubwooferToCenterRing"
                 }
               }
             ]
@@ -47,15 +47,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "CenterRingToPodiumRing"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "RunIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CenterRingToPodiumRing"
                 }
               }
             ]
@@ -70,7 +70,7 @@
         {
           "type": "named",
           "data": {
-            "name": "PodiumRingShot"
+            "name": "AutoCloseShot"
           }
         },
         {
@@ -78,15 +78,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "PodiumShotToAmpRing"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "RunIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "SpeakerToAmpRing"
                 }
               }
             ]
@@ -101,7 +101,7 @@
         {
           "type": "named",
           "data": {
-            "name": "AutoAmpRingShot"
+            "name": "AutoCloseShot"
           }
         }
       ]

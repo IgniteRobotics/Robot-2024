@@ -18,6 +18,7 @@ import frc.robot.commands.ResetGyro;
 import frc.robot.commands.RingToss;
 import frc.robot.commands.RunUmbrella;
 import frc.robot.commands.intake.IntakePiece;
+import frc.robot.commands.intake.OuttakePiece;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.StowIntake;
 import frc.robot.input.AxisButton;
@@ -25,11 +26,13 @@ import frc.robot.commands.Shooter.RunShooterPower;
 import frc.robot.commands.Shooter.RunShooterRPM;
 import frc.robot.commands.Shooter.ShootInterpolated;
 import frc.robot.commands.Shooter.ShootPiece;
+import frc.robot.commands.Shooter.StowShooter;
 import frc.robot.commands.climb.ClimbMM;
 import frc.robot.commands.climb.ClimbPower;
 import frc.robot.commands.drive.DriveToTarget;
 import frc.robot.commands.drive.TurnDegrees;
 import frc.robot.commands.Shooter.AutonShoot;
+import frc.robot.commands.Shooter.EjectPiece;
 import frc.robot.commands.Shooter.IndexPower;
 import frc.robot.commands.Shooter.PositionShooter;
 import frc.robot.commands.Shooter.PrepareShooter;
@@ -46,6 +49,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -61,6 +65,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import frc.robot.commands.ResetGyro;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.AutoWait;
 
 
 
@@ -105,7 +110,8 @@ public class RobotContainer implements Logged {
   private DoublePreference shooterIndexPower = new DoublePreference("shooter/ShootingIndexPower", 0.5);
   private DoublePreference shooterOuttakePower = new DoublePreference("shooter/OuttakePower", -0.1);  
   private DoublePreference shooterPosition = new DoublePreference("shooter/shootingPosition", 65); 
-  private DoublePreference outdexPower = new DoublePreference("shooter/OutdexPower", -0.1);
+  private DoublePreference outdexPower = new DoublePreference("shooter/OutdexPower", -0.2);
+  private DoublePreference outtakeFlywheelPower = new DoublePreference("shooter/outtakeFlywheelPower", -0.3);
   private DoublePreference preSpinDistanceM = new DoublePreference("shooter/preSpinDistanceM", 5.842);
   private DoublePreference shooterHome = new DoublePreference("shooter/homeposition", 0);
 
@@ -124,6 +130,7 @@ public class RobotContainer implements Logged {
   private DoublePreference wingShotAngle = new DoublePreference("shooter/wingShotAngle", 34);
   private DoublePreference podiumShotAngle = new DoublePreference("shooter/podiumShotAngle", 52.5);
   private DoublePreference subShotAngle = new DoublePreference("shooter/subShotAngle", 93);
+  private DoublePreference closeAutoShotAngle = new DoublePreference("shooter/closeAutoShotAngle", 48);
 
   private DoublePreference centerRingShotAngle = new DoublePreference("shooter/autoCenterRingAngle", 60);
   private DoublePreference centerRingShotRPM = new DoublePreference("shooter/autoCenterRingRPM", 3200);
@@ -143,6 +150,7 @@ public class RobotContainer implements Logged {
   private DoublePreference wingShotRPM = new DoublePreference("shooter/wingRPM", 4000);
   private DoublePreference podiumShotRPM = new DoublePreference("shooter/podiumRPM", 3200);
   private DoublePreference subShotRPM = new DoublePreference("shooter/subRPM", 3200);
+  private DoublePreference closeAutoShotRPM = new DoublePreference("shooter/closeAutoShotRPM", 3200);
 
   //High power
   private DoublePreference shooterHighPower = new DoublePreference("shooter/highPower", 78);
@@ -153,14 +161,17 @@ public class RobotContainer implements Logged {
    private DoublePreference m_kMagnitudeSlewRate = new DoublePreference("Magnitude Slew Rate", Constants.DriveConstants.kMagnitudeSlewRate);
    private DoublePreference m_kRotationalSlewRate = new DoublePreference("Rotational Slew Rate", Constants.DriveConstants.kRotationalSlewRate);
 
+   //preference for auto wait (in seconds)
+   private DoublePreference m_autoWait = new DoublePreference("Autonomous Wait Command (Secs)", 0);
 
     private final Command resetGyro = new ResetGyro(m_robotDrive);
     private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
     private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
     private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, m_rumble, intakePower, intakePosition, indexPower, intakeShooterPosition);
+    private final Command outTakePiece = new OuttakePiece(m_robotIntake, m_shooter, outtakePower, intakePosition, outdexPower, intakeShooterPosition, outtakeFlywheelPower);
     private final Command stowIntake = new StowIntake(m_robotIntake);
     private final Command parkCommand = new ParkCommand(m_robotDrive);
-    private final Command stowShooter = new PositionShooter(m_shooter, shooterHome);
+    private final Command stowShooter = new StowShooter(m_shooter, shooterHome);
     private final Command raiseShooter = new PositionShooter(m_shooter, intakeShooterPosition);
     private final Command spinShooter = new RunShooterPower(m_shooter, shooterPower);
     private final Command spinIndex = new IndexPower(m_shooter, outdexPower, outtakePower);
@@ -169,6 +180,7 @@ public class RobotContainer implements Logged {
     private final Command shootWing = new ShootPiece(m_shooter, m_rumble, wingShotAngle, wingShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command spinRPM = new RunShooterRPM(m_shooter, shooterRPM);
     private final Command preSpinShooter = new PrepareShooter(m_shooter, preSpinDistanceM);
+    private final Command ejectPiece = new EjectPiece(m_shooter);
 
     private final Command climberPowerUp = new ClimbPower(m_Climber, climberUpPower);
     private final Command climberPowerDown = new ClimbPower(m_Climber, climberDownPower);
@@ -185,18 +197,25 @@ public class RobotContainer implements Logged {
             Operator.driver_axisLY, 
             Operator.driver_axisLX);
 
-  private final Command autoShootSubwoofer = new AutonShoot(m_shooter, subShotAngle, subShotRPM, shooterIndexPower);
-  private final Command autoCenterRingShot = new AutonShoot(m_shooter, centerRingShotAngle, centerRingShotRPM, shooterIndexPower);
-  private final Command autoPodiumRingShot = new AutonShoot(m_shooter, autoPodiumRingShotAngle, autoPodiumRingShotRPM, shooterIndexPower);
-  private final Command autoAmpRingShot = new AutonShoot(m_shooter, autoAmpRingShotAngle, autoAmpRingShotRPM, shooterIndexPower);
-  private final Command ampShotStart = new AutonShoot(m_shooter, ampRingShotOnlyAngle, ampRingShotOnlyRPM, shooterIndexPower);
+  private final Command autoShootSubwoofer = new AutonShoot(m_shooter, subShotAngle, subShotRPM, shooterIndexPower).withTimeout(2);
+  private final Command autoShootAlmostSub = new AutonShoot(m_shooter, closeAutoShotAngle, closeAutoShotRPM, shooterIndexPower).withTimeout(2);
+  private final Command autoCenterRingShot = new AutonShoot(m_shooter, centerRingShotAngle, centerRingShotRPM, shooterIndexPower).withTimeout(2);
+  private final Command autoPodiumRingShot = new AutonShoot(m_shooter, autoPodiumRingShotAngle, autoPodiumRingShotRPM, shooterIndexPower).withTimeout(2);
+  private final Command autoAmpRingShot = new AutonShoot(m_shooter, autoAmpRingShotAngle, autoAmpRingShotRPM, shooterIndexPower).withTimeout(2);
+  private final Command ampShotStart = new AutonShoot(m_shooter, ampRingShotOnlyAngle, ampRingShotOnlyRPM, shooterIndexPower).withTimeout(2);
   private final Command ringToss = new RingToss(m_robotIntake, m_shooter, intakePower, intakePosition, shooterIndexPower, intakeShooterPosition, () -> 1000.0);
-  
+  private final Command autoIntake = new IntakePiece(m_robotIntake, m_shooter, m_rumble, intakePower, intakePosition, indexPower, intakeShooterPosition).withTimeout(3.75);
+
+
+  //Autonomous Wait Command
+  private final Command autoWait = new AutoWait(m_autoWait);
+
   private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
     
   private final SendableChooser<Command> autonChooser;
 
   private final double pathSpeed = 2;
+
 
     
 private static class Operator {
@@ -241,13 +260,15 @@ private static class Operator {
 
     //TODO: reconcile these with paths.
     NamedCommands.registerCommand("FirstShot", autoShootSubwoofer);
-    NamedCommands.registerCommand("RunIntake", intakePiece);
+    NamedCommands.registerCommand("AutoCloseShot", autoShootAlmostSub);
+    NamedCommands.registerCommand("RunIntake", autoIntake);
     NamedCommands.registerCommand("SecondShot", autoShootSubwoofer);
     NamedCommands.registerCommand("CenterRingShot", autoCenterRingShot);
     NamedCommands.registerCommand("PodiumRingShot", autoPodiumRingShot);
     NamedCommands.registerCommand("AutoAmpRingShot", autoAmpRingShot);
     NamedCommands.registerCommand("AmpRingShotOnly", ampShotStart);
     NamedCommands.registerCommand("RingToss", ringToss);
+    NamedCommands.registerCommand("Auto Wait", autoWait);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -261,11 +282,12 @@ private static class Operator {
     autonChooser.addOption("de test", AutoBuilder.buildAuto("de test"));
     autonChooser.addOption("CenterTwoRing", AutoBuilder.buildAuto("CenterTwoRing"));
     autonChooser.addOption("SourceTwoRing", AutoBuilder.buildAuto("SourceTwoRing"));
-    autonChooser.addOption("4Ring", AutoBuilder.buildAuto("4Ring"));
     autonChooser.addOption("GETOUTDAWAY", AutoBuilder.buildAuto("GETOUTDAWAY"));
     autonChooser.addOption("SubShootOnly", AutoBuilder.buildAuto("SubShootOnly"));
     autonChooser.addOption("AmpShootOnly", AutoBuilder.buildAuto("AmpShootOnly"));
     autonChooser.addOption("Gollum", AutoBuilder.buildAuto("Gollum"));
+    autonChooser.addOption("Subside 3 piece auton (center pieces)", AutoBuilder.buildAuto("Subside 3 piece auton (center pieces)"));
+    autonChooser.addOption("4RingClose", AutoBuilder.buildAuto("4RingClose"));
     SmartDashboard.putData("Autonomous", autonChooser);
 
 
@@ -293,7 +315,7 @@ private static class Operator {
   //  Operator.driver_dpad_up.whileTrue(new InstantCommand(()-> m_shooter.moveArm(.1), m_shooter));
   //  Operator.driver_dpad_down.whileTrue(new InstantCommand(() -> m_shooter.moveArm(-.1), m_shooter));
    //Operator.driver_a.whileTrue(shootHighAngle);
-   //Operator.driver_b.whileTrue(shootMidAngle);
+   Operator.driver_b.whileTrue(ejectPiece);
    //Operator.driver_y.whileTrue(shootLowAngle);
    //Operator.driver_x.whileTrue(shooterTune);
 
