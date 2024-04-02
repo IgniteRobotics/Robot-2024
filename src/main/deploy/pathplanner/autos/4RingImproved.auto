@@ -92,7 +92,7 @@
                                 {
                                   "type": "named",
                                   "data": {
-                                    "name": "Run Index Until"
+                                    "name": "RunIndexUntil"
                                   }
                                 },
                                 {
