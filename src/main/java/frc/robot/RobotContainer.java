@@ -174,7 +174,7 @@ public class RobotContainer implements Logged {
     private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
     private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
 
-    private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
+    private final Command intakePiece = new IntakePiece(m_robotIntake, m_LightControl, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
     private final Command outTakePiece = new OuttakePiece(m_robotIntake, m_shooter, outtakePower, intakePosition, outdexPower, intakeShooterPosition, outtakeFlywheelPower);
     private final Command stowIntake = new StowIntake(m_robotIntake);
     private final Command parkCommand = new ParkCommand(m_robotDrive);
@@ -214,7 +214,7 @@ public class RobotContainer implements Logged {
   private final Command autoAmpRingShot = new AutonShoot(m_shooter, autoAmpRingShotAngle, autoAmpRingShotRPM, shooterIndexPower).withTimeout(2);
   private final Command ampShotStart = new AutonShoot(m_shooter, ampRingShotOnlyAngle, ampRingShotOnlyRPM, shooterIndexPower).withTimeout(2);
   private final Command ringToss = new RingToss(m_robotIntake, m_shooter, intakePower, intakePosition, shooterIndexPower, intakeShooterPosition, () -> 1000.0);
-  private final Command autoIntake = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition).withTimeout(3.75);
+  private final Command autoIntake = new IntakePiece(m_robotIntake,m_LightControl, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition).withTimeout(3.75);
 
 
   //Autonomous Wait Command
