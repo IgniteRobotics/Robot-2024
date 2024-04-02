@@ -66,6 +66,9 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoWait;
 
+import frc.robot.subsystems.Cannon;
+import frc.robot.subsystems.Indexer;
+
 
 
 
@@ -85,6 +88,9 @@ public class RobotContainer implements Logged {
   private final IntakeSubsystem m_robotIntake = new IntakeSubsystem();
   //private final UmbrellaSubsystem m_umbrella  = new UmbrellaSubsystem();
   private final ShooterSubsystem m_shooter = new ShooterSubsystem();
+
+  private final Indexer m_Indexer = new Indexer();
+  private final Cannon m_Cannon = new Cannon();
 
   private final Climber m_Climber = new Climber();
 
