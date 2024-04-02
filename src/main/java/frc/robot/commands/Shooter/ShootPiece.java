@@ -49,6 +49,7 @@ public class ShootPiece extends Command {
   public void execute() {
     m_shooter.spinRPM(m_rpm.get());
     m_shooter.setAngleDegrees(m_position.get());
+
     if(m_shooter.armAtSetpoint() && m_shooter.atRPM())
     {
       m_LightControl.ShootReady(timer);

@@ -129,13 +129,13 @@ public final class Constants {
   }
   public static final class ShooterConstants {
 
-    public static final double POSITION_kF = 1;
-    public static final double POSITION_kP = 1;
+    //public static final double POSITION_kF = 1;
+    public static final double POSITION_kP = 60;
     public static final double POSITION_kI = 0;
-    public static final double POSITION_kD = 0;
+    public static final double POSITION_kD = 2;
     public static final double POSITION_kS = 0.24;
     public static final double POSITION_kV = 0.12;
-    public static final double POSITION_ForwardsLimit = 33;
+    public static final double POSITION_ForwardsLimit = 0.42;
     public static final double POSITION_ReverseLimit = 0;
 
 
@@ -151,20 +151,21 @@ public final class Constants {
 
     public static final double TARGET_POSITION_DEGREES = 56;
     public static final double SHOOTER_HOME_DEGREES = 2;
+    public static final double ARM_CANCODER_RATIO = 5.0/3.0;
 
     // DISTANCE, ANGLE, RPM
     public static final InterCalculator SHOOTER_INTER_CALCULATOR = new InterCalculator(
-      new InterParameter(0.91756992, 93, 3200),
-      new InterParameter(1.22236992, 80, 3200),
-      new InterParameter(1.52716992, 75, 3200),
-      new InterParameter(1.83196992, 67, 3200),
-      new InterParameter(2.13676992, 61, 3200),
-      new InterParameter(2.44156992, 58, 3200),
-      new InterParameter(2.74636992, 53, 3200),
-      new InterParameter(3.05116992, 50, 3200),
-      new InterParameter(3.35596992, 50, 3200),
-      new InterParameter(3.66076992, 49, 3200),
-      new InterParameter(3.96556992, 39, 3200)
+      new InterParameter(0.91756992, 50, 3200),
+      new InterParameter(1.22236992, 43.016, 3200),
+      new InterParameter(1.52716992, 40.3275, 3200),
+      new InterParameter(1.83196992, 36.0259, 3200),
+      new InterParameter(2.13676992, 32.7997, 3200),
+      new InterParameter(2.44156992, 31.1866, 3200),
+      new InterParameter(2.74636992, 28.4981, 3200),
+      new InterParameter(3.05116992, 26.885, 3200),
+      new InterParameter(3.35596992, 26.885, 3200),
+      new InterParameter(3.66076992, 26.3473, 3200),
+      new InterParameter(3.96556992, 20.9703, 3200)
       );
 
     //RED 4 
@@ -180,7 +181,7 @@ public final class Constants {
 
 
     //TODO: TUNE
-    public static final double POSITION_TOLERANCE = 2.0;
+    public static final double POSITION_TOLERANCE = 1.0;
 
     public static final double VELOCITY_TOLERANCE = 75;
 
@@ -269,7 +270,7 @@ public final class Constants {
     public static final Integer[] IGNORED_POSE_TARGETS = {50,51};
 
   }
-
+    
 
   public class CANConstants {
     public static final int INTAKE_POSITION_MOTOR = 2;
@@ -281,6 +282,7 @@ public final class Constants {
     public static final int SHOOTER_POSITION_MOTOR = 7;
     public static final int SHOOTER_MOTOR_LEADERCanId = 8;
     public static final int SHOOTER_INDEX_MOTOR = 9;
+    public static final int SHOOTER_POSITION_CANCODER = 20;
 
     public static final int FRONT_LEFT_DRIVE = 11;
     public static final int REAR_LEFT_DRIVE = 13;
