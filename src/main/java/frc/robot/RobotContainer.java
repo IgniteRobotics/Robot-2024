@@ -164,6 +164,8 @@ public class RobotContainer implements Logged {
    private DoublePreference m_FourthShotImprovAngle = new DoublePreference("Fourth Shot Improved Angle", 60);
    private DoublePreference m_FourthShotImprovRPM = new DoublePreference("Fourth Shot Improved RPM", 3200);
 
+   private DoublePreference runIntakeSimplePosition  = new DoublePreference("Run Intake Simple Position", 100);
+   private DoublePreference runIntakeSimplePower = new DoublePreference("Run Intake Simple Power", 0.5);
     private final Command resetGyro = new ResetGyro(m_robotDrive);
     private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
     private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
@@ -209,7 +211,7 @@ public class RobotContainer implements Logged {
   //improved Commands
   private final Command thirdShotImprov = new AutonShoot(m_shooter, m_ThirdShotImprovAngle, m_ThirdShotImprovRPM, shooterIndexPower).withTimeout(2);
   private final Command fourthShotImprov = new AutonShoot(m_shooter, m_FourthShotImprovAngle, m_FourthShotImprovRPM, shooterIndexPower).withTimeout(2); 
-
+  private final Command runIntakeSimpleAuto = new RunIntake(m_robotIntake, runIntakeSimplePower, runIntakeSimplePosition);
   //Autonomous Wait Command
   private final Command autoWait = new AutoWait(m_autoWait);
 
@@ -277,6 +279,7 @@ private static class Operator {
     NamedCommands.registerCommand("Auto Wait", autoWait);
     NamedCommands.registerCommand("ThirdShot", thirdShotImprov);
     NamedCommands.registerCommand("FourthShot", fourthShotImprov);
+    NamedCommands.registerCommand("SimpleIntake", runIntakeSimpleAuto);
 
     // Configure the button bindings
     configureButtonBindings();

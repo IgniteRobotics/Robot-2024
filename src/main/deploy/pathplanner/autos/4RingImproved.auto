@@ -12,45 +12,65 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "FirstShot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "SubwooferToCenterRing"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SecondShot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Center To Podium Improved"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ThirdShot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Podium to Amp Improved"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "FourthShot"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SimpleIntake"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "FirstShot"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "SubwooferToCenterRing"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "SecondShot"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Center To Podium Improved"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "ThirdShot"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Podium to Amp Improved"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "FourthShot"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
