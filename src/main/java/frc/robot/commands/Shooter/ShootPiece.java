@@ -6,6 +6,7 @@ package frc.robot.commands.Shooter;
 
 import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.RumbleSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 import java.util.function.Supplier;
@@ -13,13 +14,15 @@ import java.util.function.Supplier;
 
 public class ShootPiece extends Command {
   private final ShooterSubsystem m_shooter;
+  private final RumbleSubsystem m_rumble;
   private final Supplier<Double> m_position;
   private final Supplier<Double> m_rpm;
   private final Supplier<Double> m_indexPower;
   private final Supplier<Boolean> m_ready; 
   /** Creates a new ShootPiece. */
-  public ShootPiece(ShooterSubsystem shooter, Supplier<Double> position, Supplier<Double> rpm, Supplier<Double> indexpower, Supplier<Boolean> ready) {
+  public ShootPiece(ShooterSubsystem shooter, RumbleSubsystem rumble, Supplier<Double> position, Supplier<Double> rpm, Supplier<Double> indexpower, Supplier<Boolean> ready) {
     m_shooter = shooter;
+    m_rumble = rumble;
     m_position = position;
     m_rpm = rpm;
     m_indexPower = indexpower;
@@ -40,6 +43,9 @@ public class ShootPiece extends Command {
     //if (m_ready.get() && m_shooter.atSetpoint()){
     if (m_ready.get()){
       m_shooter.runIndex(m_indexPower.get());
+    }
+    if(m_shooter.armAtSetpoint() && m_shooter.atRPM()) {
+      m_rumble.shooterAtRPMAndAngle(3);
     }
   }
 

@@ -325,7 +325,12 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   @Log.File
   @Log.NT
   public boolean getIndexerBeamBreak(){
-    return !m_indexerBeamBreak.get();
+    if(Robot.isReal()){
+      return !m_indexerBeamBreak.get();
+    } else {
+      return true;
+    }
+    
   }
 
   @Override
