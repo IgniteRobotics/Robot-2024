@@ -23,6 +23,12 @@ import monologue.Monologue;
 import monologue.Annotations.Log;
 import monologue.Logged;
 import edu.wpi.first.wpilibj.smartdashboard.*;
+
+import frc.utils.BlinkinState;
+import frc.robot.subsystems.LightControl;
+import frc.robot.Constants;
+import frc.robot.commands.lights.FlashLEDCommand;
+
 import edu.wpi.first.util.datalog.StringLogEntry;
 
 /**f
@@ -35,6 +41,8 @@ public class Robot extends TimedRobot implements Logged {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
+  private boolean runLEDBeamBreak = true;
 
   @Log.NT
   @Log.File
@@ -123,19 +131,33 @@ public class Robot extends TimedRobot implements Logged {
     
     Monologue.setFileOnly(DriverStation.isFMSAttached());
     Monologue.updateAll();
+
+    if(runLEDBeamBreak && m_robotContainer.getIndexerBeamBreak()){
+      m_robotContainer.getBeamBreakLEDCommand().schedule();
+      runLEDBeamBreak = false;
+    }
+    else if(!runLEDBeamBreak && !m_robotContainer.getIndexerBeamBreak()){
+      runLEDBeamBreak = true;
+    }
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+  }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+
+    m_robotContainer.getLEDInitCommand().schedule();
+
     getAllianceInfo();
+
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     /*
@@ -153,11 +175,16 @@ public class Robot extends TimedRobot implements Logged {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+  }
 
   @Override
   public void teleopInit() {
+
+     m_robotContainer.getLEDInitCommand().schedule();
+
     getAllianceInfo();
+
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -169,7 +196,9 @@ public class Robot extends TimedRobot implements Logged {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    
+  }
 
   @Override
   public void testInit() {

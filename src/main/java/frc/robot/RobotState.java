@@ -13,8 +13,11 @@ public class RobotState {
     private Pose2d m_robotPose2d;
     private Pose2d m_speakerPose2d;
     private int m_speakerID = 0;
+
+
     private boolean m_hasNote = false;
     private double m_distanceToSpeaker;
+
 
     private static RobotState single_instance = null;
 
@@ -63,8 +66,10 @@ public class RobotState {
         m_distanceToSpeaker = d;
     }
 
+
     public boolean hasNote() {
         return m_hasNote;
     }
+
 
 }

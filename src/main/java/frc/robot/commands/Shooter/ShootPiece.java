@@ -7,8 +7,11 @@ package frc.robot.commands.Shooter;
 import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.LightControl;
+import frc.utils.BlinkinState;
 
 import java.util.function.Supplier;
+import frc.utils.Timer;
 
 
 public class ShootPiece extends Command {
@@ -17,26 +20,41 @@ public class ShootPiece extends Command {
   private final Supplier<Double> m_rpm;
   private final Supplier<Double> m_indexPower;
   private final Supplier<Boolean> m_ready; 
+  private final LightControl m_LightControl;
+
+  private int loops;
+  private Timer timer;
   /** Creates a new ShootPiece. */
-  public ShootPiece(ShooterSubsystem shooter, Supplier<Double> position, Supplier<Double> rpm, Supplier<Double> indexpower, Supplier<Boolean> ready) {
+
+  public ShootPiece(ShooterSubsystem shooter, LightControl lightControl, Supplier<Double> position, Supplier<Double> rpm, Supplier<Double> indexpower, Supplier<Boolean> ready) {
+
     m_shooter = shooter;
+    m_LightControl = lightControl;
     m_position = position;
     m_rpm = rpm;
     m_indexPower = indexpower;
     m_ready = ready;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_shooter);
+    addRequirements(m_shooter, m_LightControl);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    timer.resetTimer();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.setAngleDegrees(m_position.get());
     m_shooter.spinRPM(m_rpm.get());
+    m_shooter.setAngleDegrees(m_position.get());
+
+    if(m_shooter.armAtSetpoint() && m_shooter.atRPM())
+    {
+      m_LightControl.ShootReady(timer);
+    }
+    else timer.resetTimer();
     //if (m_ready.get() && m_shooter.atSetpoint()){
     if (m_ready.get()){
       m_shooter.runIndex(m_indexPower.get());
@@ -47,6 +65,7 @@ public class ShootPiece extends Command {
   @Override
   public void end(boolean interrupted) {
     m_shooter.stopAll();
+    m_LightControl.turnOff();
   }
 
   // Returns true when the command should end.

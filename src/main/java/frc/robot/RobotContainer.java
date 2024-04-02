@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.ClimberConstants;
@@ -21,6 +22,8 @@ import frc.robot.commands.intake.IntakePiece;
 import frc.robot.commands.intake.OuttakePiece;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.StowIntake;
+import frc.robot.commands.lights.ContinueFlashLEDCommand;
+import frc.robot.commands.lights.FlashStopLEDCommand;
 import frc.robot.input.AxisButton;
 import frc.robot.commands.Shooter.RunShooterPower;
 import frc.robot.commands.Shooter.RunShooterRPM;
@@ -38,10 +41,12 @@ import frc.robot.commands.Shooter.PositionShooter;
 import frc.robot.commands.Shooter.PrepareShooter;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LightControl;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.UmbrellaSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
+import frc.utils.BlinkinState;
 import monologue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -57,7 +62,9 @@ import frc.robot.subsystems.IntakeSubsystem;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+
 import com.fasterxml.jackson.core.sym.Name;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -65,6 +72,7 @@ import frc.robot.commands.ResetGyro;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoWait;
+
 
 
 
@@ -86,10 +94,15 @@ public class RobotContainer implements Logged {
   //private final UmbrellaSubsystem m_umbrella  = new UmbrellaSubsystem();
   private final ShooterSubsystem m_shooter = new ShooterSubsystem();
 
+
   private final Climber m_Climber = new Climber();
 
   
+
   private final RobotState m_robotState = RobotState.getInstance();
+
+  
+  private final LightControl m_LightControl = new LightControl(Constants.blinkinPort);
 
   //Robot preferences
   private DoublePreference intakePower = new DoublePreference("intake/intakePower", 0.5);
@@ -160,7 +173,8 @@ public class RobotContainer implements Logged {
     private final Command resetGyro = new ResetGyro(m_robotDrive);
     private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
     private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
-    private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
+
+    private final Command intakePiece = new IntakePiece(m_robotIntake, m_LightControl, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
     private final Command outTakePiece = new OuttakePiece(m_robotIntake, m_shooter, outtakePower, intakePosition, outdexPower, intakeShooterPosition, outtakeFlywheelPower);
     private final Command stowIntake = new StowIntake(m_robotIntake);
     private final Command parkCommand = new ParkCommand(m_robotDrive);
@@ -168,9 +182,11 @@ public class RobotContainer implements Logged {
     private final Command raiseShooter = new PositionShooter(m_shooter, intakeShooterPosition);
     private final Command spinShooter = new RunShooterPower(m_shooter, shooterPower);
     private final Command spinIndex = new IndexPower(m_shooter, outdexPower, outtakePower);
-    private final Command shootSubwoofer = new ShootPiece(m_shooter, subShotAngle, subShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
-    private final Command shootPodium = new ShootPiece(m_shooter, podiumShotAngle, podiumShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
-    private final Command shootWing = new ShootPiece(m_shooter, wingShotAngle, wingShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+
+    private final Command shootSubwoofer = new ShootPiece(m_shooter, m_LightControl, subShotAngle, subShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command shootPodium = new ShootPiece(m_shooter, m_LightControl, podiumShotAngle, podiumShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command shootWing = new ShootPiece(m_shooter, m_LightControl, wingShotAngle, wingShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+
     private final Command spinRPM = new RunShooterRPM(m_shooter, shooterRPM);
     private final Command preSpinShooter = new PrepareShooter(m_shooter, preSpinDistanceM);
     private final Command ejectPiece = new EjectPiece(m_shooter);
@@ -182,8 +198,9 @@ public class RobotContainer implements Logged {
 
     private final Command testTurnPID = new TurnDegrees(m_robotDrive, 15);
 
-    private final Command shooterTune = new ShootPiece(m_shooter, tuningPosition, tuningPower, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    private final Command shooterTune = new ShootPiece(m_shooter, m_LightControl, tuningPosition, tuningPower, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command shootInterpolated = new ShootInterpolated(m_shooter, m_photonCameraWrapper, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+
     private final Command driveToTarget = new DriveToTarget(m_robotDrive, 
             m_photonCameraWrapper, 
             m_robotState::getSpeakerID,
@@ -197,7 +214,7 @@ public class RobotContainer implements Logged {
   private final Command autoAmpRingShot = new AutonShoot(m_shooter, autoAmpRingShotAngle, autoAmpRingShotRPM, shooterIndexPower).withTimeout(2);
   private final Command ampShotStart = new AutonShoot(m_shooter, ampRingShotOnlyAngle, ampRingShotOnlyRPM, shooterIndexPower).withTimeout(2);
   private final Command ringToss = new RingToss(m_robotIntake, m_shooter, intakePower, intakePosition, shooterIndexPower, intakeShooterPosition, () -> 1000.0);
-  private final Command autoIntake = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition).withTimeout(3.75);
+  private final Command autoIntake = new IntakePiece(m_robotIntake,m_LightControl, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition).withTimeout(3.75);
 
 
   //Autonomous Wait Command
@@ -207,12 +224,21 @@ public class RobotContainer implements Logged {
     
   private final SendableChooser<Command> autonChooser;
 
+  //light commands
+  Command defaultLEDCommand = new ContinueFlashLEDCommand(m_LightControl, BlinkinState.Solid_Colors_Red_Orange, BlinkinState.Solid_Colors_Red, 500);
+  Command initLEDCommand = new FlashStopLEDCommand(m_LightControl, BlinkinState.Solid_Colors_Green, 750, 4);
+  Command piecePickedUP = new FlashStopLEDCommand(m_LightControl, BlinkinState.Solid_Colors_Red_Orange, 750, 4);
+  
+
   private final double pathSpeed = 2;
 
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   XboxController m_manipController = new XboxController(OIConstants.kManipControllerPort);  
+
+  private boolean autoInit = true;
+  private boolean teleopInit = true;
     
 private static class Operator {
 
@@ -334,8 +360,6 @@ private static class Operator {
     // new JoystickButton(m_driverController, XboxController.Button.kB.value)
     //     .whileTrue(m_robotDrive.turnSysIdTestBuilder(10, 5));
     
-
-   
   }
 
   private void configureDefaultCommands(){
@@ -353,7 +377,7 @@ private static class Operator {
 
     m_robotIntake.setDefaultCommand(stowIntake);
     m_shooter.setDefaultCommand(stowShooter);
-
+    m_LightControl.setDefaultCommand(defaultLEDCommand);
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -363,7 +387,18 @@ private static class Operator {
   public Command getAutonomousCommand() {
     return autonChooser.getSelected();
   }
- 
+
+  public Command getLEDInitCommand(){
+    return initLEDCommand;
+  }
+
+  public boolean getIndexerBeamBreak(){
+    return m_shooter.getIndexerBeamBreak();
+  }
+
+  public Command getBeamBreakLEDCommand(){
+    return piecePickedUP;
+  }
     
 }
 
