@@ -42,6 +42,7 @@ public class RunIndexFrom extends Command {
   @Override
   public void end(boolean interrupted) {
     m_shooter.stopIndexer();
+    m_shooter.setReady(false);
   }
 
   // Returns true when the command should end.

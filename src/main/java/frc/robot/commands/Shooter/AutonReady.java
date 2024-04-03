@@ -35,11 +35,12 @@ public class AutonReady extends Command {
   @Override
   public void end(boolean interrupted) {
     m_shooter.stopAll();
+    m_shooter.setReady(true);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return !m_shooter.getReady();
   }
 }
