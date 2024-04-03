@@ -289,9 +289,9 @@ private static class Operator {
     NamedCommands.registerCommand("ThirdShot", thirdShotImprov);
     NamedCommands.registerCommand("FourthShot", fourthShotImprov);
     NamedCommands.registerCommand("SimpleIntake", runIntakeSimpleAuto);
-    NamedCommands.registerCommand("Prepare Second Shot", prepareShot2);
-    NamedCommands.registerCommand("Prepare Third Shot", prepareShot3);
-    NamedCommands.registerCommand("Prepare Fourth Shot", prepareShot4);
+    NamedCommands.registerCommand("PrepareSecondShot", prepareShot2);
+    NamedCommands.registerCommand("PrepareThirdShot", prepareShot3);
+    NamedCommands.registerCommand("PrepareFourthShot", prepareShot4);
     NamedCommands.registerCommand("RunIndexUntil", runIndexUntilAuto);
     NamedCommands.registerCommand("RunIndexFrom", runIndexFromAuto);
 

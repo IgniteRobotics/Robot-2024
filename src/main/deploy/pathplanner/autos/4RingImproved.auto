@@ -38,7 +38,7 @@
                           {
                             "type": "named",
                             "data": {
-                              "name": "Prepare Second Shot"
+                              "name": "PrepareSecondShot"
                             }
                           },
                           {
@@ -76,7 +76,7 @@
                           {
                             "type": "named",
                             "data": {
-                              "name": "Prepare Third Shot"
+                              "name": "PrepareThirdShot"
                             }
                           },
                           {
@@ -114,7 +114,7 @@
                           {
                             "type": "named",
                             "data": {
-                              "name": "Prepare Fourth Shot"
+                              "name": "PrepareFourthShot"
                             }
                           },
                           {
