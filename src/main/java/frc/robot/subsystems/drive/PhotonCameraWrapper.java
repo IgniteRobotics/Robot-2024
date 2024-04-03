@@ -16,10 +16,8 @@ import org.photonvision.targeting.TargetCorner;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.Robot;
 import frc.robot.RobotState;
 import edu.wpi.first.wpilibj.Timer;
@@ -34,6 +32,7 @@ public class PhotonCameraWrapper implements Logged{
 
     private boolean m_seesTarget;
     private double m_yawRadians;
+    private double m_currentCameraOffset;
 
     public class TargetInfo{
         private double yaw;
@@ -80,6 +79,7 @@ public class PhotonCameraWrapper implements Logged{
 
     private PhotonCamera[] allCameras = new PhotonCamera[4];
     private PhotonPoseEstimator[] allEstimators = new PhotonPoseEstimator[4];
+    private double[] allCameraYawOffsetsDegrees = new double[4];
 
     
 
@@ -103,6 +103,11 @@ public class PhotonCameraWrapper implements Logged{
         allCameras[1] = photonCameraFrontRight;
         allCameras[2] = photonCameraRearLeft;
         allCameras[3] = photonCameraRearRight;
+
+        allCameraYawOffsetsDegrees[0] = -15.0;
+        allCameraYawOffsetsDegrees[1] = 15.0;
+        allCameraYawOffsetsDegrees[2] = -15.0;
+        allCameraYawOffsetsDegrees[3] = 15.0;
         
         try {
             layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
@@ -152,7 +157,17 @@ public class PhotonCameraWrapper implements Logged{
             if (target.isPresent()){
                 m_targetTimer.restart();
                 //return Optional.of(new TargetInfo(getDistanceFromTransform3d(target.get().getBestCameraToTarget()), target.get().getYaw()));
-                return Optional.of(buildTargetInfo(target.get().getBestCameraToTarget(), m_targetEstimator.getRobotToCameraTransform()));
+                //return Optional.of(buildTargetInfo(target.get().getBestCameraToTarget(), m_targetEstimator.getRobotToCameraTransform()));
+                // return Optional.of(
+                //     new TargetInfo(1, 
+                //                 target.get().getYaw()+15)
+                // );
+               return Optional.of(calculateTargetInfo(
+                    target.get().getYaw(), 
+                    getDistanceFromTransform3d(target.get().getBestCameraToTarget()),
+                    m_currentCameraOffset,
+                    m_targetEstimator.getRobotToCameraTransform().getY()
+                    ));
             }
 
             //we didn't find it with the locked camera.
@@ -172,9 +187,16 @@ public class PhotonCameraWrapper implements Logged{
                     m_seesTarget = true;
                     m_targetCam = allCameras[i];
                     m_targetEstimator = allEstimators[i];
+                    m_currentCameraOffset = allCameraYawOffsetsDegrees[i];
                     m_targetTimer.restart();
                     //return Optional.of(new TargetInfo(getDistanceFromTransform3d(target.get().getBestCameraToTarget()), target.get().getYaw()));
-                    return Optional.of(buildTargetInfo(target.get().getBestCameraToTarget(), m_targetEstimator.getRobotToCameraTransform()));
+                    //return Optional.of(buildTargetInfo(target.get().getBestCameraToTarget(), m_targetEstimator.getRobotToCameraTransform()));
+                    return Optional.of(calculateTargetInfo(
+                        target.get().getYaw(), 
+                        getDistanceFromTransform3d(target.get().getBestCameraToTarget()),
+                        m_currentCameraOffset,
+                        m_targetEstimator.getRobotToCameraTransform().getY()
+                    ));
                 }
             }
         }
@@ -184,6 +206,7 @@ public class PhotonCameraWrapper implements Logged{
         m_targetEstimator = null;
         m_targetTimer.stop();
         m_seesTarget = false;
+        m_currentCameraOffset = 0;
         return Optional.empty();
 
     }
@@ -215,6 +238,15 @@ public class PhotonCameraWrapper implements Logged{
         );
     }
 
+    /**
+     * DO NOT USE!  IT NO WORKEE
+     * 
+     * @param cam2Target
+     * @param robot2Cam
+     * @return a target info for shooting
+     * @deprecated use {@link #calculateTargetInfo(double, double, double, double)} instead
+     */
+    @Deprecated
     private TargetInfo buildTargetInfo(Transform3d cam2Target, Transform3d robot2Cam){
         // var r2c = robot2Cam.plus(new Transform3d(
         //         new Translation3d(),
@@ -237,6 +269,39 @@ public class PhotonCameraWrapper implements Logged{
         m_targetEstimator = null;
         m_yawRadians = 0.0;
         m_targetTimer.stop();
+        m_currentCameraOffset = 0;
+    }
+
+    public TargetInfo calculateTargetInfo(double yawToTargetDegrees, double distanceToTargetMeters, double cameraYawOffset, double cameraYOffsetMeters){
+        //first offset the yaw by the camera angle and 90.
+        yawToTargetDegrees = yawToTargetDegrees + cameraYawOffset + 90;
+
+        //apply law of cosines to get robot distance
+        double distance = Math.sqrt(
+            Math.pow(cameraYOffsetMeters, 2) +
+            Math.pow(distanceToTargetMeters, 2) -
+            (
+                2 * cameraYOffsetMeters * distanceToTargetMeters *
+                Math.cos(Math.toRadians(yawToTargetDegrees))
+            )
+            );
+
+        //now apply law of sines to get robot yaw
+        // and flip to degrees.
+        double yaw = Math.toDegrees(Math.asin(
+            distanceToTargetMeters * Math.sin(Math.toRadians(yawToTargetDegrees)) /
+            distance)
+        );
+
+        //finally, subract 90 deg from yaw to get yaw from straigh ahead.
+        yaw -= 90;
+
+        //round to 2 places.
+        distance = Math.round(distance*100.0)/100.0;
+        yaw = Math.round(yaw * 100.0)/100.0;
+
+        return new TargetInfo(distance, yaw);
+        
     }
 
 }
