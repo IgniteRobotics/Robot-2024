@@ -157,6 +157,13 @@ public class RobotContainer implements Logged {
    //preference for auto wait (in seconds)
    private DoublePreference m_autoWait = new DoublePreference("Autonomous Wait Command (Secs)", 0);
 
+   //Improved Preferences
+   private DoublePreference m_ThirdShotImprovAngle = new DoublePreference("Third Shot Improved Angle", 60);
+   private DoublePreference m_ThirdShotImprovRPM = new DoublePreference("Third Shot Improved RPM", 3200);
+
+   private DoublePreference m_FourthShotImprovAngle = new DoublePreference("Fourth Shot Improved Angle", 60);
+   private DoublePreference m_FourthShotImprovRPM = new DoublePreference("Fourth Shot Improved RPM", 3200);
+
     private final Command resetGyro = new ResetGyro(m_robotDrive);
     private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
     private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
@@ -199,6 +206,9 @@ public class RobotContainer implements Logged {
   private final Command ringToss = new RingToss(m_robotIntake, m_shooter, intakePower, intakePosition, shooterIndexPower, intakeShooterPosition, () -> 1000.0);
   private final Command autoIntake = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition).withTimeout(3.75);
 
+  //improved Commands
+  private final Command thirdShotImprov = new AutonShoot(m_shooter, m_ThirdShotImprovAngle, m_ThirdShotImprovRPM, shooterIndexPower).withTimeout(2);
+  private final Command fourthShotImprov = new AutonShoot(m_shooter, m_FourthShotImprovAngle, m_FourthShotImprovRPM, shooterIndexPower).withTimeout(2); 
 
   //Autonomous Wait Command
   private final Command autoWait = new AutoWait(m_autoWait);
@@ -265,6 +275,8 @@ private static class Operator {
     NamedCommands.registerCommand("AmpRingShotOnly", ampShotStart);
     NamedCommands.registerCommand("RingToss", ringToss);
     NamedCommands.registerCommand("Auto Wait", autoWait);
+    NamedCommands.registerCommand("ThirdShot", thirdShotImprov);
+    NamedCommands.registerCommand("FourthShot", fourthShotImprov);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -284,6 +296,7 @@ private static class Operator {
     autonChooser.addOption("Gollum", AutoBuilder.buildAuto("Gollum"));
     autonChooser.addOption("Subside 3 piece auton (center pieces)", AutoBuilder.buildAuto("Subside 3 piece auton (center pieces)"));
     autonChooser.addOption("4RingClose", AutoBuilder.buildAuto("4RingClose"));
+    autonChooser.addOption("FourRingImproved", AutoBuilder.buildAuto("4RingImproved"));
     SmartDashboard.putData("Autonomous", autonChooser);
 
 

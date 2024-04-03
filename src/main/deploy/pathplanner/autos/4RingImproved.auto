@@ -1,0 +1,61 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.4,
+      "y": 5.56
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "FirstShot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SubwooferToCenterRing"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SecondShot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center To Podium Improved"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ThirdShot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Podium to Amp Improved"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FourthShot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
