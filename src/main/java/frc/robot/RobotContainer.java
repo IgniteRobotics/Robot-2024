@@ -286,8 +286,6 @@ private static class Operator {
     NamedCommands.registerCommand("AmpRingShotOnly", ampShotStart);
     NamedCommands.registerCommand("RingToss", ringToss);
     NamedCommands.registerCommand("Auto Wait", autoWait);
-    NamedCommands.registerCommand("ThirdShot", thirdShotImprov);
-    NamedCommands.registerCommand("FourthShot", fourthShotImprov);
     NamedCommands.registerCommand("SimpleIntake", runIntakeSimpleAuto);
     NamedCommands.registerCommand("PrepareSecondShot", prepareShot2);
     NamedCommands.registerCommand("PrepareThirdShot", prepareShot3);
