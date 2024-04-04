@@ -364,7 +364,7 @@ private static class Operator {
    Operator.manip_b.whileTrue(shootPodium);
    Operator.manip_y.whileTrue(shootWing);
   
-   Operator.driver_x.whileTrue(speakerShotGroup);
+   Operator.driver_rightTrigger.whileTrue(speakerShotGroup);
 
     // new JoystickButton(m_driverController, XboxController.Button.kY.value)
     //     .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
