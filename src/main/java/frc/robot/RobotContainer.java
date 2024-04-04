@@ -350,7 +350,7 @@ private static class Operator {
    //Operator.driver_a.whileTrue(shootHighAngle);
    Operator.driver_b.whileTrue(ejectPiece);
    //Operator.driver_y.whileTrue(shootLowAngle);
-   //Operator.driver_x.whileTrue(shooterTune);
+   Operator.driver_a.whileTrue(shooterTune);
 
    //Operator.driver_y.whileTrue(raiseShooter);
    //Operator.driver_b.onTrue(stowShooter);
