@@ -55,8 +55,13 @@ public class DriveToTarget extends Command {
     if (targeting.isPresent()){
       SmartDashboard.putNumber("aim/yawtotarget",targeting.get().getYaw());
       rotation = rotationController.calculate(targeting.get().getYaw(),0);
-      SmartDashboard.putNumber("aim/autoRotnput", rotation);
+    } else {
+      rotation = 0;
+      SmartDashboard.putNumber("aim/yawtotarget",0);
     }
+    SmartDashboard.putNumber("aim/autoRotnput", rotation);
+
+
     m_drive.drive(m_driveX.get(), 
                   m_driveY.get(),
                   rotation, 
