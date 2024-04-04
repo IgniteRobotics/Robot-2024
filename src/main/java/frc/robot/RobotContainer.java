@@ -32,6 +32,7 @@ import frc.robot.commands.climb.ClimbPower;
 import frc.robot.commands.drive.DriveToTarget;
 import frc.robot.commands.drive.TurnDegrees;
 import frc.robot.commands.Shooter.AutonShoot;
+import frc.robot.commands.Shooter.AutonShootContinuous;
 import frc.robot.commands.Shooter.EjectPiece;
 import frc.robot.commands.Shooter.IndexPower;
 import frc.robot.commands.Shooter.PositionShooter;
@@ -169,6 +170,10 @@ public class RobotContainer implements Logged {
 
    private DoublePreference runIntakeSimplePosition  = new DoublePreference("Run Intake Simple Position", 100);
    private DoublePreference runIntakeSimplePower = new DoublePreference("Run Intake Simple Power", 0.5); 
+
+   private DoublePreference continuousShootPosition = new DoublePreference("shooter/Continuous Shoot Position", 50);
+   private DoublePreference continuousShootRPM = new DoublePreference("shooter/Continuous Shoot RPM", 3200);
+   private DoublePreference continuousShootIndexPower = new DoublePreference("shooter/Continuous Shoot Index Power", 0.5);
    
    private final Command resetGyro = new ResetGyro(m_robotDrive);
     private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
@@ -221,6 +226,7 @@ public class RobotContainer implements Logged {
   private final Command runIntakeSimpleAuto = new RunIntake(m_robotIntake, runIntakeSimplePower, runIntakeSimplePosition);
   private final Command runIndexUntilAuto = new RunIndexUntil(m_shooter, indexPower);
   private final Command runIndexFromAuto = new RunIndexFrom(m_shooter, indexPower).withTimeout(4);
+  private final Command shooterShootContinuous = new AutonShootContinuous(m_shooter, continuousShootPosition, continuousShootRPM, continuousShootIndexPower);
   //Autonomous Wait Command
   private final Command autoWait = new AutoWait(m_autoWait);
 
@@ -294,6 +300,7 @@ private static class Operator {
     NamedCommands.registerCommand("PrepareFourthShot", prepareShot4);
     NamedCommands.registerCommand("RunIndexUntil", runIndexUntilAuto);
     NamedCommands.registerCommand("RunIndexFrom", runIndexFromAuto);
+    NamedCommands.registerCommand("ShooterContinuousRun", shooterShootContinuous);
 
     // Configure the button bindings
     configureButtonBindings();
