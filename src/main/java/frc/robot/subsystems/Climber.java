@@ -101,6 +101,11 @@ public class Climber extends SubsystemBase implements Logged {
 
     m_climberMotor.getConfigurator().apply(m_motionMagicConfigs);
 
+  m_climberMotor.getDeviceTemp().setUpdateFrequency(2);
+  m_climberMotor.getVelocity().setUpdateFrequency(2);
+  m_climberMotor.getStatorCurrent().setUpdateFrequency(2);
+  m_climberMotor.getPosition().setUpdateFrequency(2);
+
   }
 
   public double getPositionRevolutions(){
@@ -134,5 +139,5 @@ public class Climber extends SubsystemBase implements Logged {
     velocity = m_climberMotor.getVelocity().getValueAsDouble();
     current = m_climberMotor.getStatorCurrent().getValueAsDouble();
     position = m_climberMotor.getPosition().getValueAsDouble();
-  }
+    }
 }
