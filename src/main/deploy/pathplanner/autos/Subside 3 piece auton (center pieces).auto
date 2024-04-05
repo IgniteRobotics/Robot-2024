@@ -45,7 +45,7 @@
         {
           "type": "named",
           "data": {
-            "name": "PodiumRingShot"
+            "name": "AutonIterpolatedShot"
           }
         },
         {
@@ -76,7 +76,7 @@
         {
           "type": "named",
           "data": {
-            "name": "PodiumRingShot"
+            "name": "AutonIterpolatedShot"
           }
         }
       ]
