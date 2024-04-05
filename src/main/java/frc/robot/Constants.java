@@ -298,5 +298,10 @@ public final class Constants {
 
   }
 
+  //camera pipeline Constants
+  public static final int AprilTag_Pipeline_Index = 0;
+  public static final int RingDetection_Pipeline_Index = 1;
+
+
 
 }

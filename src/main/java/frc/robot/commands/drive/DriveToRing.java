@@ -18,7 +18,7 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
 import frc.robot.subsystems.drive.PhotonCameraWrapper.TargetInfo;
 
-public class DriveToTarget extends Command {
+public class DriveToRing extends Command {
   private final DriveSubsystem m_drive;
   private final PhotonCameraWrapper m_cameras;
   private final Supplier<Integer> m_targetId;
@@ -31,7 +31,7 @@ public class DriveToTarget extends Command {
   private DoublePreference rotTolerance = new DoublePreference("turnTest/tolerance", 2);
 
   /** Creates a new DriveToTarget. */
-  public DriveToTarget(DriveSubsystem drive, PhotonCameraWrapper cameras, Supplier<Integer> targetId, Supplier<Double> driveX, Supplier<Double> driveY) {
+  public DriveToRing(DriveSubsystem drive, PhotonCameraWrapper cameras, Supplier<Integer> targetId, Supplier<Double> driveX, Supplier<Double> driveY) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drive = drive;
     m_cameras = cameras;
@@ -45,7 +45,7 @@ public class DriveToTarget extends Command {
   @Override
   public void initialize() {
     rotationController =  new PIDController(rotKP.get(), 0, rotKD.get());
-    m_cameras.setPipeline(Constants.AprilTag_Pipeline_Index);
+    m_cameras.setPipeline(Constants.RingDetection_Pipeline_Index);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
