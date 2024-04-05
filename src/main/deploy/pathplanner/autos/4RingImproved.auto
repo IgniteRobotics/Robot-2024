@@ -18,39 +18,47 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "SubwooferToCenterRing"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SecondShot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Center To Podium Improved"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ThirdShot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Podium to Amp Improved"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "FourthShot"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SimpleIntake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShooterContinuousRun"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "SubwooferToCenterRing"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Center To Podium Improved"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Podium to Amp Improved"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
