@@ -45,7 +45,6 @@ public class DriveToTarget extends Command {
   @Override
   public void initialize() {
     rotationController =  new PIDController(rotKP.get(), 0, rotKD.get());
-    m_cameras.setPipeline(Constants.AprilTag_Pipeline_Index);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
