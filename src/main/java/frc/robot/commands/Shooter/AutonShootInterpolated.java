@@ -66,6 +66,6 @@ public class AutonShootInterpolated extends Command {
   @Override
   public boolean isFinished() {
     //todo use beam break
-    return !m_shooter.getIndexerBeamBreak();
+    return false;
   }
 }

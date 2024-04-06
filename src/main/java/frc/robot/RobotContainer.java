@@ -33,10 +33,13 @@ import frc.robot.commands.drive.DriveToTarget;
 import frc.robot.commands.drive.TurnDegrees;
 import frc.robot.commands.Shooter.AutonShoot;
 import frc.robot.commands.Shooter.AutonShootInterpolated;
+import frc.robot.commands.Shooter.AutonShootContinuous;
 import frc.robot.commands.Shooter.EjectPiece;
 import frc.robot.commands.Shooter.IndexPower;
 import frc.robot.commands.Shooter.PositionShooter;
 import frc.robot.commands.Shooter.PrepareShooter;
+import frc.robot.commands.Shooter.RunIndexFrom;
+import frc.robot.commands.Shooter.RunIndexUntil;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -139,6 +142,14 @@ public class RobotContainer implements Logged {
   private DoublePreference ampRingShotOnlyRPM = new DoublePreference("shooter/ampRingShotOnlyRPM", 3200);
   
 
+  private DoublePreference runIntakeSimplePosition  = new DoublePreference("Run Intake Simple Position", 100);
+  private DoublePreference runIntakeSimplePower = new DoublePreference("Run Intake Simple Power", 0.5); 
+
+  private DoublePreference continuousShootPosition = new DoublePreference("shooter/Continuous Shoot Position", 50);
+  private DoublePreference continuousShootRPM = new DoublePreference("shooter/Continuous Shoot RPM", 3200);
+  private DoublePreference continuousShootIndexPower = new DoublePreference("shooter/Continuous Shoot Index Power", 0.5);
+  
+
 
   //Canned shot RPM
   private DoublePreference wingShotRPM = new DoublePreference("shooter/wingRPM", 4000);
@@ -207,7 +218,7 @@ public class RobotContainer implements Logged {
   private final Command ringToss = new RingToss(m_robotIntake, m_shooter, intakePower, intakePosition, shooterIndexPower, intakeShooterPosition, () -> 1000.0);
   private final Command autoIntake = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition).withTimeout(3.75);
 
-  private final Command autonShootInterpolated = new AutonShootInterpolated(m_shooter, m_photonCameraWrapper, shooterIndexPower, m_robotState::getSpeakerID);
+  private final Command autonShootInterpolated = new AutonShootInterpolated(m_shooter, m_photonCameraWrapper, shooterIndexPower, m_robotState::getSpeakerID).withTimeout(3);
 
   //improved Commands
   private final Command thirdShotImprov = new AutonShoot(m_shooter, m_ThirdShotImprovAngle, m_ThirdShotImprovRPM, shooterIndexPower).withTimeout(2);
@@ -215,6 +226,12 @@ public class RobotContainer implements Logged {
 
   //Autonomous Wait Command
   private final Command autoWait = new AutoWait(m_autoWait);
+
+  private final Command runIntakeSimpleAuto = new RunIntake(m_robotIntake, runIntakeSimplePower, runIntakeSimplePosition).withTimeout(10.5);
+  private final Command runIndexUntilAuto = new RunIndexUntil(m_shooter, indexPower);
+  private final Command runIndexFromAuto = new RunIndexFrom(m_shooter, indexPower).withTimeout(4);
+  private final Command shooterShootContinuous = new AutonShootContinuous(m_shooter, continuousShootPosition, continuousShootRPM, continuousShootIndexPower).withTimeout(10.5);
+
 
   private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
     
@@ -280,6 +297,10 @@ private static class Operator {
     NamedCommands.registerCommand("Auto Wait", autoWait);
     NamedCommands.registerCommand("ThirdShot", thirdShotImprov);
     NamedCommands.registerCommand("FourthShot", fourthShotImprov);
+    NamedCommands.registerCommand("SimpleIntake", runIntakeSimpleAuto);
+    NamedCommands.registerCommand("RunIndexUntil", runIndexUntilAuto);
+    NamedCommands.registerCommand("RunIndexFrom", runIndexFromAuto);
+    NamedCommands.registerCommand("ShooterContinuousRun", shooterShootContinuous);
     NamedCommands.registerCommand("AutonIterpolatedShot", autonShootInterpolated);
 
     // Configure the button bindings
@@ -344,7 +365,7 @@ private static class Operator {
    Operator.manip_b.whileTrue(shootPodium);
    Operator.manip_y.whileTrue(shootWing);
   
-   Operator.driver_x.whileTrue(speakerShotGroup);
+   Operator.driver_rightTrigger.whileTrue(speakerShotGroup);
 
     // new JoystickButton(m_driverController, XboxController.Button.kY.value)
     //     .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
