@@ -7,20 +7,17 @@ package frc.robot.commands.Shooter;
 import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.RobotState;
 
 import java.util.function.Supplier;
 
 
 public class AutonShootContinuous extends Command {
   private final ShooterSubsystem m_shooter;
-  private final Supplier<Double> m_position;
-  private final Supplier<Double> m_rpm;
   private final Supplier<Double> m_indexPower;
   /** Creates a new ShootPiece. */
-  public AutonShootContinuous(ShooterSubsystem shooter, Supplier<Double> position, Supplier<Double> rpm, Supplier<Double> indexpower) {
+  public AutonShootContinuous(ShooterSubsystem shooter, Supplier<Double> indexpower) {
     m_shooter = shooter;
-    m_position = position;
-    m_rpm = rpm;
     m_indexPower = indexpower;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_shooter);
@@ -33,8 +30,8 @@ public class AutonShootContinuous extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.spinRPM(m_rpm.get());
-    m_shooter.setAngleDegrees(m_position.get());
+    m_shooter.spinRPM(RobotState.getInstance().getAutoRPM());
+    m_shooter.setAngleDegrees(RobotState.getInstance().getAutoPosition());
     m_shooter.runIndex(m_indexPower.get());
   }
 

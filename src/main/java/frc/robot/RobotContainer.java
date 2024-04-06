@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.commands.Adjust;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -170,12 +171,14 @@ public class RobotContainer implements Logged {
    private DoublePreference m_autoWait = new DoublePreference("Autonomous Wait Command (Secs)", 0);
 
    //Improved Preferences
+   private DoublePreference m_SecondShotImprovAngle = new DoublePreference("Second Shot Improved Angle", 60);
+   private DoublePreference m_SecondShotImprovRPM = new DoublePreference("Second Shot Improved RPM", 3200);
    private DoublePreference m_ThirdShotImprovAngle = new DoublePreference("Third Shot Improved Angle", 60);
    private DoublePreference m_ThirdShotImprovRPM = new DoublePreference("Third Shot Improved RPM", 3200);
-
    private DoublePreference m_FourthShotImprovAngle = new DoublePreference("Fourth Shot Improved Angle", 60);
    private DoublePreference m_FourthShotImprovRPM = new DoublePreference("Fourth Shot Improved RPM", 3200);
-
+   private DoublePreference m_FifthShotImprovAngle = new DoublePreference("Fight Shot Improved Angle", 60);
+   private DoublePreference m_FifthShotImprovRPM = new DoublePreference("Fifth Shot Improved RPM", 3200);
     private final Command resetGyro = new ResetGyro(m_robotDrive);
     private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
     private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
@@ -230,8 +233,14 @@ public class RobotContainer implements Logged {
   private final Command runIntakeSimpleAuto = new RunIntake(m_robotIntake, runIntakeSimplePower, runIntakeSimplePosition).withTimeout(10.5);
   private final Command runIndexUntilAuto = new RunIndexUntil(m_shooter, indexPower);
   private final Command runIndexFromAuto = new RunIndexFrom(m_shooter, indexPower).withTimeout(4);
-  private final Command shooterShootContinuous = new AutonShootContinuous(m_shooter, continuousShootPosition, continuousShootRPM, continuousShootIndexPower).withTimeout(10.5);
+  private final Command shooterShootContinuous = new AutonShootContinuous(m_shooter, continuousShootIndexPower).withTimeout(10.5);
 
+
+  //Adjust Commands
+  private final Command adjustSecondShot = new Adjust(m_SecondShotImprovRPM, m_SecondShotImprovAngle);
+  private final Command adjustThirdShot = new Adjust(m_ThirdShotImprovRPM, m_ThirdShotImprovAngle);
+  private final Command adjustFourthShot = new Adjust(m_FourthShotImprovRPM, m_FourthShotImprovAngle);
+  private final Command adjustFifthShot = new Adjust(m_FifthShotImprovRPM, m_FifthShotImprovAngle);
 
   private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
     
@@ -302,6 +311,10 @@ private static class Operator {
     NamedCommands.registerCommand("RunIndexFrom", runIndexFromAuto);
     NamedCommands.registerCommand("ShooterContinuousRun", shooterShootContinuous);
     NamedCommands.registerCommand("AutonIterpolatedShot", autonShootInterpolated);
+    NamedCommands.registerCommand("Adjust2", adjustSecondShot);
+    NamedCommands.registerCommand("Adjust3", adjustThirdShot);
+    NamedCommands.registerCommand("Adjust4", adjustFourthShot);
+    NamedCommands.registerCommand("Adjust5", adjustFifthShot);
 
     // Configure the button bindings
     configureButtonBindings();
