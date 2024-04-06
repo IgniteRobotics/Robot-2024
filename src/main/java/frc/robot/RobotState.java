@@ -10,6 +10,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 /** Add your docs here. */
 public class RobotState {
 
+    private double autoRpm;
+    private double autoPosition;
     private Pose2d m_robotPose2d;
     private Pose2d m_speakerPose2d;
     private int m_speakerID = 0;
@@ -65,6 +67,22 @@ public class RobotState {
 
     public boolean hasNote() {
         return m_hasNote;
+    }
+
+    public double getAutoRPM(){
+        return autoRpm;
+    }
+
+    public double getAutoPosition(){
+        return autoPosition;
+    }
+
+    public void adjustAutoRPM(double adjust){
+        autoRpm = adjust;
+    }
+
+    public void adjustAutoPosition(double adjust){
+        autoPosition = adjust;
     }
 
 }

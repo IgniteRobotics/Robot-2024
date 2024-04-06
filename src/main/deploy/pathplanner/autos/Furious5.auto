@@ -26,15 +26,33 @@
                 "data": {
                   "commands": [
                     {
+                      "type": "named",
+                      "data": {
+                        "name": "Adjust2"
+                      }
+                    },
+                    {
                       "type": "path",
                       "data": {
                         "pathName": "SubwooferToCenterRing"
                       }
                     },
                     {
+                      "type": "named",
+                      "data": {
+                        "name": "Adjust3"
+                      }
+                    },
+                    {
                       "type": "path",
                       "data": {
                         "pathName": "Center To Podium Improved"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Adjust4"
                       }
                     },
                     {
