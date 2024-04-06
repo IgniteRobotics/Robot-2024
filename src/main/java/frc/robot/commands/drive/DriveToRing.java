@@ -45,7 +45,7 @@ public class DriveToRing extends Command {
   @Override
   public void initialize() {
     rotationController =  new PIDController(rotKP.get(), 0, rotKD.get());
-    m_cameras.setPipeline(Constants.RingDetection_Pipeline_Index);
+    m_cameras.setPipelineFront(Constants.RingDetection_Pipeline_Index);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -75,7 +75,7 @@ public class DriveToRing extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_cameras.setPipeline(Constants.AprilTag_Pipeline_Index);
+    m_cameras.setPipelineFront(Constants.AprilTag_Pipeline_Index);
   }
 
   // Returns true when the command should end.

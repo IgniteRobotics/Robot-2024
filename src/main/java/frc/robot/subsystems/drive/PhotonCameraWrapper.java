@@ -306,11 +306,9 @@ public class PhotonCameraWrapper implements Logged{
         
     }
 
-    public void setPipeline(int index){
+    public void setPipelineFront(int index){
         photonCameraFrontLeft.setPipelineIndex(index);
         photonCameraFrontRight.setPipelineIndex(index);
-        photonCameraRearLeft.setPipelineIndex(index);
-        photonCameraRearRight.setPipelineIndex(index);
     }
 
 }
