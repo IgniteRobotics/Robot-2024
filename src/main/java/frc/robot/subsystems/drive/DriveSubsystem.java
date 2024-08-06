@@ -732,6 +732,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
         m_rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(360)));
         m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(360)));
     }
+
+    public double getRLPos(){
+      return m_rearLeft.getPosition().angle.getDegrees();
+    }
   }
 
 
