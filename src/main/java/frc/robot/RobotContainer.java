@@ -52,7 +52,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.IntakeSubsystem;
+//import frc.robot.subsystems.IntakeSubsystem;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -61,7 +61,7 @@ import com.fasterxml.jackson.core.sym.Name;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import frc.robot.commands.ResetGyro;
+//import frc.robot.commands.ResetGyro;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoWait;
@@ -95,28 +95,28 @@ public class RobotContainer implements Logged {
   private DoublePreference intakePower = new DoublePreference("intake/intakePower", 0.5);
   private DoublePreference intakePosition = new DoublePreference("intake/intakePosition", 100);
   private DoublePreference outtakePower = new DoublePreference("intake/outtakePower", -0.75);
-  private DoublePreference umbrellaPower = new DoublePreference( "umbrella/Power", 0.25);
-  private DoublePreference shooterPower = new DoublePreference("shooter/Power", 0.79);
-  private DoublePreference shooterRPM = new DoublePreference("shooter/RPM", 4000);
+  //private DoublePreference umbrellaPower = new DoublePreference( "umbrella/Power", 0.25);
+  //private DoublePreference shooterPower = new DoublePreference("shooter/Power", 0.79);
+  //private DoublePreference shooterRPM = new DoublePreference("shooter/RPM", 4000);
   private DoublePreference intakeShooterPosition = new DoublePreference("shooter/Position", Constants.ShooterConstants.TARGET_POSITION_DEGREES);
   private DoublePreference indexPower = new DoublePreference("shooter/IndexPower", 0.1);
   private DoublePreference shooterIndexPower = new DoublePreference("shooter/ShootingIndexPower", 0.5);
-  private DoublePreference shooterOuttakePower = new DoublePreference("shooter/OuttakePower", -0.1);  
-  private DoublePreference shooterPosition = new DoublePreference("shooter/shootingPosition", 65); 
-  private DoublePreference outdexPower = new DoublePreference("shooter/OutdexPower", -0.2);
-  private DoublePreference outtakeFlywheelPower = new DoublePreference("shooter/outtakeFlywheelPower", -0.3);
-  private DoublePreference preSpinDistanceM = new DoublePreference("shooter/preSpinDistanceM", 5.842);
+  //private DoublePreference shooterOuttakePower = new DoublePreference("shooter/OuttakePower", -0.1);  
+  //private DoublePreference shooterPosition = new DoublePreference("shooter/shootingPosition", 65); 
+  //private DoublePreference outdexPower = new DoublePreference("shooter/OutdexPower", -0.2);
+  //private DoublePreference outtakeFlywheelPower = new DoublePreference("shooter/outtakeFlywheelPower", -0.3);
+  //private DoublePreference preSpinDistanceM = new DoublePreference("shooter/preSpinDistanceM", 5.842);
   private DoublePreference shooterHome = new DoublePreference("shooter/homeposition", 0);
 
   private DoublePreference climberUpPower = new DoublePreference("climber/UpPower", ClimberConstants.POWER);
   private DoublePreference climberDownPower = new DoublePreference("climber/DownPower", -ClimberConstants.POWER);
-  private DoublePreference climberUpPosition = new DoublePreference("climber/UpPosition", ClimberConstants.TOP_POSITION);
-  private DoublePreference climberDownPosition = new DoublePreference("climber/DownPosition", ClimberConstants.BOTTOM_POSITION);
+  //private DoublePreference climberUpPosition = new DoublePreference("climber/UpPosition", ClimberConstants.TOP_POSITION);
+  //private DoublePreference climberDownPosition = new DoublePreference("climber/DownPosition", ClimberConstants.BOTTOM_POSITION);
 
 
   //For tuning
-  private DoublePreference tuningPower = new DoublePreference("shooter/tuning_rpm", 2500);
-  private DoublePreference tuningPosition = new DoublePreference("shooter/tuning_Position", 65);
+  //private DoublePreference tuningPower = new DoublePreference("shooter/tuning_rpm", 2500);
+  //private DoublePreference tuningPosition = new DoublePreference("shooter/tuning_Position", 65);
 
 
   //Low Angle, Mid Angle, High Angle
@@ -146,13 +146,13 @@ public class RobotContainer implements Logged {
   private DoublePreference closeAutoShotRPM = new DoublePreference("shooter/closeAutoShotRPM", 3200);
 
   //High power
-  private DoublePreference shooterHighPower = new DoublePreference("shooter/highPower", 78);
+  //private DoublePreference shooterHighPower = new DoublePreference("shooter/highPower", 78);
   
 
    //preferences for slew rates
-   private DoublePreference m_kDirectionSlewRate = new DoublePreference("Direction Slew Rate", Constants.DriveConstants.kDirectionSlewRate);
-   private DoublePreference m_kMagnitudeSlewRate = new DoublePreference("Magnitude Slew Rate", Constants.DriveConstants.kMagnitudeSlewRate);
-   private DoublePreference m_kRotationalSlewRate = new DoublePreference("Rotational Slew Rate", Constants.DriveConstants.kRotationalSlewRate);
+  // private DoublePreference m_kDirectionSlewRate = new DoublePreference("Direction Slew Rate", Constants.DriveConstants.kDirectionSlewRate);
+  //private DoublePreference m_kMagnitudeSlewRate = new DoublePreference("Magnitude Slew Rate", Constants.DriveConstants.kMagnitudeSlewRate);
+   //private DoublePreference m_kRotationalSlewRate = new DoublePreference("Rotational Slew Rate", Constants.DriveConstants.kRotationalSlewRate);
 
    //preference for auto wait (in seconds)
    private DoublePreference m_autoWait = new DoublePreference("Autonomous Wait Command (Secs)", 0);
@@ -165,31 +165,31 @@ public class RobotContainer implements Logged {
    private DoublePreference m_FourthShotImprovRPM = new DoublePreference("Fourth Shot Improved RPM", 3200);
 
     private final Command resetGyro = new ResetGyro(m_robotDrive);
-    private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
+    //private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
     private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
     private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
-    private final Command outTakePiece = new OuttakePiece(m_robotIntake, m_shooter, outtakePower, intakePosition, outdexPower, intakeShooterPosition, outtakeFlywheelPower);
+    //private final Command outTakePiece = new OuttakePiece(m_robotIntake, m_shooter, outtakePower, intakePosition, outdexPower, intakeShooterPosition, outtakeFlywheelPower);
     private final Command stowIntake = new StowIntake(m_robotIntake);
     private final Command parkCommand = new ParkCommand(m_robotDrive);
     private final Command stowShooter = new StowShooter(m_shooter, shooterHome);
-    private final Command raiseShooter = new PositionShooter(m_shooter, intakeShooterPosition);
-    private final Command spinShooter = new RunShooterPower(m_shooter, shooterPower);
-    private final Command spinIndex = new IndexPower(m_shooter, outdexPower, outtakePower);
+    //private final Command raiseShooter = new PositionShooter(m_shooter, intakeShooterPosition);
+    //private final Command spinShooter = new RunShooterPower(m_shooter, shooterPower);
+    //private final Command spinIndex = new IndexPower(m_shooter, outdexPower, outtakePower);
     private final Command shootSubwoofer = new ShootPiece(m_shooter, subShotAngle, subShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command shootPodium = new ShootPiece(m_shooter, podiumShotAngle, podiumShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command shootWing = new ShootPiece(m_shooter, wingShotAngle, wingShotRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
-    private final Command spinRPM = new RunShooterRPM(m_shooter, shooterRPM);
-    private final Command preSpinShooter = new PrepareShooter(m_shooter, preSpinDistanceM);
+    //private final Command spinRPM = new RunShooterRPM(m_shooter, shooterRPM);
+    //private final Command preSpinShooter = new PrepareShooter(m_shooter, preSpinDistanceM);
     private final Command ejectPiece = new EjectPiece(m_shooter);
 
     private final Command climberPowerUp = new ClimbPower(m_Climber, climberUpPower);
     private final Command climberPowerDown = new ClimbPower(m_Climber, climberDownPower);
-    private final Command climbMMUp = new ClimbMM(m_Climber, climberUpPosition);
-    private final Command climbMMDown = new ClimbMM(m_Climber, climberDownPosition);
+    //private final Command climbMMUp = new ClimbMM(m_Climber, climberUpPosition);
+    //private final Command climbMMDown = new ClimbMM(m_Climber, climberDownPosition);
 
-    private final Command testTurnPID = new TurnDegrees(m_robotDrive, 15);
+    //private final Command testTurnPID = new TurnDegrees(m_robotDrive, 15);
 
-    private final Command shooterTune = new ShootPiece(m_shooter, tuningPosition, tuningPower, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
+    //private final Command shooterTune = new ShootPiece(m_shooter, tuningPosition, tuningPower, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command shootInterpolated = new ShootInterpolated(m_shooter, m_photonCameraWrapper, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean());
     private final Command driveToTarget = new DriveToTarget(m_robotDrive, 
             m_photonCameraWrapper, 
@@ -217,7 +217,9 @@ public class RobotContainer implements Logged {
     
   private final SendableChooser<Command> autonChooser;
 
-  private final double pathSpeed = 2;
+  private final SendableChooser<Command> testChooser;
+
+  //private final double pathSpeed = 2;
 
 
   // The driver's controller
@@ -232,22 +234,22 @@ private static class Operator {
 
     private static Supplier<Double> driver_axisLX = () -> MathUtil.applyDeadband(-driver.getRawAxis(0), Constants.OIConstants.kDriveDeadband);
     private static Supplier<Double> driver_axisLY = () -> MathUtil.applyDeadband(-driver.getRawAxis(1), Constants.OIConstants.kDriveDeadband);
-    private static Supplier<Double> driver_axisRY = () -> MathUtil.applyDeadband(-driver.getRawAxis(5), Constants.OIConstants.kDriveDeadband);
+   //private static Supplier<Double> driver_axisRY = () -> MathUtil.applyDeadband(-driver.getRawAxis(5), Constants.OIConstants.kDriveDeadband);
 
     private static JoystickButton driver_x = new JoystickButton(driver, XboxController.Button.kX.value);
-    private static JoystickButton driver_a = new JoystickButton(driver, XboxController.Button.kA.value);
+    //private static JoystickButton driver_a = new JoystickButton(driver, XboxController.Button.kA.value);
     private static JoystickButton driver_b = new JoystickButton(driver, XboxController.Button.kB.value);
-    private static JoystickButton driver_y = new JoystickButton(driver, XboxController.Button.kY.value);
+   // private static JoystickButton driver_y = new JoystickButton(driver, XboxController.Button.kY.value);
     private static JoystickButton driver_start = new JoystickButton(driver, XboxController.Button.kStart.value);
     private static JoystickButton driver_back = new JoystickButton(driver, XboxController.Button.kBack.value);
     private static JoystickButton driver_leftBumper = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private static JoystickButton driver_rightBumper = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    private static AxisButton driver_rightTrigger = new AxisButton(driver, XboxController.Axis.kRightTrigger.value, 0.25);
+    //private static AxisButton driver_rightTrigger = new AxisButton(driver, XboxController.Axis.kRightTrigger.value, 0.25);
     private static AxisButton driver_leftTrigger = new AxisButton(driver, XboxController.Axis.kLeftTrigger.value, 0.25);
     private static POVButton driver_dpad_up = new POVButton(driver, 0);
-    private static POVButton driver_dpad_right = new POVButton(driver, 90);
+    //private static POVButton driver_dpad_right = new POVButton(driver, 90);
     private static POVButton driver_dpad_down= new POVButton(driver, 180);
-    private static POVButton driver_dpad_left = new POVButton(driver, 270);
+    //private static POVButton driver_dpad_left = new POVButton(driver, 270);
 
     private static JoystickButton manip_a = new JoystickButton(manipulator, XboxController.Button.kA.value);
     private static JoystickButton manip_b = new JoystickButton(manipulator, XboxController.Button.kB.value);
@@ -298,6 +300,11 @@ private static class Operator {
     autonChooser.addOption("4RingClose", AutoBuilder.buildAuto("4RingClose"));
     autonChooser.addOption("FourRingImproved", AutoBuilder.buildAuto("4RingImproved"));
     SmartDashboard.putData("Autonomous", autonChooser);
+
+    testChooser = AutoBuilder.buildAutoChooser();
+    
+    
+
 
 
   }

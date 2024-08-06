@@ -709,4 +709,30 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       .finallyDo(() -> this.setTurnVolts(0));
   }
 
-}
+  //testing garbarge
+    public void rotateFL360() {
+        m_frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(360)));
+    }
+
+    public void rotateFR360() {
+        m_frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(360)));
+    }
+
+    public void rotateRL360() {
+        m_rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(360)));
+    }
+
+    public void rotateRR360(){
+        m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(360)));
+    }
+
+    public void  rotateAll360(){
+        m_frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(360)));
+        m_frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(360)));
+        m_rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(360)));
+        m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(360)));
+    }
+  }
+
+
+
