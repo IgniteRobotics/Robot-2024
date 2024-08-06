@@ -66,6 +66,8 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoWait;
 
+import frc.robot.commands.test.rotateRearLeft;
+
 
 
 
@@ -213,6 +215,9 @@ public class RobotContainer implements Logged {
   //Autonomous Wait Command
   private final Command autoWait = new AutoWait(m_autoWait);
 
+  //test mode command
+  private final Command rotateRL = new rotateRearLeft(m_robotDrive);
+
   private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
     
   private final SendableChooser<Command> autonChooser;
@@ -302,7 +307,9 @@ private static class Operator {
     SmartDashboard.putData("Autonomous", autonChooser);
 
     testChooser = AutoBuilder.buildAutoChooser();
-    
+    testChooser.addOption("rotateRL", rotateRL);
+    SmartDashboard.putData("Test Mode", testChooser);
+
     
 
 
@@ -382,6 +389,10 @@ private static class Operator {
    */
   public Command getAutonomousCommand() {
     return autonChooser.getSelected();
+  }
+
+  public Command getTestCommand(){
+    return testChooser.getSelected();
   }
  
     
