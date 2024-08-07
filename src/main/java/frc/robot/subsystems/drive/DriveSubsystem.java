@@ -89,7 +89,9 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
   private final SwerveDrivePoseEstimator poseEstimator;
   private final SwerveDrivePoseEstimator autonPoseEstimator;
 
+  private MAXSwerveModule[] m_modules = {m_frontLeft, m_frontRight, m_rearLeft, m_rearRight};
   private SwerveModuleState[] m_moduleStates = new SwerveModuleState[4];
+
 
 
   // Slew rate filter variables for controlling lateral acceleration
@@ -240,6 +242,24 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
 
    
   }
+
+  public SysIdRoutine createModuleTurnSysIdRoutine(int module){
+      SysIdRoutine newSysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(), 
+      new SysIdRoutine.Mechanism( 
+        (Measure<Voltage> volts) -> this.setTurnModuleVolts(module, volts.in(Volts)), null, this)
+      );
+      return newSysIdRoutine;
+    }
+
+  public SysIdRoutine createModuleDriveSysIdRoutine(int module){
+      SysIdRoutine newSysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(), 
+      new SysIdRoutine.Mechanism( 
+        (Measure<Voltage> volts) -> this.setDriveModuleVolts(module, volts.in(Volts)), null, this)
+      );
+      return newSysIdRoutine;
+    }
 
   @Override
   public void periodic(
@@ -505,6 +525,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     m_rearRight.setDriveVolts(volts);
   }
 
+  public void setDriveModuleVolts(int module, double volts){
+    m_modules[module].setDriveVolts(volts);
+  }
+
   /**
    * Set all trurn motors to voltage
    * 
@@ -515,6 +539,10 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     m_frontRight.setTurnVolts(volts);
     m_rearLeft.setTurnVolts(volts);
     m_rearRight.setTurnVolts(volts);
+  }
+
+  public void setTurnModuleVolts(int module, double volts){
+    m_modules[module].setTurnVolts(volts);
   }
 
   /**
@@ -701,6 +729,19 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       .finallyDo(() -> this.setDriveVolts(0));
   }
 
+  public Command driveModuleSysIdTestBuilder(double staticTimeout, double dynamicTimeout, int module){
+    SysIdRoutine newSysIdRoutine = createModuleDriveSysIdRoutine(module);
+    return
+      new InstantCommand(() -> this.setModulesZero())
+      .andThen(newSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward).withTimeout(staticTimeout))
+      .andThen(newSysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse).withTimeout(staticTimeout))
+      .andThen(new WaitCommand(2))
+      .andThen(newSysIdRoutine.dynamic(SysIdRoutine.Direction.kForward).withTimeout(dynamicTimeout))
+      .andThen(newSysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse).withTimeout(dynamicTimeout))
+      .finallyDo(() -> this.setDriveVolts(0));
+  }
+
+
   public Command turnSysIdTestBuilder(double staticTimeout, double dynamicTimeout){ 
     return m_TurnSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward).withTimeout(staticTimeout)
       .andThen(m_TurnSysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse).withTimeout(staticTimeout))
@@ -709,7 +750,18 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
       .finallyDo(() -> this.setTurnVolts(0));
   }
 
+  public Command turnModuleSysIdTestBuilder(double staticTimeout, double dynamicTimeout, int module){ 
+    SysIdRoutine newSysIdRoutine = createModuleTurnSysIdRoutine(module);
+    return newSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward).withTimeout(staticTimeout)
+      .andThen(newSysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse).withTimeout(staticTimeout))
+      .andThen(newSysIdRoutine.dynamic(SysIdRoutine.Direction.kForward).withTimeout(dynamicTimeout))
+      .andThen(newSysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse).withTimeout(dynamicTimeout))
+      .finallyDo(() -> this.setTurnVolts(0));
+  }
+
+  
   //testing garbarge
+  /* 
     public void rotateFL360() {
         m_frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(360)));
     }
@@ -726,7 +778,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
         m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(360)));
     }
 
-    public void  rotateAll360(){
+    public void rotateAll360(){
         m_frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(360)));
         m_frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(360)));
         m_rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(360)));
@@ -736,6 +788,7 @@ public class DriveSubsystem extends SubsystemBase implements Logged{
     public double getRLPos(){
       return m_rearLeft.getPosition().angle.getDegrees();
     }
+    */
   }
 
 

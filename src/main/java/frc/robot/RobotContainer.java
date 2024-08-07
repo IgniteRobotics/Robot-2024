@@ -215,8 +215,18 @@ public class RobotContainer implements Logged {
   //Autonomous Wait Command
   private final Command autoWait = new AutoWait(m_autoWait);
 
-  //test mode command
-  private final Command rotateRL = new rotateRearLeft(m_robotDrive);
+  //test mode commands
+  private final Command driveFrontLeft = m_robotDrive.driveModuleSysIdTestBuilder(2, 2, 0);
+  private final Command driveFrontRight = m_robotDrive.driveModuleSysIdTestBuilder(2, 2, 1);
+  private final Command driveRearLeft = m_robotDrive.driveModuleSysIdTestBuilder(2, 2, 2);
+  private final Command driveRearRight = m_robotDrive.driveModuleSysIdTestBuilder(2, 2, 3);
+  private final Command driveAll = m_robotDrive.driveSysIdTestBuilder(2,2);
+
+  private final Command rotateFrontLeft = m_robotDrive.turnModuleSysIdTestBuilder(2,2,0);
+  private final Command rotateFrontRight = m_robotDrive.turnModuleSysIdTestBuilder(2,2,1);
+  private final Command rotateRearLeft = m_robotDrive.turnModuleSysIdTestBuilder(2,2,2);
+  private final Command rotateRearRight = m_robotDrive.turnModuleSysIdTestBuilder(2,2,3);
+  private final Command rotateAll = m_robotDrive.turnSysIdTestBuilder(2, 2);
 
   private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
     
@@ -307,7 +317,19 @@ private static class Operator {
     SmartDashboard.putData("Autonomous", autonChooser);
 
     testChooser = AutoBuilder.buildAutoChooser();
-    testChooser.addOption("rotateRL", rotateRL);
+
+    testChooser.addOption("driveFrontLeft", driveFrontLeft);
+    testChooser.addOption("driveFrontRight", driveFrontRight);
+    testChooser.addOption("driveRearLeft", driveRearLeft);
+    testChooser.addOption("driveRearRight", driveRearRight);
+    testChooser.addOption("driveAll", driveAll);
+
+    testChooser.addOption("rotateFrontLeft", rotateFrontLeft);
+    testChooser.addOption("rotateFrontRight", rotateFrontRight);
+    testChooser.addOption("rotateRearLeft", rotateRearLeft);
+    testChooser.addOption("rotateRearRight", rotateRearRight);
+    testChooser.addOption("rotateAll", rotateAll);
+
     SmartDashboard.putData("Test Mode", testChooser);
 
     

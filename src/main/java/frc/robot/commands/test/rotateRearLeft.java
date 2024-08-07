@@ -23,7 +23,7 @@ public class rotateRearLeft extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_testDrive.rotateRL360();
+    //m_testDrive.rotateRL360();
   }
 
   // Called once the command ends or is interrupted.
@@ -33,6 +33,7 @@ public class rotateRearLeft extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_testDrive.getRLPos() == 360;
+   // return m_testDrive.getRLPos() == 360;
+   return false;
   }
 }
