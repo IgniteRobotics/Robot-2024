@@ -228,6 +228,8 @@ public class RobotContainer implements Logged {
   private final Command rotateRearRight = m_robotDrive.turnModuleSysIdTestBuilder(2,2,3);
   private final Command rotateAll = m_robotDrive.turnSysIdTestBuilder(2, 2);
 
+  private final Command shooterPositionTest = m_shooter.positionerTestBuilder(2,2);
+
   private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
     
   private final SendableChooser<Command> autonChooser;
@@ -329,6 +331,8 @@ private static class Operator {
     testChooser.addOption("rotateRearLeft", rotateRearLeft);
     testChooser.addOption("rotateRearRight", rotateRearRight);
     testChooser.addOption("rotateAll", rotateAll);
+
+    testChooser.addOption("shooterTest", shooterPositionTest);
 
     SmartDashboard.putData("Test Mode", testChooser);
 
