@@ -216,6 +216,18 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
 
     public Command intakeMotorTestBuilder(double staticTimeout, double dynamicTimeout){
     return
+      new InstantCommand(() -> this.stop())
+      .andThen(new InstantCommand(() -> this.setSpeed(0.5))).withTimeout(staticTimeout)
+      .andThen(new InstantCommand(() -> this.setSpeed(-0.5)).withTimeout(staticTimeout))
+      .andThen(new InstantCommand(() -> this.stop()))
+      .andThen(new WaitCommand(2))
+      .andThen(new InstantCommand(() -> this.setSpeed(1)).withTimeout(dynamicTimeout))
+      .andThen(new InstantCommand(() -> this.setSpeed(-1)).withTimeout(dynamicTimeout))
+      .andThen(new InstantCommand(() -> this.stop()));
+  }
+/* 
+  public Command intakePositionTestBuilder(double staticTimeout, double dynamicTimeout){
+    return
       new InstantCommand(() -> this.setSpeed(0))
       .andThen(new InstantCommand(() -> this.setSpeed(0.5))).withTimeout(staticTimeout)
       .andThen(new InstantCommand(() -> this.setSpeed(-0.5)).withTimeout(staticTimeout))
@@ -225,5 +237,9 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
       .andThen(new InstantCommand(() -> this.setSpeed(-1)).withTimeout(dynamicTimeout))
       .andThen(new InstantCommand(() -> this.setSpeed(0)));
   }
+
+*/
+
+
      
 }

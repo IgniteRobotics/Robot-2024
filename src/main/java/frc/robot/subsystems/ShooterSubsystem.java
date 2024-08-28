@@ -463,6 +463,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
       .andThen(new InstantCommand(() -> this.setPositionMotorSpeed(1)))
       .andThen(new InstantCommand(() -> this.setAngleDegrees(90)).withTimeout(staticTimeout))
       .andThen(new InstantCommand(() -> this.resetPosition()).withTimeout(staticTimeout))
+      .andThen(new InstantCommand(() -> this.setPositionMotorSpeed(0)))
       .andThen(new WaitCommand(2))
       //TODO:Change speed
       .andThen(new InstantCommand(() -> this.setPositionMotorSpeed(2)))
