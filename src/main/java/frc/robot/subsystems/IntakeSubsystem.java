@@ -7,7 +7,9 @@ package frc.robot.subsystems;
 
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -24,6 +26,8 @@ import frc.robot.subsystems.IntakeSubsystem;
 import monologue.Logged;
 import monologue.Annotations.Log;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.units.Measure;
 
 
 
@@ -209,5 +213,17 @@ public class IntakeSubsystem extends SubsystemBase implements Logged {
         }, this::stop);
 
       }
+
+    public Command intakeMotorTestBuilder(double staticTimeout, double dynamicTimeout){
+    return
+      new InstantCommand(() -> this.setSpeed(0))
+      .andThen(new InstantCommand(() -> this.setSpeed(0.5))).withTimeout(staticTimeout)
+      .andThen(new InstantCommand(() -> this.setSpeed(-0.5)).withTimeout(staticTimeout))
+      .andThen(new InstantCommand(() -> this.setSpeed(0)))
+      .andThen(new WaitCommand(2))
+      .andThen(new InstantCommand(() -> this.setSpeed(1)).withTimeout(dynamicTimeout))
+      .andThen(new InstantCommand(() -> this.setSpeed(-1)).withTimeout(dynamicTimeout))
+      .andThen(new InstantCommand(() -> this.setSpeed(0)));
+  }
      
 }
