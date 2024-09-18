@@ -48,7 +48,7 @@ public class TurnToRing extends Command {
     Optional<TargetInfo> targeting = m_camera.seekNote();
     double rotation = 0.0;
     if (targeting.isPresent()){
-      SmartDashboard.putNumber("ring/ringtotarget",targeting.get().getYaw());
+      SmartDashboard.putNumber("ring/yawtotarget",targeting.get().getYaw());
       rotation = rotationController.calculate(targeting.get().getYaw(),0);
     } else {
       rotation = 0;
