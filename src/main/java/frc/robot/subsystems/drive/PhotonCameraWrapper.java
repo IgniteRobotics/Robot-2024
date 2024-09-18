@@ -76,6 +76,8 @@ public class PhotonCameraWrapper implements Logged{
     public PhotonPoseEstimator photonPoseEstimatorRearLeft;
     public PhotonCamera photonCameraRearRight;
     public PhotonPoseEstimator photonPoseEstimatorRearRight;
+    public PhotonCamera photonCameraColored;
+    public PhotonPoseEstimator photonPoseEstimatorColored;
 
     private PhotonCamera[] allCameras = new PhotonCamera[4];
     private PhotonPoseEstimator[] allEstimators = new PhotonPoseEstimator[4];
@@ -85,6 +87,7 @@ public class PhotonCameraWrapper implements Logged{
 
     public AprilTagFieldLayout layout;
     private PhotonCamera  m_targetCam = null;
+    private PhotonCamera m_coloredCam = photonCameraColored;
     private PhotonPoseEstimator m_targetEstimator = null;
     private Timer m_targetTimer = new Timer();
     private double m_lockTimeSec = 0.2;
@@ -98,6 +101,7 @@ public class PhotonCameraWrapper implements Logged{
         photonCameraFrontRight = new PhotonCamera(CameraConstants.photonCameraNameFrontRight);
         photonCameraRearLeft = new PhotonCamera(CameraConstants.photonCameraNameRearLeft);
         photonCameraRearRight = new PhotonCamera(CameraConstants.photonCameraNameRearRight);
+        photonCameraColored = new PhotonCamera(CameraConstants.photonCameraNameColored);
 
         allCameras[0] = photonCameraFrontLeft;
         allCameras[1] = photonCameraFrontRight;
@@ -120,6 +124,7 @@ public class PhotonCameraWrapper implements Logged{
         photonPoseEstimatorFrontRight = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonCameraFrontRight, CameraConstants.photonCameraTransformFrontRight);
         photonPoseEstimatorRearLeft = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonCameraRearLeft, CameraConstants.photonCameraTransformRearLeft);
         photonPoseEstimatorRearRight = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonCameraRearRight, CameraConstants.photonCameraTransformRearRight);
+        photonPoseEstimatorColored = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonCameraColored, CameraConstants.photonCameraTransformColored);
         
         allEstimators[0] = photonPoseEstimatorFrontLeft;
         allEstimators[1] = photonPoseEstimatorFrontRight;
@@ -211,6 +216,23 @@ public class PhotonCameraWrapper implements Logged{
 
     }
 
+    public Optional<TargetInfo> seekNote() {
+        var result = m_coloredCam.getLatestResult();
+        Optional<PhotonTrackedTarget> ring = lookForRing(result);
+        if(ring != null){
+            m_seesTarget = true;
+            return Optional.of(calculateTargetInfo(
+                    ring.get().getYaw(), 
+                    getDistanceFromTransform3d(ring.get().getBestCameraToTarget()),
+                    m_currentCameraOffset,
+                    m_targetEstimator.getRobotToCameraTransform().getY()
+            ));
+        }
+        else{
+            return null;
+        }
+    }
+
     private Optional<PhotonTrackedTarget> lookForTarget(PhotonPipelineResult result, int targetId){
         for (var target : result.getTargets()){
                 if (targetId == target.getFiducialId()){
@@ -229,6 +251,22 @@ public class PhotonCameraWrapper implements Logged{
              new ArrayList<TargetCorner>(4)
              ));
         }
+    }
+
+    private Optional<PhotonTrackedTarget> lookForRing(PhotonPipelineResult ring){
+        PhotonTrackedTarget bestTarget = null;
+        boolean hasTarget = false;
+        for (var target : ring.getTargets()){
+                double targetArea = target.getArea();
+                if(!hasTarget){
+                    bestTarget = target;
+                    hasTarget = true;
+                }
+               else if(targetArea > bestTarget.getArea()){
+                    bestTarget = target;
+                }
+            }
+            return Optional.of(bestTarget);
     }
 
     private double getDistanceFromTransform3d(Transform3d t){
@@ -263,6 +301,7 @@ public class PhotonCameraWrapper implements Logged{
         RobotState.getInstance().setDistanceToSpeaker(t.distance);
         return t;
     }
+
 
     public void unlockTargeting(){
         m_targetCam = null;
