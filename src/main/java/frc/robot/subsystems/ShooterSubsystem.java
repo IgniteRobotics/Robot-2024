@@ -161,6 +161,10 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
   private boolean armRevLimiFault;
 
+  @Log.File
+  @Log.NT
+  private boolean Ready = true;
+
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     
@@ -450,5 +454,13 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   }
   public void simulationPeriodic(){
     m_shooterPositionMotor.setPosition(targetPosition);
+  }
+
+  public void setReady(boolean bool){
+    Ready = bool;
+  }
+
+  public boolean getReady(){
+    return Ready;
   }
 }
