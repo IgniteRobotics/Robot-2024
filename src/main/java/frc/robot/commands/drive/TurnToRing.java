@@ -6,7 +6,6 @@ package frc.robot.commands.drive;
 
 import java.util.Optional;
 import java.util.function.Supplier;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,10 +16,10 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
 import frc.robot.subsystems.drive.PhotonCameraWrapper.TargetInfo;
 
+
 public class TurnToRing extends Command {
   private final DriveSubsystem m_drive;
   private final PhotonCameraWrapper m_camera;
-  private final Supplier<Integer> m_ringId;
   PIDController rotationController;
 
   private DoublePreference rotKP = new DoublePreference("turnTest/kP", ShooterConstants.AUTO_TARGET_ROT_kP);
@@ -28,11 +27,10 @@ public class TurnToRing extends Command {
   private DoublePreference rotTolerance = new DoublePreference("turnTest/tolerance", 2);
 
   /** Creates a new DriveToTarget. */
-  public TurnToRing(DriveSubsystem drive, PhotonCameraWrapper camera, Supplier<Integer> ringId) {
+  public TurnToRing(DriveSubsystem drive, PhotonCameraWrapper camera) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drive = drive;
     m_camera = camera;
-    m_ringId = ringId;
     addRequirements(m_drive);
   }
 

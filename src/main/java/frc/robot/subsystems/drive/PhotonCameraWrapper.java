@@ -64,10 +64,6 @@ public class PhotonCameraWrapper implements Logged{
     }
 
 
-
-
-
-
     public PhotonCamera photonCameraFrontLeft;
     public PhotonPoseEstimator photonPoseEstimatorFrontLeft;
     public PhotonCamera photonCameraFrontRight;
@@ -87,7 +83,6 @@ public class PhotonCameraWrapper implements Logged{
 
     public AprilTagFieldLayout layout;
     private PhotonCamera  m_targetCam = null;
-    private PhotonCamera m_coloredCam = photonCameraColored;
     private PhotonPoseEstimator m_targetEstimator = null;
     private Timer m_targetTimer = new Timer();
     private double m_lockTimeSec = 0.2;
@@ -217,9 +212,9 @@ public class PhotonCameraWrapper implements Logged{
     }
 
     public Optional<TargetInfo> seekNote() {
-        var result = m_coloredCam.getLatestResult();
+        var result = photonCameraColored.getLatestResult();
         Optional<PhotonTrackedTarget> ring = lookForRing(result);
-        if(ring != null){
+        if(ring.isPresent()){
             m_seesTarget = true;
             return Optional.of(calculateTargetInfo(
                     ring.get().getYaw(), 
@@ -229,7 +224,7 @@ public class PhotonCameraWrapper implements Logged{
             ));
         }
         else{
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -266,7 +261,17 @@ public class PhotonCameraWrapper implements Logged{
                     bestTarget = target;
                 }
             }
-            return Optional.of(bestTarget);
+        if (!hasTarget){
+            //return a canned target for testing in simulation
+            return Optional.of(new PhotonTrackedTarget(0.2, 0.0, 1.0, 0.0, 0, 
+                new Transform3d(1, 1, 1, new Rotation3d(0.0, 0.0, 0.2)),
+                new Transform3d(1, 1, 1, new Rotation3d(0.0, 0.0, 0.2)),
+             0.0, 
+             new ArrayList<TargetCorner>(4), 
+             new ArrayList<TargetCorner>(4)
+             ));
+        }
+        return Optional.of(bestTarget);
     }
 
     private double getDistanceFromTransform3d(Transform3d t){

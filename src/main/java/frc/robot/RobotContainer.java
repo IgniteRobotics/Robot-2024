@@ -36,6 +36,7 @@ import frc.robot.commands.Shooter.EjectPiece;
 import frc.robot.commands.Shooter.IndexPower;
 import frc.robot.commands.Shooter.PositionShooter;
 import frc.robot.commands.Shooter.PrepareShooter;
+import frc.robot.commands.drive.TurnToRing;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -196,6 +197,7 @@ public class RobotContainer implements Logged {
             m_robotState::getSpeakerID,
             Operator.driver_axisLY, 
             Operator.driver_axisLX);
+    private final Command turnToRing = new TurnToRing(m_robotDrive, m_photonCameraWrapper);
 
   private final Command autoShootSubwoofer = new AutonShoot(m_shooter, subShotAngle, subShotRPM, shooterIndexPower).withTimeout(2);
   private final Command autoShootAlmostSub = new AutonShoot(m_shooter, closeAutoShotAngle, closeAutoShotRPM, shooterIndexPower).withTimeout(2);
@@ -252,6 +254,7 @@ private static class Operator {
     private static JoystickButton manip_a = new JoystickButton(manipulator, XboxController.Button.kA.value);
     private static JoystickButton manip_b = new JoystickButton(manipulator, XboxController.Button.kB.value);
     private static JoystickButton manip_y = new JoystickButton(manipulator, XboxController.Button.kY.value);
+    private static JoystickButton manip_x = new JoystickButton(manipulator, XboxController.Button.kX.value);
     
 
     // subsystems
@@ -339,8 +342,9 @@ private static class Operator {
    Operator.manip_a.whileTrue(shootSubwoofer);
    Operator.manip_b.whileTrue(shootPodium);
    Operator.manip_y.whileTrue(shootWing);
+   Operator.driver_x.onTrue(turnToRing);
   
-   Operator.driver_x.whileTrue(speakerShotGroup);
+   //Operator.driver_x.whileTrue(speakerShotGroup);
 
     // new JoystickButton(m_driverController, XboxController.Button.kY.value)
     //     .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
