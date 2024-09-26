@@ -189,7 +189,7 @@ public final class Constants {
 
     public static final double LENGTH = 1.5;
 
-    //100 to 1 gear ration
+    //100 to 1 gear ratio
     public static final double POSITION_DEGREE_PER_MOTOR_REV = 360.0/100.0;
 
     
@@ -237,6 +237,13 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final int kManipControllerPort = 1;
     public static final double kDriveDeadband = 0.1;
+  }
+
+  public static final class LEDConstants {
+    public static final int kLEDStripLength = 75;      // FIXME
+    public static final int kLEDStripPWMPort = 0; 
+    public static final double kLEDBlinkOnTime = 0.5;
+    public static final double kLEDBlinkOffTime = 0.25;
   }
 
   public static final class AutoConstants {
