@@ -20,17 +20,19 @@ import frc.robot.subsystems.drive.PhotonCameraWrapper.TargetInfo;
 public class TurnToRing extends Command {
   private final DriveSubsystem m_drive;
   private final PhotonCameraWrapper m_camera;
+  private final Supplier<Double> m_driveX;
   PIDController rotationController;
 
   private DoublePreference rotKP = new DoublePreference("turnTest/kP", ShooterConstants.AUTO_TARGET_ROT_kP);
   private DoublePreference rotKD = new DoublePreference("turnTest/kD", ShooterConstants.AUTO_TARGET_ROT_kD);
   private DoublePreference rotTolerance = new DoublePreference("turnTest/tolerance", 2);
-
+  
   /** Creates a new DriveToTarget. */
-  public TurnToRing(DriveSubsystem drive, PhotonCameraWrapper camera) {
+  public TurnToRing(DriveSubsystem drive, PhotonCameraWrapper camera, Supplier<Double> driveX) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drive = drive;
     m_camera = camera;
+    m_driveX = driveX;
     addRequirements(m_drive);
   }
 
@@ -53,6 +55,10 @@ public class TurnToRing extends Command {
       SmartDashboard.putNumber("ring/yawtotarget",0);
     }
     SmartDashboard.putNumber("ring/autoRotnput", rotation);
+    m_drive.drive(m_driveX.get(), 0,
+    rotation, 
+    false, 
+    true);
   }
 
   // Called once the command ends or is interrupted.

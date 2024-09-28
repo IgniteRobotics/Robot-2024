@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.comm.preferences.BooleanPreference;
 import frc.robot.comm.preferences.DoublePreference;
 import frc.robot.commands.ParkCommand;
 import frc.robot.commands.ResetGyro;
@@ -197,7 +198,7 @@ public class RobotContainer implements Logged {
             m_robotState::getSpeakerID,
             Operator.driver_axisLY, 
             Operator.driver_axisLX);
-    private final Command turnToRing = new TurnToRing(m_robotDrive, m_photonCameraWrapper);
+    private final Command turnToRing = new TurnToRing(m_robotDrive, m_photonCameraWrapper, Operator.driver_axisLY);
 
   private final Command autoShootSubwoofer = new AutonShoot(m_shooter, subShotAngle, subShotRPM, shooterIndexPower).withTimeout(2);
   private final Command autoShootAlmostSub = new AutonShoot(m_shooter, closeAutoShotAngle, closeAutoShotRPM, shooterIndexPower).withTimeout(2);
@@ -324,34 +325,13 @@ private static class Operator {
    Operator.driver_dpad_up.whileTrue(climberPowerUp);
    Operator.driver_dpad_down.whileTrue(climberPowerDown);
 
-  //  Operator.driver_dpad_up.whileTrue(new InstantCommand(()-> m_shooter.moveArm(.1), m_shooter));
-  //  Operator.driver_dpad_down.whileTrue(new InstantCommand(() -> m_shooter.moveArm(-.1), m_shooter));
-   //Operator.driver_a.whileTrue(shootHighAngle);
    Operator.driver_b.whileTrue(ejectPiece);
-   //Operator.driver_y.whileTrue(shootLowAngle);
-   //Operator.driver_x.whileTrue(shooterTune);
 
-   //Operator.driver_y.whileTrue(raiseShooter);
-   //Operator.driver_b.onTrue(stowShooter);
-  //  Operator.driver_dpad_left.whileTrue(spinIndex);
-  //  Operator.driver_dpad_right.whileTrue(spinRPM);
-  //  Operator.driver_a.whileTrue(shootSubwoofer);
-  //  Operator.driver_b.whileTrue(shootPodium);
-  //  Operator.driver_y.whileTrue(shootWing);\
   
    Operator.manip_a.whileTrue(shootSubwoofer);
    Operator.manip_b.whileTrue(shootPodium);
    Operator.manip_y.whileTrue(shootWing);
    Operator.driver_x.onTrue(turnToRing);
-  
-   //Operator.driver_x.whileTrue(speakerShotGroup);
-
-    // new JoystickButton(m_driverController, XboxController.Button.kY.value)
-    //     .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));
-    // new JoystickButton(m_driverController, XboxController.Button.kB.value)
-    //     .whileTrue(m_robotDrive.turnSysIdTestBuilder(10, 5));
-    
-
    
   }
 
