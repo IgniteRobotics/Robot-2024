@@ -46,6 +46,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.RobotState;
+import edu.wpi.first.wpilibj.Servo;
 
 
 
@@ -54,6 +55,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   private final CANSparkMax m_shooterIndexMotor;
   private final TalonFX m_shooterPositionMotor;
   private final CANcoder m_shooterPositionCancoder;
+  private final Servo m_RightServo;
+  private final Servo m_LeftServo;
 
   private final RelativeEncoder m_shooterEncoder;
   private final RelativeEncoder m_shooterIndexEncoder;
@@ -179,6 +182,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     
     m_RollerPidController = m_shooterMotor.getPIDController();
 
+    m_RightServo = new Servo(ShooterConstants.RIGHT_SERVO_PORT);
+    m_LeftServo = new Servo(ShooterConstants.LEFT_SERVO_PORT);
 
     this.configureShooterMotor(m_shooterMotor, m_shooterEncoder, m_RollerPidController);
     this.configureIndexMotor(m_shooterIndexMotor);
