@@ -220,7 +220,7 @@ public class PhotonCameraWrapper implements Logged{
                     ring.get().getYaw(), 
                     getDistanceFromTransform3d(ring.get().getBestCameraToTarget()),
                     m_currentCameraOffset,
-                    m_targetEstimator.getRobotToCameraTransform().getY()
+                    photonPoseEstimatorColored.getRobotToCameraTransform().getY()
             ));
         }
         else{

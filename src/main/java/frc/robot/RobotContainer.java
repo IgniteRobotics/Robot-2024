@@ -331,7 +331,7 @@ private static class Operator {
    Operator.manip_a.whileTrue(shootSubwoofer);
    Operator.manip_b.whileTrue(shootPodium);
    Operator.manip_y.whileTrue(shootWing);
-   Operator.driver_x.onTrue(turnToRing);
+   Operator.driver_x.whileTrue(turnToRing);
    
   }
 
