@@ -71,7 +71,6 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   private DoublePreference shooterkIPreference = new DoublePreference("shooter/RPMkI", Constants.ShooterConstants.ROLLER_kI);
   private DoublePreference shooterkDPreference = new DoublePreference("shooter/RPMkD", Constants.ShooterConstants.ROLLER_kD);
   private DoublePreference shooterkFPreference = new DoublePreference("shooter/RPMkF", Constants.ShooterConstants.ROLLER_kF);
-  
   private SoftwareLimitSwitchConfigs m_positionSoftLimitConfig = new SoftwareLimitSwitchConfigs();
   private MotionMagicConfigs m_positionMotionMagicConfigs = new MotionMagicConfigs();
   private MotorOutputConfigs m_positionMotorConfig = new MotorOutputConfigs();
@@ -468,4 +467,11 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   public boolean getReady(){
     return Ready;
   }
+
+  //position 0.0-1.0 (one extreme to other extreme)
+  public void setServoPosition(double position){
+    m_RightServo.set(position);
+    m_LeftServo.set(1.0 - position);
+  }
+
 }

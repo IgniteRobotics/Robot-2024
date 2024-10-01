@@ -57,6 +57,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.commands.Shooter.AmpShot.PositionServos;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -117,6 +118,9 @@ public class RobotContainer implements Logged {
   private DoublePreference climberUpPosition = new DoublePreference("climber/UpPosition", ClimberConstants.TOP_POSITION);
   private DoublePreference climberDownPosition = new DoublePreference("climber/DownPosition", ClimberConstants.BOTTOM_POSITION);
 
+  //Servos
+  private DoublePreference shooterServoPosAmpShot = new DoublePreference("shooter/ServoPosAmp", 0.5);
+  private DoublePreference shooterServoPosDefault = new DoublePreference("shooter/ServoPosDefault", 0.5);
 
   //For tuning
   private DoublePreference tuningPower = new DoublePreference("shooter/tuning_rpm", 2500);
@@ -239,6 +243,9 @@ public class RobotContainer implements Logged {
 
   private final double pathSpeed = 2;
 
+  //servo commands
+  private final Command positionServoTest = new PositionServos(m_shooter, shooterServoPosAmpShot, shooterServoPosDefault);
+
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -350,6 +357,7 @@ private static class Operator {
   //  Operator.driver_dpad_down.whileTrue(new InstantCommand(() -> m_shooter.moveArm(-.1), m_shooter));
    //Operator.driver_a.whileTrue(shootHighAngle);
    Operator.driver_b.whileTrue(ejectPiece);
+   Operator.driver_a.whileTrue(positionServoTest);
    //Operator.driver_y.whileTrue(shootLowAngle);
    //Operator.driver_x.whileTrue(shooterTune);
 
