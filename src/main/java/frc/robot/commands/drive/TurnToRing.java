@@ -15,6 +15,7 @@ import frc.robot.comm.preferences.DoublePreference;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
 import frc.robot.subsystems.drive.PhotonCameraWrapper.TargetInfo;
+import frc.robot.Constants.CameraConstants;;
 
 
 public class TurnToRing extends Command {
@@ -49,6 +50,7 @@ public class TurnToRing extends Command {
     double rotation = 0.0;
     if (targeting.isPresent()){
       SmartDashboard.putNumber("ring/yawtotarget",targeting.get().getYaw());
+      SmartDashboard.putBoolean("ring/turnedtoRing", Math.abs(targeting.get().getYaw()) < CameraConstants.TURNED_TO_NOTE_TOLERANCE);
       rotation = rotationController.calculate(targeting.get().getYaw(),0);
     } else {
       rotation = 0;
@@ -63,7 +65,8 @@ public class TurnToRing extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override

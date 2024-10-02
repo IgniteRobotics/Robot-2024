@@ -272,6 +272,8 @@ public final class Constants {
 
     public static final Integer[] IGNORED_POSE_TARGETS = {50,51};
 
+    //TODO: Change value;
+    public static final double TURNED_TO_NOTE_TOLERANCE = 30;
   }
     
 

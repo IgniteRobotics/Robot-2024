@@ -31,6 +31,7 @@ public class PhotonCameraWrapper implements Logged{
 
 
     private boolean m_seesTarget;
+    private boolean m_seesNote;
     private double m_yawRadians;
     private double m_currentCameraOffset;
 
@@ -215,7 +216,7 @@ public class PhotonCameraWrapper implements Logged{
         var result = photonCameraColored.getLatestResult();
         Optional<PhotonTrackedTarget> ring = lookForRing(result);
         if(ring.isPresent()){
-            m_seesTarget = true;
+            m_seesNote = true;
             return Optional.of(calculateTargetInfo(
                     ring.get().getYaw(), 
                     getDistanceFromTransform3d(ring.get().getBestCameraToTarget()),
@@ -346,6 +347,10 @@ public class PhotonCameraWrapper implements Logged{
 
         return new TargetInfo(distance, yaw);
         
+    }
+
+    public boolean getSeesNote(){
+        return m_seesNote;
     }
 
 }
