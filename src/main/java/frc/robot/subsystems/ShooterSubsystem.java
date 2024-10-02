@@ -474,4 +474,9 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     m_LeftServo.set(1.0 - position);
   }
 
+  public void resetServoPosition(){
+    m_RightServo.set(-1);
+    m_LeftServo.set(-2);
+  }
+
 }

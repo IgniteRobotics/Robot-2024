@@ -58,6 +58,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.commands.Shooter.AmpShot.PositionServos;
+import frc.robot.commands.Shooter.AmpShot.AmpShot;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -246,6 +247,8 @@ public class RobotContainer implements Logged {
   //servo commands
   private final Command positionServoTest = new PositionServos(m_shooter, shooterServoPosAmpShot, shooterServoPosDefault);
 
+  //ampshot command
+  private final Command ampShot = new AmpShot(m_shooter, tuningPosition, tuningPower, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean(), shooterServoPosAmpShot);
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
