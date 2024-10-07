@@ -282,6 +282,7 @@ private static class Operator {
     private static JoystickButton manip_a = new JoystickButton(manipulator, XboxController.Button.kA.value);
     private static JoystickButton manip_b = new JoystickButton(manipulator, XboxController.Button.kB.value);
     private static JoystickButton manip_y = new JoystickButton(manipulator, XboxController.Button.kY.value);
+    private static JoystickButton manip_x = new JoystickButton(manipulator, XboxController.Button.kX.value);
     
 
     // subsystems
@@ -360,7 +361,6 @@ private static class Operator {
   //  Operator.driver_dpad_down.whileTrue(new InstantCommand(() -> m_shooter.moveArm(-.1), m_shooter));
    //Operator.driver_a.whileTrue(shootHighAngle);
    Operator.driver_b.whileTrue(ejectPiece);
-   Operator.driver_a.whileTrue(positionServoTest);
    //Operator.driver_y.whileTrue(shootLowAngle);
    //Operator.driver_x.whileTrue(shooterTune);
 
@@ -375,6 +375,8 @@ private static class Operator {
    Operator.manip_a.whileTrue(shootSubwoofer);
    Operator.manip_b.whileTrue(shootPodium);
    Operator.manip_y.whileTrue(shootWing);
+
+   Operator.manip_x.whileTrue(ampShot);
   
    Operator.driver_rightTrigger.whileTrue(speakerShotGroup);
 
