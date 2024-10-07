@@ -131,8 +131,8 @@ public final class Constants {
 
 
     //servos 
-    public static final int RIGHT_SERVO_PORT = -1;
-    public static final int LEFT_SERVO_PORT = -1;
+    public static final int RIGHT_SERVO_PORT = 0;
+    public static final int LEFT_SERVO_PORT = 1;
 
     //public static final double POSITION_kF = 1;
     public static final double POSITION_kP = 60;

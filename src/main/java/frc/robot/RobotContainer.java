@@ -120,8 +120,8 @@ public class RobotContainer implements Logged {
   private DoublePreference climberDownPosition = new DoublePreference("climber/DownPosition", ClimberConstants.BOTTOM_POSITION);
 
   //Servos
-  private DoublePreference shooterServoPosAmpShot = new DoublePreference("shooter/ServoPosAmp", 0.5);
-  private DoublePreference shooterServoPosDefault = new DoublePreference("shooter/ServoPosDefault", 0.5);
+  private DoublePreference shooterServoPosAmpShot = new DoublePreference("shooter/ServoPosAmp", 1);
+  private DoublePreference shooterServoPosDefault = new DoublePreference("shooter/ServoPosDefault", 0);
 
   //For tuning
   private DoublePreference tuningPower = new DoublePreference("shooter/tuning_rpm", 2500);
