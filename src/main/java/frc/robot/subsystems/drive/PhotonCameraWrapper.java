@@ -29,8 +29,11 @@ import monologue.Annotations.Log;
 
 public class PhotonCameraWrapper implements Logged{
 
-
+    @Log.NT
+    @Log.File
     private boolean m_seesTarget;
+    @Log.NT
+    @Log.File
     private boolean m_seesNote;
     private double m_yawRadians;
     private double m_currentCameraOffset;

@@ -1,0 +1,668 @@
+{
+  "tabPane": [
+    {
+      "title": "SmartDashboard",
+      "autoPopulate": true,
+      "autoPopulatePrefix": "SmartDashboard/",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Autonomous",
+              "_title": "Autonomous",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Preferences/intake/intakePower",
+              "_title": "/Preferences/intake/intakePower",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Preferences/climber/UpPower",
+              "_title": "Preferences/climber/UpPower",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Preferences/shooter/IndexPower",
+              "_title": "Preferences/shooter/IndexPower",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "1,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/x stick speed",
+              "_title": "x stick speed",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "2,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/y stick speed",
+              "_title": "y stick speed",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/rot stick ",
+              "_title": "rot stick ",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/targetid",
+              "_title": "targetid",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/aim/targetid",
+              "_title": "aim/targetid",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "6,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/aim/yawtotarget",
+              "_title": "aim/yawtotarget",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "7,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/aim/autoRotnput",
+              "_title": "aim/autoRotnput",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "LiveWindow",
+      "autoPopulate": true,
+      "autoPopulatePrefix": "LiveWindow/",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {}
+      }
+    },
+    {
+      "title": "Competition",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 32.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "10,4": {
+            "size": [
+              9,
+              9
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Steering",
+              "_glyph": 149,
+              "_showGlyph": false,
+              "Layout/Number of columns": 2,
+              "Layout/Number of rows": 2,
+              "Layout/Label position": "HIDDEN",
+              "_children": {
+                "0,1": {
+                  "_type": "Gyro",
+                  "_source0": "network_table:///Robot/m_robotContainer/m_robotDrive/m_rearLeft/m_modulePosition",
+                  "_title": "Robot/m_robotContainer/m_robotDrive/m_rearLeft/m_modulePosition",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Visuals/Major tick spacing": 45.0,
+                  "Visuals/Starting angle": 180.0,
+                  "Visuals/Show tick mark ring": true,
+                  "Visuals/Counter clockwise": false
+                },
+                "1,0": {
+                  "_type": "Gyro",
+                  "_source0": "network_table:///Robot/m_robotContainer/m_robotDrive/m_frontRight/m_modulePosition",
+                  "_title": "Robot/m_robotContainer/m_robotDrive/m_frontRight/m_modulePosition",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Visuals/Major tick spacing": 45.0,
+                  "Visuals/Starting angle": 180.0,
+                  "Visuals/Show tick mark ring": true,
+                  "Visuals/Counter clockwise": false
+                },
+                "0,0": {
+                  "_type": "Gyro",
+                  "_source0": "network_table:///Robot/m_robotContainer/m_robotDrive/m_frontLeft/m_modulePosition",
+                  "_title": "Robot/m_robotContainer/m_robotDrive/m_frontLeft/m_modulePosition",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Visuals/Major tick spacing": 45.0,
+                  "Visuals/Starting angle": 180.0,
+                  "Visuals/Show tick mark ring": true,
+                  "Visuals/Counter clockwise": false
+                },
+                "1,1": {
+                  "_type": "Gyro",
+                  "_source0": "network_table:///Robot/m_robotContainer/m_robotDrive/m_rearRight/m_modulePosition",
+                  "_title": "Robot/m_robotContainer/m_robotDrive/m_rearRight/m_modulePosition",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Visuals/Major tick spacing": 45.0,
+                  "Visuals/Starting angle": 180.0,
+                  "Visuals/Show tick mark ring": true,
+                  "Visuals/Counter clockwise": false
+                }
+              }
+            }
+          },
+          "19,6": {
+            "size": [
+              7,
+              7
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Speed",
+              "_glyph": 149,
+              "_showGlyph": false,
+              "Layout/Number of columns": 2,
+              "Layout/Number of rows": 2,
+              "Layout/Label position": "HIDDEN",
+              "_children": {
+                "1,0": {
+                  "_type": "Simple Dial",
+                  "_source0": "network_table:///Robot/m_robotContainer/m_robotDrive/m_frontRight/m_moduleSpeed",
+                  "_title": "Robot/m_robotContainer/m_robotDrive/m_frontRight/m_moduleSpeed",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Range/Min": -5.0,
+                  "Range/Max": 5.0,
+                  "Visuals/Show value": false
+                },
+                "0,1": {
+                  "_type": "Simple Dial",
+                  "_source0": "network_table:///Robot/m_robotContainer/m_robotDrive/m_rearLeft/m_moduleSpeed",
+                  "_title": "Robot/m_robotContainer/m_robotDrive/m_rearLeft/m_moduleSpeed",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Range/Min": -5.0,
+                  "Range/Max": 5.0,
+                  "Visuals/Show value": false
+                },
+                "1,1": {
+                  "_type": "Simple Dial",
+                  "_source0": "network_table:///Robot/m_robotContainer/m_robotDrive/m_rearRight/m_moduleSpeed",
+                  "_title": "Robot/m_robotContainer/m_robotDrive/m_rearRight/m_moduleSpeed",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Range/Min": -5.0,
+                  "Range/Max": 5.0,
+                  "Visuals/Show value": false
+                },
+                "0,0": {
+                  "_type": "Simple Dial",
+                  "_source0": "network_table:///Robot/m_robotContainer/m_robotDrive/m_frontLeft/m_moduleSpeed",
+                  "_title": "Robot/m_robotContainer/m_robotDrive/m_frontLeft/m_moduleSpeed",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Range/Min": -5.0,
+                  "Range/Max": 5.0,
+                  "Visuals/Show value": false
+                }
+              }
+            }
+          },
+          "10,0": {
+            "size": [
+              16,
+              3
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Auton",
+              "_glyph": 149,
+              "_showGlyph": false,
+              "Layout/Number of columns": 2,
+              "Layout/Number of rows": 1,
+              "Layout/Label position": "TOP",
+              "_children": {
+                "0,0": {
+                  "_type": "ComboBox Chooser",
+                  "_source0": "network_table:///SmartDashboard/Autonomous",
+                  "_title": "/SmartDashboard/Autonomous",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                "1,0": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/Autonomous Wait Command (Secs)",
+                  "_title": "/Preferences/Autonomous Wait Command (Secs)",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                }
+              }
+            }
+          },
+          "0,0": {
+            "size": [
+              3,
+              12
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Shooter",
+              "_glyph": 149,
+              "_showGlyph": false,
+              "Layout/Number of columns": 1,
+              "Layout/Number of rows": 4,
+              "Layout/Label position": "TOP",
+              "_children": {
+                "0,0": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///Robot/m_robotContainer/m_shooter/Ready",
+                  "_title": "/Robot/m_robotContainer/m_shooter/Ready",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                "0,1": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///Robot/m_robotContainer/m_shooter/armAtSetpoint",
+                  "_title": "/Robot/m_robotContainer/m_shooter/armAtSetpoint",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                "0,2": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///Robot/m_robotContainer/m_shooter/atRPM",
+                  "_title": "/Robot/m_robotContainer/m_shooter/atRPM",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                "0,3": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///Robot/m_robotContainer/m_photonCameraWrapper/m_seesTarget",
+                  "_title": "/Robot/m_robotContainer/m_photonCameraWrapper/m_seesTarget",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                }
+              }
+            }
+          },
+          "3,0": {
+            "size": [
+              3,
+              7
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Intake",
+              "_glyph": 149,
+              "_showGlyph": false,
+              "Layout/Number of columns": 1,
+              "Layout/Number of rows": 2,
+              "Layout/Label position": "TOP",
+              "_children": {
+                "0,0": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///Robot/m_robotContainer/m_photonCameraWrapper/m_seesNote",
+                  "_title": "/Robot/m_robotContainer/m_photonCameraWrapper/m_seesNote",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                "0,1": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///Robot/m_robotContainer/m_shooter/getIndexerBeamBreak",
+                  "_title": "/Robot/m_robotContainer/m_shooter/getIndexerBeamBreak",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Preferences",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Intake",
+              "_glyph": 118,
+              "_showGlyph": true,
+              "Layout/Label position": "TOP",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/intake/intakePosition",
+                  "_title": "/Preferences/intake/intakePosition",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/intake/intakePower",
+                  "_title": "/Preferences/intake/intakePower",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/intake/outtakePower",
+                  "_title": "/Preferences/intake/outtakePower",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                }
+              ]
+            }
+          },
+          "3,0": {
+            "size": [
+              2,
+              4
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Shooter",
+              "_glyph": 73,
+              "_showGlyph": true,
+              "Layout/Label position": "LEFT",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/shooter/IndexPower",
+                  "_title": "/Preferences/shooter/IndexPower",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/shooter/OutdexPower",
+                  "_title": "/Preferences/shooter/OutdexPower",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/shooter/OuttakePower",
+                  "_title": "/Preferences/shooter/OuttakePower",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/shooter/outtakeFlywheelPower",
+                  "_title": "/Preferences/shooter/outtakeFlywheelPower",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/shooter/homeposition",
+                  "_title": "/Preferences/shooter/homeposition",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/shooter/preSpinDistanceM",
+                  "_title": "/Preferences/shooter/preSpinDistanceM",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/shooter/ServoPosAmp",
+                  "_title": "/Preferences/shooter/ServoPosAmp",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/shooter/ServoPosDefault",
+                  "_title": "/Preferences/shooter/ServoPosDefault",
+                  "_glyph": 73,
+                  "_showGlyph": false
+                }
+              ]
+            }
+          },
+          "0,2": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Climber",
+              "_glyph": 36,
+              "_showGlyph": true,
+              "Layout/Number of columns": 3,
+              "Layout/Number of rows": 3,
+              "Layout/Label position": "TOP",
+              "_children": {
+                "0,0": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/climber/UpPosition",
+                  "_title": "/Preferences/climber/UpPosition",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                "1,0": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/climber/UpPower",
+                  "_title": "/Preferences/climber/UpPower",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                "0,2": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/climber/DownPosition",
+                  "_title": "/Preferences/climber/DownPosition",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                "1,2": {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/climber/DownPower",
+                  "_title": "/Preferences/climber/DownPower",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                }
+              }
+            }
+          },
+          "5,0": {
+            "size": [
+              2,
+              4
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Shots",
+              "_glyph": 417,
+              "_showGlyph": true,
+              "Layout/Label position": "LEFT",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/shooter/subRPM",
+                  "_title": "/Preferences/shooter/subRPM",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/shooter/subShotAngle",
+                  "_title": "/Preferences/shooter/subShotAngle",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/shooter/podiumRPM",
+                  "_title": "/Preferences/shooter/podiumRPM",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/shooter/podiumShotAngle",
+                  "_title": "/Preferences/shooter/podiumShotAngle",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/shooter/wingRPM",
+                  "_title": "/Preferences/shooter/wingRPM",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/shooter/wingShotAngle",
+                  "_title": "/Preferences/shooter/wingShotAngle",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/shooter/tuning_rpm",
+                  "_title": "/Preferences/shooter/tuning_rpm",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///Preferences/shooter/tuning_Position",
+                  "_title": "/Preferences/shooter/tuning_Position",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "windowGeometry": {
+    "x": 0.0,
+    "y": 0.0,
+    "width": 1280.0,
+    "height": 752.0
+  }
+}
