@@ -57,6 +57,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.commands.Shooter.AmpShot.PositionServos;
+import frc.robot.commands.Shooter.AmpShot.AmpShot;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -117,6 +119,9 @@ public class RobotContainer implements Logged {
   private DoublePreference climberUpPosition = new DoublePreference("climber/UpPosition", ClimberConstants.TOP_POSITION);
   private DoublePreference climberDownPosition = new DoublePreference("climber/DownPosition", ClimberConstants.BOTTOM_POSITION);
 
+  //Servos
+  private DoublePreference shooterServoPosAmpShot = new DoublePreference("shooter/ServoPosAmp", 1);
+  private DoublePreference shooterServoPosDefault = new DoublePreference("shooter/ServoPosDefault", 0);
 
   //For tuning
   private DoublePreference tuningPower = new DoublePreference("shooter/tuning_rpm", 2500);
@@ -239,6 +244,11 @@ public class RobotContainer implements Logged {
 
   private final double pathSpeed = 2;
 
+  //servo commands
+  private final Command positionServoTest = new PositionServos(m_shooter, shooterServoPosAmpShot, shooterServoPosDefault);
+
+  //ampshot command
+  private final Command ampShot = new AmpShot(m_shooter, tuningPosition, tuningPower, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean(), shooterServoPosAmpShot);
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -272,6 +282,7 @@ private static class Operator {
     private static JoystickButton manip_a = new JoystickButton(manipulator, XboxController.Button.kA.value);
     private static JoystickButton manip_b = new JoystickButton(manipulator, XboxController.Button.kB.value);
     private static JoystickButton manip_y = new JoystickButton(manipulator, XboxController.Button.kY.value);
+    private static JoystickButton manip_x = new JoystickButton(manipulator, XboxController.Button.kX.value);
     
 
     // subsystems
@@ -364,6 +375,8 @@ private static class Operator {
    Operator.manip_a.whileTrue(shootSubwoofer);
    Operator.manip_b.whileTrue(shootPodium);
    Operator.manip_y.whileTrue(shootWing);
+
+   Operator.manip_x.whileTrue(ampShot);
   
    Operator.driver_rightTrigger.whileTrue(speakerShotGroup);
 

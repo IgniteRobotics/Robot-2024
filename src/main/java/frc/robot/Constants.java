@@ -129,6 +129,11 @@ public final class Constants {
   }
   public static final class ShooterConstants {
 
+
+    //servos 
+    public static final int RIGHT_SERVO_PORT = 0;
+    public static final int LEFT_SERVO_PORT = 1;
+
     //public static final double POSITION_kF = 1;
     public static final double POSITION_kP = 60;
     public static final double POSITION_kI = 0;
