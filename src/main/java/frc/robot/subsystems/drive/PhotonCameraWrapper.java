@@ -345,12 +345,21 @@ public class PhotonCameraWrapper implements Logged{
         distance = Math.round(distance*100.0)/100.0;
         yaw = Math.round(yaw * 100.0)/100.0;
 
-        return new TargetInfo(distance, yaw);
+        TargetInfo t = new TargetInfo(distance, yaw);
+        RobotState.getInstance().setDistanceToSpeaker(t.distance);
+        return t;
         
     }
 
     public boolean getSeesNote(){
         return m_seesNote;
+
+    public void setPipeline(int index){
+        photonCameraFrontLeft.setPipelineIndex(index);
+        photonCameraFrontRight.setPipelineIndex(index);
+        photonCameraRearLeft.setPipelineIndex(index);
+        photonCameraRearRight.setPipelineIndex(index);
+
     }
 
 }

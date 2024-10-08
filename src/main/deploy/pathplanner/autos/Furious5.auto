@@ -18,21 +18,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "SimpleIntake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShooterContinuousRun"
-                }
-              },
               {
                 "type": "sequential",
                 "data": {
@@ -57,8 +45,51 @@
                     }
                   ]
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SimpleIntake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShooterContinuousRun"
+                }
               }
             ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "AmpToCenter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RunIntake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterField2Podium"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutonIterpolatedShot"
           }
         }
       ]
