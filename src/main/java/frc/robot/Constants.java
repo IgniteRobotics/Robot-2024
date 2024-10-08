@@ -273,9 +273,14 @@ public final class Constants {
     public static final Transform3d photonCameraTransformRearRight = new Transform3d(new Translation3d(-.343, -0.271, 0.239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, -195.0/180 * Math.PI));
     public static final String photonCameraNameRearLeft = "REAR_LEFT";
     public static final Transform3d photonCameraTransformRearLeft = new Transform3d(new Translation3d(-.343, 0.271, 0.239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 195.0/180 * Math.PI));
+    public static final String photonCameraNameColored = "COLORED";
+    public static final Transform3d photonCameraTransformColored = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 195.0/180 * Math.PI));
+
 
     public static final Integer[] IGNORED_POSE_TARGETS = {50,51};
 
+    //TODO: Change value;
+    public static final double TURNED_TO_NOTE_TOLERANCE = 30;
   }
     
 
