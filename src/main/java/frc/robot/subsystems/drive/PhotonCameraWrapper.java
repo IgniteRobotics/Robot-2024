@@ -353,6 +353,7 @@ public class PhotonCameraWrapper implements Logged{
 
     public boolean getSeesNote(){
         return m_seesNote;
+    }
 
     public void setPipeline(int index){
         photonCameraFrontLeft.setPipelineIndex(index);
