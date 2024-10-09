@@ -363,7 +363,7 @@ private static class Operator {
    Operator.driver_dpad_down.whileTrue(climberPowerDown);
 
    Operator.driver_b.whileTrue(ejectPiece);
-   Operator.driver_a.whileFalse(ringHunterGroup);
+   Operator.driver_a.whileTrue(ringHunterGroup);
 
   
    Operator.manip_a.whileTrue(shootSubwoofer);
