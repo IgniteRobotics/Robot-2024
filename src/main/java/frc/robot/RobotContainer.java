@@ -242,6 +242,8 @@ public class RobotContainer implements Logged {
 
 
   private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
+
+  private final ParallelCommandGroup ringHunterGroup = new ParallelCommandGroup(intakePiece, turnToRing);
     
   private final SendableChooser<Command> autonChooser;
 
@@ -361,6 +363,7 @@ private static class Operator {
    Operator.driver_dpad_down.whileTrue(climberPowerDown);
 
    Operator.driver_b.whileTrue(ejectPiece);
+   Operator.driver_a.whileFalse(ringHunterGroup);
 
   
    Operator.manip_a.whileTrue(shootSubwoofer);
