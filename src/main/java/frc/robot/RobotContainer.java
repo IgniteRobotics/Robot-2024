@@ -147,9 +147,9 @@ public class RobotContainer implements Logged {
   
 
   //AMP SHOT STUFF!!!!!
-  private DoublePreference ampShotOnlyShooterAngle = new DoublePreference("shooter/AmpShotAngle", 34);
-  private DoublePreference ampShotOnlyShooterRPM = new DoublePreference("shooter/AmpRPM", 2800);
-  private DoublePreference ampShotOnlyBroomAngle = new DoublePreference("shooter/AmpBroomAngle", 0.45);
+  private DoublePreference ampShotOnlyShooterAngle = new DoublePreference("amp/AmpShotAngle", 34);
+  private DoublePreference ampShotOnlyShooterRPM = new DoublePreference("amp/AmpRPM", 2800);
+  private DoublePreference ampShotOnlyBroomAngle = new DoublePreference("amp/AmpBroomAngle", 0.45);
 
 
 

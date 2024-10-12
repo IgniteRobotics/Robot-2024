@@ -385,7 +385,7 @@
           },
           "3,0": {
             "size": [
-              3,
+              4,
               7
             ],
             "content": {
@@ -397,19 +397,19 @@
               "Layout/Number of rows": 2,
               "Layout/Label position": "TOP",
               "_children": {
-                "0,0": {
+                "0,1": {
                   "_type": "Boolean Box",
-                  "_source0": "network_table:///Robot/m_robotContainer/m_photonCameraWrapper/m_seesNote",
-                  "_title": "/Robot/m_robotContainer/m_photonCameraWrapper/m_seesNote",
+                  "_source0": "network_table:///Robot/m_robotContainer/m_shooter/getIndexerBeamBreak",
+                  "_title": "/Robot/m_robotContainer/m_shooter/getIndexerBeamBreak",
                   "_glyph": 148,
                   "_showGlyph": false,
                   "Colors/Color when true": "#7CFC00FF",
                   "Colors/Color when false": "#8B0000FF"
                 },
-                "0,1": {
+                "0,0": {
                   "_type": "Boolean Box",
-                  "_source0": "network_table:///Robot/m_robotContainer/m_shooter/getIndexerBeamBreak",
-                  "_title": "/Robot/m_robotContainer/m_shooter/getIndexerBeamBreak",
+                  "_source0": "network_table:///Robot/m_robotContainer/m_photonCameraWrapper/m_seesNote",
+                  "_title": "/Robot/m_robotContainer/m_photonCameraWrapper/m_seesNote",
                   "_glyph": 148,
                   "_showGlyph": false,
                   "Colors/Color when true": "#7CFC00FF",
@@ -547,8 +547,8 @@
             "content": {
               "_type": "Grid Layout",
               "_title": "Climber",
-              "_glyph": 36,
-              "_showGlyph": true,
+              "_glyph": 149,
+              "_showGlyph": false,
               "Layout/Number of columns": 3,
               "Layout/Number of rows": 3,
               "Layout/Label position": "TOP",
