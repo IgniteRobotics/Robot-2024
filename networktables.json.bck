@@ -112,38 +112,6 @@
     }
   },
   {
-    "name": "/Preferences/climber/kP",
-    "type": "double",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/climber/kI",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/climber/kD",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/climber/power",
-    "type": "double",
-    "value": 0.1,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
     "name": "/Preferences/intake/intakePower",
     "type": "double",
     "value": 0.5,
@@ -202,14 +170,6 @@
   {
     "name": "/Preferences/shooter/IndexPower",
     "type": "double",
-    "value": 0.1,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/ShootingIndexPower",
-    "type": "double",
     "value": 0.5,
     "properties": {
       "persistent": true
@@ -240,46 +200,6 @@
     }
   },
   {
-    "name": "/Preferences/shooter/preSpinDistanceM",
-    "type": "double",
-    "value": 5.842,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/climber/UpPower",
-    "type": "double",
-    "value": 0.1,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/climber/DownPower",
-    "type": "double",
-    "value": -0.1,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/climber/UpPosition",
-    "type": "double",
-    "value": 5.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/climber/DownPosition",
-    "type": "double",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
     "name": "/Preferences/shooter/tuning_rpm",
     "type": "double",
     "value": 2500.0,
@@ -296,7 +216,7 @@
     }
   },
   {
-    "name": "/Preferences/shooter/wingShotAngle",
+    "name": "/Preferences/shooter/lowAngle",
     "type": "double",
     "value": 34.0,
     "properties": {
@@ -304,41 +224,17 @@
     }
   },
   {
-    "name": "/Preferences/shooter/podiumShotAngle",
+    "name": "/Preferences/shooter/midAngle",
     "type": "double",
-    "value": 52.5,
+    "value": 40.0,
     "properties": {
       "persistent": true
     }
   },
   {
-    "name": "/Preferences/shooter/subShotAngle",
+    "name": "/Preferences/shooter/highAngle",
     "type": "double",
-    "value": 93.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/wingRPM",
-    "type": "double",
-    "value": 4000.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/podiumRPM",
-    "type": "double",
-    "value": 3200.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/subRPM",
-    "type": "double",
-    "value": 3200.0,
+    "value": 90.0,
     "properties": {
       "persistent": true
     }
@@ -378,7 +274,7 @@
   {
     "name": "/Preferences/turnTest/kP",
     "type": "double",
-    "value": 0.014,
+    "value": 1.0,
     "properties": {
       "persistent": true
     }
@@ -395,6 +291,134 @@
     "name": "/Preferences/turnTest/tolerance",
     "type": "double",
     "value": 2.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/climber/kP",
+    "type": "double",
+    "value": 1.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/climber/kI",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/climber/kD",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/climber/power",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/ShootingIndexPower",
+    "type": "double",
+    "value": 0.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/outtakeFlywheelPower",
+    "type": "double",
+    "value": -0.3,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/preSpinDistanceM",
+    "type": "double",
+    "value": 5.842,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/homeposition",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/climber/UpPower",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/climber/DownPower",
+    "type": "double",
+    "value": -0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/climber/UpPosition",
+    "type": "double",
+    "value": 5.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/climber/DownPosition",
+    "type": "double",
+    "value": 1.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/wingShotAngle",
+    "type": "double",
+    "value": 34.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/podiumShotAngle",
+    "type": "double",
+    "value": 52.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/subShotAngle",
+    "type": "double",
+    "value": 93.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/closeAutoShotAngle",
+    "type": "double",
+    "value": 48.0,
     "properties": {
       "persistent": true
     }
@@ -464,33 +488,25 @@
     }
   },
   {
-    "name": "/Preferences/shooter/homeposition",
+    "name": "/Preferences/shooter/wingRPM",
     "type": "double",
-    "value": 0.0,
+    "value": 4000.0,
     "properties": {
       "persistent": true
     }
   },
   {
-    "name": "/Preferences/Autonomous Wait Command (Secs)",
+    "name": "/Preferences/shooter/podiumRPM",
     "type": "double",
-    "value": 0.0,
+    "value": 3200.0,
     "properties": {
       "persistent": true
     }
   },
   {
-    "name": "/Preferences/shooter/outtakeFlywheelPower",
+    "name": "/Preferences/shooter/subRPM",
     "type": "double",
-    "value": -0.3,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/shooter/closeAutoShotAngle",
-    "type": "double",
-    "value": 48.0,
+    "value": 3200.0,
     "properties": {
       "persistent": true
     }
@@ -499,6 +515,14 @@
     "name": "/Preferences/shooter/closeAutoShotRPM",
     "type": "double",
     "value": 3200.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Autonomous Wait Command (Secs)",
+    "type": "double",
+    "value": 0.0,
     "properties": {
       "persistent": true
     }
@@ -576,17 +600,33 @@
     }
   },
   {
-    "name": "/Preferences/Drive Speed Smoothing",
+    "name": "/Preferences/Second Shot Improved Angle",
     "type": "double",
-    "value": 2.0,
+    "value": 60.0,
     "properties": {
       "persistent": true
     }
   },
   {
-    "name": "/Preferences/Drive Rotation Smoothing",
+    "name": "/Preferences/Second Shot Improved RPM",
     "type": "double",
-    "value": 2.0,
+    "value": 3200.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Fight Shot Improved Angle",
+    "type": "double",
+    "value": 60.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Fifth Shot Improved RPM",
+    "type": "double",
+    "value": 3200.0,
     "properties": {
       "persistent": true
     }

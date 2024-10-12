@@ -121,10 +121,6 @@ public class RobotContainer implements Logged {
   private DoublePreference climberUpPosition = new DoublePreference("climber/UpPosition", ClimberConstants.TOP_POSITION);
   private DoublePreference climberDownPosition = new DoublePreference("climber/DownPosition", ClimberConstants.BOTTOM_POSITION);
 
-  //Servos
-  private DoublePreference shooterServoPosAmpShot = new DoublePreference("shooter/ServoPosAmp", 1);
-  private DoublePreference shooterServoPosDefault = new DoublePreference("shooter/ServoPosDefault", 0);
-
   //For tuning
   private DoublePreference tuningPower = new DoublePreference("shooter/tuning_rpm", 2500);
   private DoublePreference tuningPosition = new DoublePreference("shooter/tuning_Position", 65);
@@ -142,13 +138,6 @@ public class RobotContainer implements Logged {
   private DoublePreference autoPodiumRingShotAngle = new DoublePreference("shooter/autoPodiumRingAngle", 85);
   private DoublePreference autoPodiumRingShotRPM = new DoublePreference("shooter/autoPodiumRingRPM", 3200);
 
-  private DoublePreference autoAmpRingShotAngle = new DoublePreference("shooter/autoAmpRingAngle", 70);
-  private DoublePreference autoAmpRingShotRPM = new DoublePreference("shooter/autoAmpRingRPM", 3200);
-
-  private DoublePreference ampRingShotOnlyAngle = new DoublePreference("shooter/ampRingShotOnlyAngle", 60);
-  private DoublePreference ampRingShotOnlyRPM = new DoublePreference("shooter/ampRingShotOnlyRPM", 3200);
-  
-
   private DoublePreference runIntakeSimplePosition  = new DoublePreference("Run Intake Simple Position", 100);
   private DoublePreference runIntakeSimplePower = new DoublePreference("Run Intake Simple Power", 0.5); 
 
@@ -156,6 +145,12 @@ public class RobotContainer implements Logged {
   private DoublePreference continuousShootRPM = new DoublePreference("shooter/Continuous Shoot RPM", 3200);
   private DoublePreference continuousShootIndexPower = new DoublePreference("shooter/Continuous Shoot Index Power", 0.5);
   
+
+  //AMP SHOT STUFF!!!!!
+  private DoublePreference ampShotOnlyShooterAngle = new DoublePreference("shooter/AmpShotAngle", 34);
+  private DoublePreference ampShotOnlyShooterRPM = new DoublePreference("shooter/AmpRPM", 2800);
+  private DoublePreference ampShotOnlyBroomAngle = new DoublePreference("shooter/AmpBroomAngle", 0.45);
+
 
 
   //Canned shot RPM
@@ -221,8 +216,7 @@ public class RobotContainer implements Logged {
   private final Command autoShootAlmostSub = new AutonShoot(m_shooter, closeAutoShotAngle, closeAutoShotRPM, shooterIndexPower).withTimeout(2);
   private final Command autoCenterRingShot = new AutonShoot(m_shooter, centerRingShotAngle, centerRingShotRPM, shooterIndexPower).withTimeout(2);
   private final Command autoPodiumRingShot = new AutonShoot(m_shooter, autoPodiumRingShotAngle, autoPodiumRingShotRPM, shooterIndexPower).withTimeout(2);
-  private final Command autoAmpRingShot = new AutonShoot(m_shooter, autoAmpRingShotAngle, autoAmpRingShotRPM, shooterIndexPower).withTimeout(2);
-  private final Command ampShotStart = new AutonShoot(m_shooter, ampRingShotOnlyAngle, ampRingShotOnlyRPM, shooterIndexPower).withTimeout(2);
+  private final Command autoAmpRingShot = new AutonShoot(m_shooter, ampShotOnlyShooterAngle, ampShotOnlyShooterRPM, shooterIndexPower).withTimeout(2);
   private final Command ringToss = new RingToss(m_robotIntake, m_shooter, intakePower, intakePosition, shooterIndexPower, intakeShooterPosition, () -> 1000.0);
   private final Command autoIntake = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition).withTimeout(3.75);
 
@@ -249,11 +243,7 @@ public class RobotContainer implements Logged {
 
   private final double pathSpeed = 2;
 
-  //servo commands
-  private final Command positionServoTest = new PositionServos(m_shooter, shooterServoPosAmpShot, shooterServoPosDefault);
-
-  //ampshot command
-  private final Command ampShot = new AmpShot(m_shooter, tuningPosition, tuningPower, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean(), shooterServoPosAmpShot);
+  private final Command ampShot = new AmpShot(m_shooter, ampShotOnlyShooterAngle, ampShotOnlyShooterRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean(), ampShotOnlyBroomAngle);
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -308,7 +298,6 @@ private static class Operator {
     NamedCommands.registerCommand("CenterRingShot", autoCenterRingShot);
     NamedCommands.registerCommand("PodiumRingShot", autoPodiumRingShot);
     NamedCommands.registerCommand("AutoAmpRingShot", autoAmpRingShot);
-    NamedCommands.registerCommand("AmpRingShotOnly", ampShotStart);
     NamedCommands.registerCommand("RingToss", ringToss);
     NamedCommands.registerCommand("Auto Wait", autoWait);
     NamedCommands.registerCommand("ThirdShot", thirdShotImprov);
