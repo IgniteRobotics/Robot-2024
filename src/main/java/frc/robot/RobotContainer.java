@@ -182,6 +182,7 @@ public class RobotContainer implements Logged {
     private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
     private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
     private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
+    private final Command intakePieceGroupCommand = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
     private final Command outTakePiece = new OuttakePiece(m_robotIntake, m_shooter, outtakePower, intakePosition, outdexPower, intakeShooterPosition, outtakeFlywheelPower);
     private final Command stowIntake = new StowIntake(m_robotIntake);
     private final Command parkCommand = new ParkCommand(m_robotDrive);
@@ -237,7 +238,7 @@ public class RobotContainer implements Logged {
 
   private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
 
-  private final ParallelCommandGroup ringHunterGroup = new ParallelCommandGroup(intakePiece, turnToRing);
+  private final ParallelCommandGroup ringHunterGroup = new ParallelCommandGroup(intakePieceGroupCommand, turnToRing);
     
   private final SendableChooser<Command> autonChooser;
 
@@ -358,7 +359,7 @@ private static class Operator {
    Operator.manip_a.whileTrue(shootSubwoofer);
    Operator.manip_b.whileTrue(shootPodium);
    Operator.manip_y.whileTrue(shootWing);
-   Operator.driver_x.whileTrue(turnToRing);
+   //Operator.driver_x.whileTrue(turnToRing);
 
    Operator.manip_x.whileTrue(ampShot);
   
