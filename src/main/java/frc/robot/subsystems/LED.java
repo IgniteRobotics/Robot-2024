@@ -11,14 +11,19 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDConstants;
+import monologue.Annotations.Log;
+import monologue.Logged;
 
-public class LED extends SubsystemBase {
+public class LED extends SubsystemBase implements Logged {
   private final AddressableLED led;
   private final AddressableLEDBuffer ledBufferOff;
   private final AddressableLEDBuffer ledBuffer;
   private final Timer ledTimerOff;
   private final Timer ledTimerOn;
-  public LEDMode mode;
+  
+  @Log.File
+  @Log.NT
+  private final LEDMode mode;
   
   public static enum LEDMode {
     ON, OFF, BLINK
