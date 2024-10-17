@@ -220,12 +220,7 @@ public class PhotonCameraWrapper implements Logged{
         Optional<PhotonTrackedTarget> ring = lookForRing(result);
         if(ring.isPresent()){
             m_seesNote = true;
-            return Optional.of(calculateTargetInfo(
-                    ring.get().getYaw(), 
-                    getDistanceFromTransform3d(ring.get().getBestCameraToTarget()),
-                    m_currentCameraOffset,
-                    photonPoseEstimatorColored.getRobotToCameraTransform().getY()
-            ));
+            return Optional.of(new TargetInfo(0, ring.get().getYaw()));
         }
         else{
             return Optional.empty();
