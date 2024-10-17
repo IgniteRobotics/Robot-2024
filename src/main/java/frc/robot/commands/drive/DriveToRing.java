@@ -15,25 +15,40 @@ import frc.robot.comm.preferences.DoublePreference;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
 import frc.robot.subsystems.drive.PhotonCameraWrapper.TargetInfo;
-import frc.robot.Constants.CameraConstants;;
+import frc.robot.Constants.CameraConstants;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 
 public class DriveToRing extends Command {
   //if necessary incorporate Shooter to see if beambreak activates
   private final DriveSubsystem m_drive;
   private final PhotonCameraWrapper m_camera;
+  private final ShooterSubsystem m_shooter;
+  private final IntakeSubsystem m_intake;
+  Supplier<Double> m_intakePower;
+  Supplier<Double> m_intakePosition;
+  Supplier<Double> m_indexPower;
+  Supplier<Double> m_indexPosition;
   PIDController rotationController;
+
 
   private DoublePreference rotKP = new DoublePreference("turnTest/kP", ShooterConstants.AUTO_TARGET_ROT_kP);
   private DoublePreference rotKD = new DoublePreference("turnTest/kD", ShooterConstants.AUTO_TARGET_ROT_kD);
   private DoublePreference rotTolerance = new DoublePreference("turnTest/tolerance", 2);
   
   /** Creates a new DriveToTarget. */
-  public DriveToRing(DriveSubsystem drive, PhotonCameraWrapper camera) {
+  public DriveToRing(DriveSubsystem drive, PhotonCameraWrapper camera, IntakeSubsystem intake, ShooterSubsystem shooter, Supplier<Double> intakePower, Supplier<Double> intakePosition, Supplier<Double> indexPower, Supplier<Double> indexPosition ) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drive = drive;
     m_camera = camera;
-    addRequirements(m_drive);
+    m_shooter = shooter;
+    m_intake = intake;
+    m_intakePower = intakePower;
+    m_intakePosition = intakePosition;
+    m_indexPower = indexPower;
+    m_indexPosition = indexPosition;
+    addRequirements(m_drive, m_shooter, m_intake);
   }
 
   // Called when the command is initially scheduled.
@@ -45,6 +60,10 @@ public class DriveToRing extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_intake.setPosition(m_intakePosition.get());
+    m_intake.setSpeed(m_intakePower.get());
+    m_shooter.setAngleDegrees(m_indexPosition.get());
+    m_shooter.runIndex(m_indexPower.get());
     Optional<TargetInfo> targeting = m_camera.seekNote();
     double rotation = 0.0;
     if (targeting.isPresent()){
@@ -65,11 +84,13 @@ public class DriveToRing extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_shooter.stopAll();
+    m_intake.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_shooter.getIndexerBeamBreak();
   }
 }

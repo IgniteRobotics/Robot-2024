@@ -236,7 +236,7 @@ public class RobotContainer implements Logged {
   private final Command runIndexFromAuto = new RunIndexFrom(m_shooter, indexPower).withTimeout(4);
   private final Command shooterShootContinuous = new AutonShootContinuous(m_shooter, continuousShootPosition, continuousShootRPM, continuousShootIndexPower).withTimeout(10.5);
 
-  private final Command ringPickup = new DriveToRing(m_robotDrive, m_photonCameraWrapper).withTimeout(5);
+  private final Command ringPickup = new DriveToRing(m_robotDrive, m_photonCameraWrapper, m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition).withTimeout(3.75);
 
 
   private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
