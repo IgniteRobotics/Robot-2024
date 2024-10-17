@@ -19,6 +19,7 @@ import frc.robot.Constants.CameraConstants;;
 
 
 public class DriveToRing extends Command {
+  //if necessary incorporate Shooter to see if beambreak activates
   private final DriveSubsystem m_drive;
   private final PhotonCameraWrapper m_camera;
   PIDController rotationController;
@@ -55,7 +56,7 @@ public class DriveToRing extends Command {
       SmartDashboard.putNumber("ring/yawtotarget",0);
     }
     SmartDashboard.putNumber("ring/autoRotnput", rotation);
-    m_drive.drive(0, 0,
+    m_drive.drive(0.5, 0,
     rotation, 
     false, 
     true);
