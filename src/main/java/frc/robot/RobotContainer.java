@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.commands.drive.DriveToRing;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -235,6 +236,8 @@ public class RobotContainer implements Logged {
   private final Command runIndexFromAuto = new RunIndexFrom(m_shooter, indexPower).withTimeout(4);
   private final Command shooterShootContinuous = new AutonShootContinuous(m_shooter, continuousShootPosition, continuousShootRPM, continuousShootIndexPower).withTimeout(10.5);
 
+  private final Command ringPickup = new DriveToRing(m_robotDrive, m_photonCameraWrapper);
+
 
   private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
 
@@ -308,6 +311,7 @@ private static class Operator {
     NamedCommands.registerCommand("RunIndexFrom", runIndexFromAuto);
     NamedCommands.registerCommand("ShooterContinuousRun", shooterShootContinuous);
     NamedCommands.registerCommand("AutonIterpolatedShot", autonShootInterpolated);
+    NamedCommands.registerCommand("AutoRingPickup", ringPickup);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -328,6 +332,7 @@ private static class Operator {
     autonChooser.addOption("Subside 3 piece auton (center pieces)", AutoBuilder.buildAuto("Subside 3 piece auton (center pieces)"));
     autonChooser.addOption("4RingClose", AutoBuilder.buildAuto("4RingClose"));
     autonChooser.addOption("FourRingImproved", AutoBuilder.buildAuto("4RingImproved"));
+    autonChooser.addOption("RingHunterTest", AutoBuilder.buildAuto("RingTest"));
     SmartDashboard.putData("Autonomous", autonChooser);
 
 

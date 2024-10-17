@@ -1,0 +1,44 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "RunIntake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoRingPickup"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterRingToSub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutonIterpolatedShot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
