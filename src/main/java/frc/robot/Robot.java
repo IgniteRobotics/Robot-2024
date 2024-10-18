@@ -96,9 +96,13 @@ public class Robot extends TimedRobot implements Logged {
       if (DriverStation.getAlliance().get() == Alliance.Red){
         RobotState.getInstance().setSpeakerPose(Constants.ShooterConstants.RED_SPEAKER,
                                                 Constants.ShooterConstants.RED_SPEAKER_ID);
+        RobotState.getInstance().setAmpPose(Constants.ShooterConstants.RED_AMP, 
+                                            Constants.ShooterConstants.RED_AMP_ID);
       } else {
         RobotState.getInstance().setSpeakerPose(Constants.ShooterConstants.BLUE_SPEAKER,
                                                 Constants.ShooterConstants.BLUE_SPEAKER_ID);
+        RobotState.getInstance().setAmpPose(Constants.ShooterConstants.BLUE_AMP, 
+                                            Constants.ShooterConstants.BLUE_AMP_ID);
       }
     }
   }

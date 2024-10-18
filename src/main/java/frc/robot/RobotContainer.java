@@ -211,6 +211,11 @@ public class RobotContainer implements Logged {
             m_robotState::getSpeakerID,
             Operator.driver_axisLY, 
             Operator.driver_axisLX);
+    private final Command driveToAmp = new DriveToTarget(m_robotDrive, 
+            m_photonCameraWrapper, 
+            m_robotState::getAmpId,
+            Operator.driver_axisLY,
+            Operator.driver_axisLX);
     private final Command turnToRing = new TurnToRing(m_robotDrive, m_photonCameraWrapper, Operator.driver_axisLY);
 
   private final Command autoShootSubwoofer = new AutonShoot(m_shooter, subShotAngle, subShotRPM, shooterIndexPower).withTimeout(2);
@@ -364,6 +369,8 @@ private static class Operator {
    Operator.manip_x.whileTrue(ampShot);
   
    Operator.driver_rightTrigger.whileTrue(speakerShotGroup);
+
+   Operator.driver_leftTrigger.whileTrue(driveToAmp);
 
     // new JoystickButton(m_driverController, XboxController.Button.kY.value)
     //     .whileTrue(m_robotDrive.driveSysIdTestBuilder(6, 3));

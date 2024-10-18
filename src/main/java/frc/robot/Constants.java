@@ -185,6 +185,10 @@ public final class Constants {
     public static final Pose2d RED_SPEAKER = new Pose2d(16.58, 5.55, Rotation2d.fromDegrees(0));
     public static final int BLUE_SPEAKER_ID = 7;
     public static final Pose2d BLUE_SPEAKER =  new Pose2d(0, 5.55, Rotation2d.fromDegrees(180));
+    public static final int RED_AMP_ID = 5;
+    public static final Pose2d RED_AMP = new Pose2d(2, 7, Rotation2d.fromDegrees(90));
+    public static final int BLUE_AMP_ID = 6;
+    public static final Pose2d BLUE_AMP = new Pose2d(13, 7, Rotation2d.fromDegrees(270));
 
 
     //TODO: TUNE

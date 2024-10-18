@@ -13,6 +13,8 @@ public class RobotState {
     private Pose2d m_robotPose2d;
     private Pose2d m_speakerPose2d;
     private int m_speakerID = 0;
+    private int m_ampID = 0;
+    private Pose2d m_ampPose2d;
     private boolean m_hasNote = false;
     private double m_distanceToSpeaker;
 
@@ -47,12 +49,25 @@ public class RobotState {
         m_speakerID = id;
     }
 
+    public synchronized void setAmpPose(Pose2d pose, int id){
+        m_ampPose2d = pose;
+        m_ampID = id;
+    }
+
     public Pose2d getSpeakerPose2d(){
-        return m_robotPose2d;
+        return m_speakerPose2d;
     }
 
     public int getSpeakerID(){
         return m_speakerID;
+    }
+
+    public Pose2d getAmpPose2d(){
+        return m_ampPose2d;
+    }
+
+    public int getAmpId(){
+        return m_ampID;
     }
 
     public double getDistancetoSpeaker(){
