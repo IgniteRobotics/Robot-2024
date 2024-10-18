@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.comm.preferences.BooleanPreference;
 import frc.robot.comm.preferences.DoublePreference;
 import frc.robot.commands.ParkCommand;
 import frc.robot.commands.ResetGyro;
@@ -38,6 +39,7 @@ import frc.robot.commands.Shooter.EjectPiece;
 import frc.robot.commands.Shooter.IndexPower;
 import frc.robot.commands.Shooter.PositionShooter;
 import frc.robot.commands.Shooter.PrepareShooter;
+import frc.robot.commands.drive.TurnToRing;
 import frc.robot.commands.Shooter.RunIndexFrom;
 import frc.robot.commands.Shooter.RunIndexUntil;
 import frc.robot.subsystems.Climber;
@@ -57,6 +59,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.commands.Shooter.AmpShot.PositionServos;
+import frc.robot.commands.Shooter.AmpShot.AmpShot;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -117,7 +121,6 @@ public class RobotContainer implements Logged {
   private DoublePreference climberUpPosition = new DoublePreference("climber/UpPosition", ClimberConstants.TOP_POSITION);
   private DoublePreference climberDownPosition = new DoublePreference("climber/DownPosition", ClimberConstants.BOTTOM_POSITION);
 
-
   //For tuning
   private DoublePreference tuningPower = new DoublePreference("shooter/tuning_rpm", 2500);
   private DoublePreference tuningPosition = new DoublePreference("shooter/tuning_Position", 65);
@@ -135,13 +138,6 @@ public class RobotContainer implements Logged {
   private DoublePreference autoPodiumRingShotAngle = new DoublePreference("shooter/autoPodiumRingAngle", 85);
   private DoublePreference autoPodiumRingShotRPM = new DoublePreference("shooter/autoPodiumRingRPM", 3200);
 
-  private DoublePreference autoAmpRingShotAngle = new DoublePreference("shooter/autoAmpRingAngle", 70);
-  private DoublePreference autoAmpRingShotRPM = new DoublePreference("shooter/autoAmpRingRPM", 3200);
-
-  private DoublePreference ampRingShotOnlyAngle = new DoublePreference("shooter/ampRingShotOnlyAngle", 60);
-  private DoublePreference ampRingShotOnlyRPM = new DoublePreference("shooter/ampRingShotOnlyRPM", 3200);
-  
-
   private DoublePreference runIntakeSimplePosition  = new DoublePreference("Run Intake Simple Position", 100);
   private DoublePreference runIntakeSimplePower = new DoublePreference("Run Intake Simple Power", 0.5); 
 
@@ -149,6 +145,12 @@ public class RobotContainer implements Logged {
   private DoublePreference continuousShootRPM = new DoublePreference("shooter/Continuous Shoot RPM", 3200);
   private DoublePreference continuousShootIndexPower = new DoublePreference("shooter/Continuous Shoot Index Power", 0.5);
   
+
+  //AMP SHOT STUFF!!!!!
+  private DoublePreference ampShotOnlyShooterAngle = new DoublePreference("amp/AmpShotAngle", 34);
+  private DoublePreference ampShotOnlyShooterRPM = new DoublePreference("amp/AmpRPM", 2800);
+  private DoublePreference ampShotOnlyBroomAngle = new DoublePreference("amp/AmpBroomAngle", 0.45);
+
 
 
   //Canned shot RPM
@@ -180,6 +182,7 @@ public class RobotContainer implements Logged {
     private final Command intakeCommand = new RunIntake(m_robotIntake, intakePower, intakePosition);
     private final Command extakeCommand = new RunIntake(m_robotIntake, outtakePower, intakePosition);
     private final Command intakePiece = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
+    private final Command intakePieceGroupCommand = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition);
     private final Command outTakePiece = new OuttakePiece(m_robotIntake, m_shooter, outtakePower, intakePosition, outdexPower, intakeShooterPosition, outtakeFlywheelPower);
     private final Command stowIntake = new StowIntake(m_robotIntake);
     private final Command parkCommand = new ParkCommand(m_robotDrive);
@@ -208,13 +211,13 @@ public class RobotContainer implements Logged {
             m_robotState::getSpeakerID,
             Operator.driver_axisLY, 
             Operator.driver_axisLX);
+    private final Command turnToRing = new TurnToRing(m_robotDrive, m_photonCameraWrapper, Operator.driver_axisLY);
 
   private final Command autoShootSubwoofer = new AutonShoot(m_shooter, subShotAngle, subShotRPM, shooterIndexPower).withTimeout(2);
   private final Command autoShootAlmostSub = new AutonShoot(m_shooter, closeAutoShotAngle, closeAutoShotRPM, shooterIndexPower).withTimeout(2);
   private final Command autoCenterRingShot = new AutonShoot(m_shooter, centerRingShotAngle, centerRingShotRPM, shooterIndexPower).withTimeout(2);
   private final Command autoPodiumRingShot = new AutonShoot(m_shooter, autoPodiumRingShotAngle, autoPodiumRingShotRPM, shooterIndexPower).withTimeout(2);
-  private final Command autoAmpRingShot = new AutonShoot(m_shooter, autoAmpRingShotAngle, autoAmpRingShotRPM, shooterIndexPower).withTimeout(2);
-  private final Command ampShotStart = new AutonShoot(m_shooter, ampRingShotOnlyAngle, ampRingShotOnlyRPM, shooterIndexPower).withTimeout(2);
+  private final Command autoAmpRingShot = new AutonShoot(m_shooter, ampShotOnlyShooterAngle, ampShotOnlyShooterRPM, shooterIndexPower).withTimeout(2);
   private final Command ringToss = new RingToss(m_robotIntake, m_shooter, intakePower, intakePosition, shooterIndexPower, intakeShooterPosition, () -> 1000.0);
   private final Command autoIntake = new IntakePiece(m_robotIntake, m_shooter, intakePower, intakePosition, indexPower, intakeShooterPosition).withTimeout(3.75);
 
@@ -234,11 +237,14 @@ public class RobotContainer implements Logged {
 
 
   private final ParallelCommandGroup speakerShotGroup = new ParallelCommandGroup(shootInterpolated, driveToTarget);
+
+  private final ParallelCommandGroup ringHunterGroup = new ParallelCommandGroup(intakePieceGroupCommand, turnToRing);
     
   private final SendableChooser<Command> autonChooser;
 
   private final double pathSpeed = 2;
 
+  private final Command ampShot = new AmpShot(m_shooter, ampShotOnlyShooterAngle, ampShotOnlyShooterRPM, shooterIndexPower, () -> Operator.driver_leftTrigger.getAsBoolean(), ampShotOnlyBroomAngle);
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -272,6 +278,7 @@ private static class Operator {
     private static JoystickButton manip_a = new JoystickButton(manipulator, XboxController.Button.kA.value);
     private static JoystickButton manip_b = new JoystickButton(manipulator, XboxController.Button.kB.value);
     private static JoystickButton manip_y = new JoystickButton(manipulator, XboxController.Button.kY.value);
+    private static JoystickButton manip_x = new JoystickButton(manipulator, XboxController.Button.kX.value);
     
 
     // subsystems
@@ -292,7 +299,6 @@ private static class Operator {
     NamedCommands.registerCommand("CenterRingShot", autoCenterRingShot);
     NamedCommands.registerCommand("PodiumRingShot", autoPodiumRingShot);
     NamedCommands.registerCommand("AutoAmpRingShot", autoAmpRingShot);
-    NamedCommands.registerCommand("AmpRingShotOnly", ampShotStart);
     NamedCommands.registerCommand("RingToss", ringToss);
     NamedCommands.registerCommand("Auto Wait", autoWait);
     NamedCommands.registerCommand("ThirdShot", thirdShotImprov);
@@ -346,24 +352,16 @@ private static class Operator {
    Operator.driver_dpad_up.whileTrue(climberPowerUp);
    Operator.driver_dpad_down.whileTrue(climberPowerDown);
 
-  //  Operator.driver_dpad_up.whileTrue(new InstantCommand(()-> m_shooter.moveArm(.1), m_shooter));
-  //  Operator.driver_dpad_down.whileTrue(new InstantCommand(() -> m_shooter.moveArm(-.1), m_shooter));
-   //Operator.driver_a.whileTrue(shootHighAngle);
    Operator.driver_b.whileTrue(ejectPiece);
-   //Operator.driver_y.whileTrue(shootLowAngle);
-   //Operator.driver_x.whileTrue(shooterTune);
+   Operator.driver_a.whileTrue(ringHunterGroup);
 
-   //Operator.driver_y.whileTrue(raiseShooter);
-   //Operator.driver_b.onTrue(stowShooter);
-  //  Operator.driver_dpad_left.whileTrue(spinIndex);
-  //  Operator.driver_dpad_right.whileTrue(spinRPM);
-  //  Operator.driver_a.whileTrue(shootSubwoofer);
-  //  Operator.driver_b.whileTrue(shootPodium);
-  //  Operator.driver_y.whileTrue(shootWing);\
   
    Operator.manip_a.whileTrue(shootSubwoofer);
    Operator.manip_b.whileTrue(shootPodium);
    Operator.manip_y.whileTrue(shootWing);
+   //Operator.driver_x.whileTrue(turnToRing);
+
+   Operator.manip_x.whileTrue(ampShot);
   
    Operator.driver_rightTrigger.whileTrue(speakerShotGroup);
 
@@ -372,7 +370,6 @@ private static class Operator {
     // new JoystickButton(m_driverController, XboxController.Button.kB.value)
     //     .whileTrue(m_robotDrive.turnSysIdTestBuilder(10, 5));
     
-
    
   }
 

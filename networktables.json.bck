@@ -558,5 +558,77 @@
     "properties": {
       "persistent": true
     }
+  },
+  {
+    "name": "/Preferences/Run Intake Simple Position",
+    "type": "double",
+    "value": 100.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Run Intake Simple Power",
+    "type": "double",
+    "value": 0.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/Continuous Shoot Position",
+    "type": "double",
+    "value": 50.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/Continuous Shoot RPM",
+    "type": "double",
+    "value": 3200.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/shooter/Continuous Shoot Index Power",
+    "type": "double",
+    "value": 0.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Second Shot Improved Angle",
+    "type": "double",
+    "value": 60.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Second Shot Improved RPM",
+    "type": "double",
+    "value": 3200.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Fight Shot Improved Angle",
+    "type": "double",
+    "value": 60.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Fifth Shot Improved RPM",
+    "type": "double",
+    "value": 3200.0,
+    "properties": {
+      "persistent": true
+    }
   }
 ]

@@ -129,6 +129,11 @@ public final class Constants {
   }
   public static final class ShooterConstants {
 
+
+    //servos 
+    public static final int RIGHT_SERVO_PORT = 0;
+    public static final int LEFT_SERVO_PORT = 1;
+
     //public static final double POSITION_kF = 1;
     public static final double POSITION_kP = 60;
     public static final double POSITION_kI = 0;
@@ -268,9 +273,14 @@ public final class Constants {
     public static final Transform3d photonCameraTransformRearRight = new Transform3d(new Translation3d(-.343, -0.271, 0.239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, -195.0/180 * Math.PI));
     public static final String photonCameraNameRearLeft = "REAR_LEFT";
     public static final Transform3d photonCameraTransformRearLeft = new Transform3d(new Translation3d(-.343, 0.271, 0.239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 195.0/180 * Math.PI));
+    public static final String photonCameraNameColored = "COLORED";
+    public static final Transform3d photonCameraTransformColored = new Transform3d(new Translation3d(0.29845, 0, 0.33655), new Rotation3d(0.0, 25.0 / 180 * Math.PI, 0));
+
 
     public static final Integer[] IGNORED_POSE_TARGETS = {50,51};
 
+    //TODO: Change value;
+    public static final double TURNED_TO_NOTE_TOLERANCE = 30;
   }
     
 

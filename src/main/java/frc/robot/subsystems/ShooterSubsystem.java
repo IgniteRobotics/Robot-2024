@@ -46,6 +46,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.RobotState;
+import edu.wpi.first.wpilibj.Servo;
 
 
 
@@ -54,6 +55,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   private final CANSparkMax m_shooterIndexMotor;
   private final TalonFX m_shooterPositionMotor;
   private final CANcoder m_shooterPositionCancoder;
+  private final Servo m_RightServo;
+  private final Servo m_LeftServo;
 
   private final RelativeEncoder m_shooterEncoder;
   private final RelativeEncoder m_shooterIndexEncoder;
@@ -68,7 +71,6 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   private DoublePreference shooterkIPreference = new DoublePreference("shooter/RPMkI", Constants.ShooterConstants.ROLLER_kI);
   private DoublePreference shooterkDPreference = new DoublePreference("shooter/RPMkD", Constants.ShooterConstants.ROLLER_kD);
   private DoublePreference shooterkFPreference = new DoublePreference("shooter/RPMkF", Constants.ShooterConstants.ROLLER_kF);
-  
   private SoftwareLimitSwitchConfigs m_positionSoftLimitConfig = new SoftwareLimitSwitchConfigs();
   private MotionMagicConfigs m_positionMotionMagicConfigs = new MotionMagicConfigs();
   private MotorOutputConfigs m_positionMotorConfig = new MotorOutputConfigs();
@@ -179,6 +181,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     
     m_RollerPidController = m_shooterMotor.getPIDController();
 
+    m_RightServo = new Servo(ShooterConstants.RIGHT_SERVO_PORT);
+    m_LeftServo = new Servo(ShooterConstants.LEFT_SERVO_PORT);
 
     this.configureShooterMotor(m_shooterMotor, m_shooterEncoder, m_RollerPidController);
     this.configureIndexMotor(m_shooterIndexMotor);
@@ -463,4 +467,16 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
   public boolean getReady(){
     return Ready;
   }
+
+  //position 0.0-1.0 (one extreme to other extreme)
+  public void setServoPosition(double position){
+    m_RightServo.set(position);
+    m_LeftServo.set(1.0 - position);
+  }
+
+  public void resetServoPosition(){
+    m_RightServo.set(0);
+    m_LeftServo.set(1);
+  }
+
 }
