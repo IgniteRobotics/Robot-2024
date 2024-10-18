@@ -29,8 +29,11 @@ import monologue.Annotations.Log;
 
 public class PhotonCameraWrapper implements Logged{
 
-
+    @Log.NT
+    @Log.File
     private boolean m_seesTarget;
+    @Log.NT
+    @Log.File
     private boolean m_seesNote;
     private double m_yawRadians;
     private double m_currentCameraOffset;
@@ -217,12 +220,7 @@ public class PhotonCameraWrapper implements Logged{
         Optional<PhotonTrackedTarget> ring = lookForRing(result);
         if(ring.isPresent()){
             m_seesNote = true;
-            return Optional.of(calculateTargetInfo(
-                    ring.get().getYaw(), 
-                    getDistanceFromTransform3d(ring.get().getBestCameraToTarget()),
-                    m_currentCameraOffset,
-                    photonPoseEstimatorColored.getRobotToCameraTransform().getY()
-            ));
+            return Optional.of(new TargetInfo(0, ring.get().getYaw()));
         }
         else{
             return Optional.empty();
@@ -249,10 +247,10 @@ public class PhotonCameraWrapper implements Logged{
         }
     }
 
-    private Optional<PhotonTrackedTarget> lookForRing(PhotonPipelineResult ring){
+    private Optional<PhotonTrackedTarget> lookForRing(PhotonPipelineResult result){
         PhotonTrackedTarget bestTarget = null;
         boolean hasTarget = false;
-        for (var target : ring.getTargets()){
+        for (var target : result.getTargets()){
                 double targetArea = target.getArea();
                 if(!hasTarget){
                     bestTarget = target;
@@ -262,17 +260,23 @@ public class PhotonCameraWrapper implements Logged{
                     bestTarget = target;
                 }
             }
-        if (!hasTarget){
-            //return a canned target for testing in simulation
-            return Optional.of(new PhotonTrackedTarget(0.2, 0.0, 1.0, 0.0, 0, 
-                new Transform3d(1, 1, 1, new Rotation3d(0.0, 0.0, 0.2)),
-                new Transform3d(1, 1, 1, new Rotation3d(0.0, 0.0, 0.2)),
-             0.0, 
-             new ArrayList<TargetCorner>(4), 
-             new ArrayList<TargetCorner>(4)
-             ));
+        if (hasTarget){
+            return Optional.of(bestTarget);
+        } else {
+            if (Robot.isReal()){
+                return Optional.empty();
+            } else {
+                //return a canned target for testing in simulation
+                return Optional.of(new PhotonTrackedTarget(0.2, 0.0, 1.0, 0.0, 0, 
+                    new Transform3d(1, 1, 1, new Rotation3d(0.0, 0.0, 0.2)),
+                    new Transform3d(1, 1, 1, new Rotation3d(0.0, 0.0, 0.2)),
+                0.0, 
+                new ArrayList<TargetCorner>(4), 
+                new ArrayList<TargetCorner>(4)
+                ));
+            }
         }
-        return Optional.of(bestTarget);
+        
     }
 
     private double getDistanceFromTransform3d(Transform3d t){
