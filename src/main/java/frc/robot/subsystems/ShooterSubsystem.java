@@ -47,6 +47,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.RobotState;
 import edu.wpi.first.wpilibj.Servo;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 
 
 
@@ -81,6 +82,9 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
 
   private DigitalInput m_indexerBeamBreak = new DigitalInput(0);
+
+  //temp preference
+  private DoublePreference shooterPositionkGPreference = new DoublePreference("shooter/positionkG", Constants.ShooterConstants.POSITION_kG);
 
 
   /*********************  Telemetry Variables *********************/
@@ -248,6 +252,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     slot0PID.kP = Constants.ShooterConstants.POSITION_kP;
     slot0PID.kI = Constants.ShooterConstants.POSITION_kI;
     slot0PID.kD = Constants.ShooterConstants.POSITION_kD;
+    slot0PID.kG = shooterPositionkGPreference.getValue(); 
+    slot0PID.GravityType = GravityTypeValue.Arm_Cosine;
 
     configurator.apply(slot0PID, 0.050);
 

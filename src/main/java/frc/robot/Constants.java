@@ -140,6 +140,7 @@ public final class Constants {
     public static final double POSITION_kD = 2;
     public static final double POSITION_kS = 0.24;
     public static final double POSITION_kV = 0.12;
+    public static final double POSITION_kG = 0.2; 
     public static final double POSITION_ForwardsLimit = 0.42;
     public static final double POSITION_ReverseLimit = 0;
 
