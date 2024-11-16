@@ -235,7 +235,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     configurator.refresh(mmConfig);
     
     baseConfiguration.Feedback.FeedbackRemoteSensorID = m_shooterPositionCancoder.getDeviceID();
-    baseConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+    baseConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     
     configurator.apply(baseConfiguration);
 
