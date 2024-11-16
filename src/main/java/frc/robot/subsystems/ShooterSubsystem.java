@@ -50,6 +50,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.Servo;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 
 
 
@@ -84,6 +85,9 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
 
 
   private DigitalInput m_indexerBeamBreak = new DigitalInput(0);
+
+  //temp preference
+  private DoublePreference shooterPositionkGPreference = new DoublePreference("shooter/positionkG", Constants.ShooterConstants.POSITION_kG);
 
 
   /*********************  Telemetry Variables *********************/
@@ -238,7 +242,7 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     configurator.refresh(mmConfig);
     
     baseConfiguration.Feedback.FeedbackRemoteSensorID = m_shooterPositionCancoder.getDeviceID();
-    baseConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+    baseConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     
     configurator.apply(baseConfiguration);
 
@@ -251,6 +255,8 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     slot0PID.kP = Constants.ShooterConstants.POSITION_kP;
     slot0PID.kI = Constants.ShooterConstants.POSITION_kI;
     slot0PID.kD = Constants.ShooterConstants.POSITION_kD;
+    slot0PID.kG = shooterPositionkGPreference.getValue(); 
+    slot0PID.GravityType = GravityTypeValue.Arm_Cosine;
 
     configurator.apply(slot0PID, 0.050);
 
