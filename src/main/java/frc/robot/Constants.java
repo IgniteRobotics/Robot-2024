@@ -129,6 +129,11 @@ public final class Constants {
   }
   public static final class ShooterConstants {
 
+
+    //servos 
+    public static final int RIGHT_SERVO_PORT = 0;
+    public static final int LEFT_SERVO_PORT = 1;
+
     //public static final double POSITION_kF = 1;
     public static final double POSITION_kP = 60;
     public static final double POSITION_kI = 0;
@@ -155,17 +160,19 @@ public final class Constants {
 
     // DISTANCE, ANGLE, RPM
     public static final InterCalculator SHOOTER_INTER_CALCULATOR = new InterCalculator(
-      new InterParameter(0.91756992, 50, 3200),
-      new InterParameter(1.22236992, 43.016, 3200),
-      new InterParameter(1.52716992, 40.3275, 3200),
-      new InterParameter(1.83196992, 36.0259, 3200),
-      new InterParameter(2.13676992, 32.7997, 3200),
-      new InterParameter(2.44156992, 31.1866, 3200),
-      new InterParameter(2.74636992, 28.4981, 3200),
-      new InterParameter(3.05116992, 26.885, 3200),
-      new InterParameter(3.35596992, 26.885, 3200),
-      new InterParameter(3.66076992, 26.3473, 3200),
-      new InterParameter(3.96556992, 20.9703, 3200)
+      new InterParameter(1.5, 42, 4000),
+      new InterParameter(2, 35, 4000),
+      new InterParameter(2.25, 35, 4000),
+      new InterParameter(2.5, 30, 4000),
+      new InterParameter(2.75, 30, 4000),
+      new InterParameter(3.0, 27, 4000),
+      new InterParameter(3.25, 25, 4000),
+      new InterParameter(3.5, 24, 4000),
+      new InterParameter(3.75, 23, 4000),
+      new InterParameter(4.0, 22, 4000),
+      new InterParameter(4.25, 21, 4000),
+      new InterParameter(4.5, 20, 4000),
+      new InterParameter(4.75, 19, 4000)
       );
 
     //RED 4 
@@ -266,9 +273,14 @@ public final class Constants {
     public static final Transform3d photonCameraTransformRearRight = new Transform3d(new Translation3d(-.343, -0.271, 0.239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, -195.0/180 * Math.PI));
     public static final String photonCameraNameRearLeft = "REAR_LEFT";
     public static final Transform3d photonCameraTransformRearLeft = new Transform3d(new Translation3d(-.343, 0.271, 0.239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 195.0/180 * Math.PI));
+    public static final String photonCameraNameColored = "COLORED";
+    public static final Transform3d photonCameraTransformColored = new Transform3d(new Translation3d(0.29845, 0, 0.33655), new Rotation3d(0.0, 25.0 / 180 * Math.PI, 0));
+
 
     public static final Integer[] IGNORED_POSE_TARGETS = {50,51};
 
+    //TODO: Change value;
+    public static final double TURNED_TO_NOTE_TOLERANCE = 30;
   }
     
 
@@ -295,6 +307,11 @@ public final class Constants {
     public static final int REAR_RIGHT_TURN = 16;
 
   }
+
+  //camera pipeline Constants
+  public static final int AprilTag_Pipeline_Index = 0;
+  public static final int RingDetection_Pipeline_Index = 1;
+
 
 
 }
