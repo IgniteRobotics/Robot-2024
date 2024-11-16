@@ -115,8 +115,8 @@ public class RobotContainer implements Logged {
   private DoublePreference shooterIndexPower = new DoublePreference("shooter/ShootingIndexPower", 0.5);
   //private DoublePreference shooterOuttakePower = new DoublePreference("shooter/OuttakePower", -0.1);  
   //private DoublePreference shooterPosition = new DoublePreference("shooter/shootingPosition", 65); 
-  //private DoublePreference outdexPower = new DoublePreference("shooter/OutdexPower", -0.2);
-  //private DoublePreference outtakeFlywheelPower = new DoublePreference("shooter/outtakeFlywheelPower", -0.3);
+  private DoublePreference outdexPower = new DoublePreference("shooter/OutdexPower", -0.2);
+  private DoublePreference outtakeFlywheelPower = new DoublePreference("shooter/outtakeFlywheelPower", -0.3);
   //private DoublePreference preSpinDistanceM = new DoublePreference("shooter/preSpinDistanceM", 5.842);
   private DoublePreference shooterHome = new DoublePreference("shooter/homeposition", 0);
 
@@ -287,14 +287,14 @@ private static class Operator {
    //private static Supplier<Double> driver_axisRY = () -> MathUtil.applyDeadband(-driver.getRawAxis(5), Constants.OIConstants.kDriveDeadband);
 
     private static JoystickButton driver_x = new JoystickButton(driver, XboxController.Button.kX.value);
-    //private static JoystickButton driver_a = new JoystickButton(driver, XboxController.Button.kA.value);
+    private static JoystickButton driver_a = new JoystickButton(driver, XboxController.Button.kA.value);
     private static JoystickButton driver_b = new JoystickButton(driver, XboxController.Button.kB.value);
-   // private static JoystickButton driver_y = new JoystickButton(driver, XboxController.Button.kY.value);
+    private static JoystickButton driver_y = new JoystickButton(driver, XboxController.Button.kY.value);
     private static JoystickButton driver_start = new JoystickButton(driver, XboxController.Button.kStart.value);
     private static JoystickButton driver_back = new JoystickButton(driver, XboxController.Button.kBack.value);
     private static JoystickButton driver_leftBumper = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private static JoystickButton driver_rightBumper = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    //private static AxisButton driver_rightTrigger = new AxisButton(driver, XboxController.Axis.kRightTrigger.value, 0.25);
+    private static AxisButton driver_rightTrigger = new AxisButton(driver, XboxController.Axis.kRightTrigger.value, 0.25);
     private static AxisButton driver_leftTrigger = new AxisButton(driver, XboxController.Axis.kLeftTrigger.value, 0.25);
     private static POVButton driver_dpad_up = new POVButton(driver, 0);
     //private static POVButton driver_dpad_right = new POVButton(driver, 90);
