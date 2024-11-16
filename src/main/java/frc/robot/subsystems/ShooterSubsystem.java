@@ -46,6 +46,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.RobotState;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.Servo;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 
@@ -462,6 +465,28 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     robotPose2d = m_robotState.getRobotPose();
   
   }
+
+  public void setPositionMotorSpeed(double speed){
+    m_shooterPositionMotor.set(speed);
+  }
+
+  public Command positionerTestBuilder(double staticTimeout, double dynamicTimeout){
+    return
+      new InstantCommand(() -> this.resetPosition()).withTimeout(staticTimeout)
+      //TODO:Change speed
+      .andThen(new InstantCommand(() -> this.setPositionMotorSpeed(1)))
+      .andThen(new InstantCommand(() -> this.setAngleDegrees(90)).withTimeout(staticTimeout))
+      .andThen(new InstantCommand(() -> this.resetPosition()).withTimeout(staticTimeout))
+      .andThen(new InstantCommand(() -> this.setPositionMotorSpeed(0)))
+      .andThen(new WaitCommand(2))
+      //TODO:Change speed
+      .andThen(new InstantCommand(() -> this.setPositionMotorSpeed(2)))
+      .andThen(new InstantCommand(() -> this.setAngleDegrees(90)).withTimeout(dynamicTimeout))
+      .andThen(new InstantCommand(() -> this.resetPosition()).withTimeout(dynamicTimeout))
+      .andThen(new InstantCommand(() -> this.setPositionMotorSpeed(0)));
+  }
+
+
   public void simulationPeriodic(){
     m_shooterPositionMotor.setPosition(targetPosition);
   }
