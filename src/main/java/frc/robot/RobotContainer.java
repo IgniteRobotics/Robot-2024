@@ -163,6 +163,15 @@ public class RobotContainer implements Logged {
   private DoublePreference subShotRPM = new DoublePreference("shooter/subRPM", 3200);
   private DoublePreference closeAutoShotRPM = new DoublePreference("shooter/closeAutoShotRPM", 3200);
 
+  //shooter positioner test angles
+  private DoublePreference angle1 = new DoublePreference("shooter/positionerAdvancedTest/Angle1", 30);
+  private DoublePreference angle2 = new DoublePreference("shooter/positionerAdvancedTest/Angle2", 45);
+  private DoublePreference angle3 = new DoublePreference("shooter/positionerAdvancedTest/Angle3", 60);
+
+  //shooter positioner test powers
+  private DoublePreference power1 = new DoublePreference("shooter/positionerPowerTest/ForwardPower", 0.2);
+  private DoublePreference power2 = new DoublePreference("shooter/positionerPowerTest/BackwardPower", -0.2);
+
   //High power
   //private DoublePreference shooterHighPower = new DoublePreference("shooter/highPower", 78);
   
@@ -249,7 +258,8 @@ public class RobotContainer implements Logged {
   private final Command rotateRearRight = m_robotDrive.turnModuleSysIdTestBuilder(2,2,3);
   private final Command rotateAll = m_robotDrive.turnSysIdTestBuilder(2, 2);
 
-  private final Command shooterPositionTest = m_shooter.positionerTestBuilder(2,2);
+  private final Command shooterPositionTestAdvanced = m_shooter.positionerTestBuilder(2, angle1.getValue(), angle2.getValue(), angle3.getValue());
+  private final Command shooterPositionPowerTest = m_shooter.powerTestBuilder(2, power1.getValue(), power2.getValue());
 
   private final Command intakeSpeedTest = m_robotIntake.intakeMotorTestBuilder(2, 2);
 
@@ -370,7 +380,8 @@ private static class Operator {
     testChooser.addOption("rotateRearRight", rotateRearRight);
     testChooser.addOption("rotateAll", rotateAll);
 
-    testChooser.addOption("shooterPositionTest", shooterPositionTest);
+    testChooser.addOption("shooterPositionTestAdvanced", shooterPositionTestAdvanced);
+    testChooser.addOption("shooterPositionerPowerTest", shooterPositionPowerTest);
 
     testChooser.addOption("intakeSpeedTest", intakeSpeedTest);
 

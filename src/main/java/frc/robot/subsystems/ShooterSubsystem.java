@@ -470,20 +470,34 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     m_shooterPositionMotor.set(speed);
   }
 
-  public Command positionerTestBuilder(double staticTimeout, double dynamicTimeout){
+  public Command powerTestBuilder(double staticTimeout, double powerForward, double powerBackward){
     return
       new InstantCommand(() -> this.resetPosition()).withTimeout(staticTimeout)
-      //TODO:Change speed
-      .andThen(new InstantCommand(() -> this.setPositionMotorSpeed(1)))
-      .andThen(new InstantCommand(() -> this.setAngleDegrees(90)).withTimeout(staticTimeout))
+
+      .andThen(new InstantCommand(() -> this.setPositionMotorSpeed(powerForward)).withTimeout(staticTimeout))
+      .andThen(new InstantCommand(() -> this.setPositionMotorSpeed(powerBackward)).withTimeout(staticTimeout))
+      .andThen(new InstantCommand(() -> this.resetPosition()).withTimeout(staticTimeout));
+  }
+public Command positionerTestBuilder(double staticTimeout, double angle1, double angle2, double angle3){
+    return
+      new InstantCommand(() -> this.resetPosition()).withTimeout(staticTimeout)
+
+      //angle 1 test
+      .andThen(new InstantCommand(() -> this.setAngleDegrees(angle1)).withTimeout(staticTimeout))
       .andThen(new InstantCommand(() -> this.resetPosition()).withTimeout(staticTimeout))
-      .andThen(new InstantCommand(() -> this.setPositionMotorSpeed(0)))
       .andThen(new WaitCommand(2))
-      //TODO:Change speed
-      .andThen(new InstantCommand(() -> this.setPositionMotorSpeed(2)))
-      .andThen(new InstantCommand(() -> this.setAngleDegrees(90)).withTimeout(dynamicTimeout))
-      .andThen(new InstantCommand(() -> this.resetPosition()).withTimeout(dynamicTimeout))
-      .andThen(new InstantCommand(() -> this.setPositionMotorSpeed(0)));
+    
+
+      //angle 2 test
+      .andThen(new InstantCommand(() -> this.setAngleDegrees(angle2)).withTimeout(staticTimeout))
+      .andThen(new InstantCommand(() -> this.resetPosition()).withTimeout(staticTimeout))
+      .andThen(new WaitCommand(2))
+
+      //angle 3 test
+      .andThen(new InstantCommand(() -> this.setAngleDegrees(angle3)).withTimeout(staticTimeout))
+      .andThen(new InstantCommand(() -> this.resetPosition()).withTimeout(staticTimeout))
+      .andThen(new WaitCommand(2));
+
   }
 
 
