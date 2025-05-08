@@ -260,7 +260,9 @@ public class ShooterSubsystem extends SubsystemBase implements Logged {
     mmConfig.MotionMagicJerk = ShooterConstants.MOTION_MAGIC_JERK;
 
     configurator.apply(mmConfig);
-    
+
+    motor.getDeviceTemp().setUpdateFrequency(2);
+    motor.getTorqueCurrent().setUpdateFrequency(2);
   }
 
   private void configureCancoder(CANcoder cancoder){
