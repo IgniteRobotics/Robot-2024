@@ -34,6 +34,8 @@ import edu.wpi.first.util.datalog.StringLogEntry;
 public class Robot extends TimedRobot implements Logged {
   private Command m_autonomousCommand;
 
+  private Command m_testCommand;
+
   private RobotContainer m_robotContainer;
 
   @Log.NT
@@ -165,6 +167,9 @@ public class Robot extends TimedRobot implements Logged {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    if (m_testCommand != null){
+      m_testCommand.cancel();
+    }
   }
 
   /** This function is called periodically during operator control. */
@@ -176,6 +181,11 @@ public class Robot extends TimedRobot implements Logged {
     getAllianceInfo();
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    m_testCommand = m_robotContainer.getTestCommand();
+
+    if(m_testCommand != null){
+      m_testCommand.schedule();
+    }
   }
 
   /** This function is called periodically during test mode. */

@@ -15,7 +15,10 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -135,4 +138,17 @@ public class Climber extends SubsystemBase implements Logged {
     current = m_climberMotor.getStatorCurrent().getValueAsDouble();
     position = m_climberMotor.getPosition().getValueAsDouble();
   }
+
+  public Command climberTestBuilder(double staticTimeout, double dynamicTimeout){
+    return
+      new InstantCommand(() -> this.stop())
+      .andThen(new InstantCommand(() -> this.move(0.5)).withTimeout(staticTimeout))
+      .andThen(new InstantCommand(() -> this.move(-0.5)).withTimeout(staticTimeout))
+      .andThen(new InstantCommand(() -> this.stop()))
+      .andThen(new WaitCommand(2))
+      .andThen(new InstantCommand(() -> this.move(1)).withTimeout(dynamicTimeout))
+      .andThen(new InstantCommand(() -> this.move(-1)).withTimeout(dynamicTimeout))
+      .andThen(new InstantCommand(() -> this.stop()));
+  }
+
 }
